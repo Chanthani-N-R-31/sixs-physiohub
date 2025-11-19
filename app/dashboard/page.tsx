@@ -1,8 +1,99 @@
-export default function Dashboard() {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <h1 className="text-3xl font-semibold">Dashboard (Logged In)</h1>
-      </div>
-    );
-  }
-  
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
+import StatsCard from "@/components/StatsCard";
+import RecentEntries from "@/components/RecentEntries";
+import { auth } from "@/lib/firebase";
+import { User } from "firebase/auth";
+import {
+  UserCircleIcon,
+  HeartIcon,
+  SparklesIcon,
+  AcademicCapIcon,
+  FireIcon,
+} from "@heroicons/react/24/solid";
+
+export default function DashboardPage() {
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged((u) => {
+      if (!u) {
+        router.push("/"); // redirect to login
+      } else {
+        setUser(u);
+      }
+    });
+    return () => unsub();
+  }, [router]);
+
+  // placeholder stats - later connect to Firestore
+  const stats = [
+    { title: "Physiotherapy", value: 124, delta: "+8%", icon: <SparklesIcon className="w-6 h-6 text-blue-500" /> },
+    { title: "Physiology", value: 87, delta: "+2%", icon: <HeartIcon className="w-6 h-6 text-red-500" /> },
+    { title: "Biomechanics", value: 45, delta: "-1%", icon: <FireIcon className="w-6 h-6 text-orange-500" /> },
+    { title: "Nutrition", value: 62, delta: "+4%", icon: <AcademicCapIcon className="w-6 h-6 text-green-500" /> },
+    { title: "Psychology", value: 33, delta: "+6%", icon: <UserCircleIcon className="w-6 h-6 text-indigo-500" /> },
+  ];
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+
+      <main className="flex-1 p-6">
+        <header className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
+            <p className="text-sm text-gray-500">Welcome back{user ? `, ${user.email}` : ""} — your dashboard at a glance.</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm shadow-sm hover:bg-gray-50">
+              Settings
+            </button>
+
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+              // onClick={() => handleExport()} // wire this to your export util
+            >
+              Export
+            </button>
+          </div>
+        </header>
+
+        <section className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+          {stats.map((s) => (
+            <StatsCard key={s.title} title={s.title} value={s.value} delta={s.delta} icon={s.icon} />
+          ))}
+        </section>
+
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <RecentEntries />
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-800 mb-3">Quick Actions</h3>
+
+              <div className="flex flex-col gap-2">
+                <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 border border-gray-100">New Entry</button>
+                <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 border border-gray-100">Import CSV</button>
+                <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 border border-gray-100">Manage Templates</button>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">Announcements</h3>
+              <p className="text-xs text-gray-500">No announcements. Check back later.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
