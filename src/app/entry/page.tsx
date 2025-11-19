@@ -18,27 +18,39 @@ export default function EntryPage() {
   const [success, setSuccess] = useState("");
 
   const submitForm = async () => {
+    if (!patientName.trim()) {
+      alert("Please enter a patient name");
+      return;
+    }
+
     setLoading(true);
+    setSuccess("");
 
-    await addDoc(collection(db, "entries"), {
-      patientName,
-      physiotherapy,
-      physiology,
-      biomechanics,
-      nutrition,
-      psychology,
-      createdAt: Timestamp.now(),
-    });
+    try {
+      await addDoc(collection(db, "entries"), {
+        patientName,
+        physiotherapy,
+        physiology,
+        biomechanics,
+        nutrition,
+        psychology,
+        createdAt: Timestamp.now(),
+      });
 
-    setLoading(false);
-    setSuccess("Entry Saved Successfully 🎉");
+      setSuccess("Entry Saved Successfully 🎉");
 
-    setPatientName("");
-    setPhysiotherapy("");
-    setPhysiology("");
-    setBiomechanics("");
-    setNutrition("");
-    setPsychology("");
+      setPatientName("");
+      setPhysiotherapy("");
+      setPhysiology("");
+      setBiomechanics("");
+      setNutrition("");
+      setPsychology("");
+    } catch (error) {
+      const err = error as Error;
+      alert(`Error saving entry: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

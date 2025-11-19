@@ -14,7 +14,7 @@ export default function AuthForm() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -25,8 +25,9 @@ export default function AuthForm() {
       }
 
       router.push("/dashboard");
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      const error = err as Error;
+      alert(error.message);
     }
   };
 
@@ -41,6 +42,7 @@ export default function AuthForm() {
           <input
             type="email"
             placeholder="Email"
+            value={email}
             className="border border-gray-300 px-3 py-2 rounded-md text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -48,6 +50,7 @@ export default function AuthForm() {
           <input
             type="password"
             placeholder="Password"
+            value={password}
             className="border border-gray-300 px-3 py-2 rounded-md text-black placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
             onChange={(e) => setPassword(e.target.value)}
           />
