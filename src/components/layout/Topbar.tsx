@@ -6,12 +6,13 @@ import { auth } from "@/lib/firebase";
 import {
   BellIcon,
   UserCircleIcon,
-  FunnelIcon,
-  SparklesIcon,
 } from "@heroicons/react/24/outline";
+import SearchBar from "@/components/SearchBar";
+import { getAllPatients } from "@/lib/patientData";
 
 export default function Topbar() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const patients = getAllPatients();
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((user) => {
@@ -26,26 +27,11 @@ export default function Topbar() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
           {/* Search */}
           <div className="flex items-center gap-4 w-full sm:w-auto">
-            <div className="relative w-full sm:w-auto">
-              <FunnelIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                placeholder="Search patient details..."
-                className="w-full sm:w-96 md:w-[420px] p-2.5 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-300"
-              />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm hidden sm:block">
-                ⌘K
-              </div>
-            </div>
+            <SearchBar patients={patients} />
           </div>
 
           {/* Right Section */}
           <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
-            {/* Summarize Button */}
-            <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
-              <SparklesIcon className="w-4 h-4" />
-              Summarize
-            </button>
-
             {/* Notifications */}
             <button className="p-2 rounded-md text-gray-600 hover:bg-gray-100">
               <BellIcon className="w-5 h-5" />

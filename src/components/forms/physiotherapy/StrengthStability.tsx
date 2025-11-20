@@ -78,7 +78,7 @@ export default function StrengthStability() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500">
+            <tr className="text-left text-gray-700 font-medium">
               <th className="py-2">Movement</th>
               <th className="py-2">Left</th>
               <th className="py-2">Right</th>
@@ -88,65 +88,65 @@ export default function StrengthStability() {
           <tbody className="divide-y">
             {/* Shoulder */}
             <tr>
-              <td className="py-2">Shoulder Flexion</td>
+              <td className="py-2 text-gray-900">Shoulder Flexion</td>
               <td><MMTSelect value={data.shoulderFlexL} onChange={(v: any) => u("shoulderFlexL", v)} /></td>
               <td><MMTSelect value={data.shoulderFlexR} onChange={(v: any) => u("shoulderFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Shoulder Abduction</td>
+              <td className="py-2 text-gray-900">Shoulder Abduction</td>
               <td><MMTSelect value={data.shoulderAbdL} onChange={(v: any) => u("shoulderAbdL", v)} /></td>
               <td><MMTSelect value={data.shoulderAbdR} onChange={(v: any) => u("shoulderAbdR", v)} /></td>
             </tr>
 
             {/* Elbow */}
             <tr>
-              <td>Elbow Flexion</td>
+              <td className="py-2 text-gray-900">Elbow Flexion</td>
               <td><MMTSelect value={data.elbowFlexL} onChange={(v: any) => u("elbowFlexL", v)} /></td>
               <td><MMTSelect value={data.elbowFlexR} onChange={(v: any) => u("elbowFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Elbow Extension</td>
+              <td className="py-2 text-gray-900">Elbow Extension</td>
               <td><MMTSelect value={data.elbowExtL} onChange={(v: any) => u("elbowExtL", v)} /></td>
               <td><MMTSelect value={data.elbowExtR} onChange={(v: any) => u("elbowExtR", v)} /></td>
             </tr>
 
             {/* Hip */}
             <tr>
-              <td>Hip Flexion</td>
+              <td className="py-2 text-gray-900">Hip Flexion</td>
               <td><MMTSelect value={data.hipFlexL} onChange={(v: any) => u("hipFlexL", v)} /></td>
               <td><MMTSelect value={data.hipFlexR} onChange={(v: any) => u("hipFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Hip Abduction</td>
+              <td className="py-2 text-gray-900">Hip Abduction</td>
               <td><MMTSelect value={data.hipAbdL} onChange={(v: any) => u("hipAbdL", v)} /></td>
               <td><MMTSelect value={data.hipAbdR} onChange={(v: any) => u("hipAbdR", v)} /></td>
             </tr>
 
             {/* Knee */}
             <tr>
-              <td>Knee Flexion</td>
+              <td className="py-2 text-gray-900">Knee Flexion</td>
               <td><MMTSelect value={data.kneeFlexL} onChange={(v: any) => u("kneeFlexL", v)} /></td>
               <td><MMTSelect value={data.kneeFlexR} onChange={(v: any) => u("kneeFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Knee Extension</td>
+              <td className="py-2 text-gray-900">Knee Extension</td>
               <td><MMTSelect value={data.kneeExtL} onChange={(v: any) => u("kneeExtL", v)} /></td>
               <td><MMTSelect value={data.kneeExtR} onChange={(v: any) => u("kneeExtR", v)} /></td>
             </tr>
 
             {/* Ankle */}
             <tr>
-              <td>Ankle Dorsiflexion</td>
+              <td className="py-2 text-gray-900">Ankle Dorsiflexion</td>
               <td><MMTSelect value={data.ankleDFL} onChange={(v: any) => u("ankleDFL", v)} /></td>
               <td><MMTSelect value={data.ankleDFR} onChange={(v: any) => u("ankleDFR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Ankle Plantarflexion</td>
+              <td className="py-2 text-gray-900">Ankle Plantarflexion</td>
               <td><MMTSelect value={data.anklePFL} onChange={(v: any) => u("anklePFL", v)} /></td>
               <td><MMTSelect value={data.anklePFR} onChange={(v: any) => u("anklePFR", v)} /></td>
             </tr>
@@ -164,7 +164,7 @@ export default function StrengthStability() {
             <input
               value={data.plankTime}
               onChange={(e) => u("plankTime", e.target.value)}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
               placeholder="Eg: 45 sec"
             />
           </div>
@@ -174,7 +174,7 @@ export default function StrengthStability() {
             <input
               value={data.sidePlankL}
               onChange={(e) => u("sidePlankL", e.target.value)}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -183,7 +183,7 @@ export default function StrengthStability() {
             <input
               value={data.sidePlankR}
               onChange={(e) => u("sidePlankR", e.target.value)}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
             />
           </div>
         </div>

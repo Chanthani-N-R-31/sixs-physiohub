@@ -82,7 +82,7 @@ export default function FMS() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500">
+            <tr className="text-left text-gray-700 font-medium">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -90,11 +90,11 @@ export default function FMS() {
 
           <tbody className="divide-y">
             <tr>
-              <td className="py-2">Left</td>
+              <td className="py-2 text-gray-900">Left</td>
               <td><ScoreSelect value={form.hurdleL} onChange={(v: any) => update("hurdleL", v)} /></td>
             </tr>
             <tr>
-              <td>Right</td>
+              <td className="py-2 text-gray-900">Right</td>
               <td><ScoreSelect value={form.hurdleR} onChange={(v: any) => update("hurdleR", v)} /></td>
             </tr>
           </tbody>
@@ -107,7 +107,7 @@ export default function FMS() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500">
+            <tr className="text-left text-gray-700 font-medium">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -115,11 +115,11 @@ export default function FMS() {
 
           <tbody className="divide-y">
             <tr>
-              <td>Left</td>
+              <td className="py-2 text-gray-900">Left</td>
               <td><ScoreSelect value={form.lungeL} onChange={(v: any) => update("lungeL", v)} /></td>
             </tr>
             <tr>
-              <td>Right</td>
+              <td className="py-2 text-gray-900">Right</td>
               <td><ScoreSelect value={form.lungeR} onChange={(v: any) => update("lungeR", v)} /></td>
             </tr>
           </tbody>
@@ -132,7 +132,7 @@ export default function FMS() {
 
         <table className="w-full text-sm mb-4">
           <thead>
-            <tr className="text-left text-gray-500">
+            <tr className="text-left text-gray-700 font-medium">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -140,11 +140,11 @@ export default function FMS() {
 
           <tbody className="divide-y">
             <tr>
-              <td>Left</td>
+              <td className="py-2 text-gray-900">Left</td>
               <td><ScoreSelect value={form.shoulderMobL} onChange={(v: any) => update("shoulderMobL", v)} /></td>
             </tr>
             <tr>
-              <td>Right</td>
+              <td className="py-2 text-gray-900">Right</td>
               <td><ScoreSelect value={form.shoulderMobR} onChange={(v: any) => update("shoulderMobR", v)} /></td>
             </tr>
           </tbody>
@@ -171,18 +171,18 @@ export default function FMS() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500">
+            <tr className="text-left text-gray-700 font-medium">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             <tr>
-              <td>Left</td>
+              <td className="py-2 text-gray-900">Left</td>
               <td><ScoreSelect value={form.aslrL} onChange={(v: any) => update("aslrL", v)} /></td>
             </tr>
             <tr>
-              <td>Right</td>
+              <td className="py-2 text-gray-900">Right</td>
               <td><ScoreSelect value={form.aslrR} onChange={(v: any) => update("aslrR", v)} /></td>
             </tr>
           </tbody>
@@ -219,7 +219,7 @@ export default function FMS() {
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500">
+            <tr className="text-left text-gray-700 font-medium">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -227,11 +227,11 @@ export default function FMS() {
 
           <tbody className="divide-y">
             <tr>
-              <td>Left</td>
+              <td className="py-2 text-gray-900">Left</td>
               <td><ScoreSelect value={form.rotaryL} onChange={(v: any) => update("rotaryL", v)} /></td>
             </tr>
             <tr>
-              <td>Right</td>
+              <td className="py-2 text-gray-900">Right</td>
               <td><ScoreSelect value={form.rotaryR} onChange={(v: any) => update("rotaryR", v)} /></td>
             </tr>
           </tbody>
