@@ -25,9 +25,10 @@ export default function AuthForm() {
       }
 
       router.push("/dashboard");
-    } catch (err) {
-      const error = err as Error;
-      alert(error.message);
+    } catch (err: unknown) {
+      const error = err as { message?: string; code?: string };
+      const errorMessage = error.message || "Authentication failed. Please try again.";
+      alert(errorMessage);
     }
   };
 
