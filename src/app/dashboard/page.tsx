@@ -46,7 +46,7 @@ export default function DashboardPage() {
       value: 87,
       delta: "+2%",
       icon: <HeartIcon className="w-6 h-6 text-red-500" />,
-      href: "/physiology/form", // placeholder route (you'll provide template later)
+      href: "/physiology/form",
     },
     {
       title: "Biomechanics",
@@ -84,11 +84,10 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main */}
       <main className="flex-1 p-6">
+        {/* HEADER */}
         <header className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Dashboard Overview</h2>
@@ -97,25 +96,15 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Removed Settings as requested */}
-            <button
-              onClick={() => router.push("/export")}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-            >
-              Export Data
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm shadow-sm hover:bg-gray-50"
-            >
-              Logout
-            </button>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm shadow-sm hover:bg-gray-100 text-gray-900 font-medium"
+          >
+            Logout
+          </button>
         </header>
 
-        {/* Stats (clickable) */}
+        {/* STATS GRID */}
         <section className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
           {stats.map((stat) => (
             <div
@@ -124,7 +113,7 @@ export default function DashboardPage() {
               role="button"
               tabIndex={0}
               onKeyDown={(e) => e.key === "Enter" && router.push(stat.href)}
-              className="cursor-pointer transform hover:-translate-y-0.5 transition p-0"
+              className="cursor-pointer transform hover:-translate-y-0.5 transition"
             >
               <StatsCard
                 title={stat.title}
@@ -136,41 +125,9 @@ export default function DashboardPage() {
           ))}
         </section>
 
-        {/* Bottom Sections */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <RecentEntries />
-          </div>
-
-          <div className="space-y-4">
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <h3 className="text-sm font-semibold text-gray-800 mb-3">Quick Actions</h3>
-
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => router.push("/physiotherapy/form")}
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 border border-gray-100"
-                >
-                  ➕ New Entry (Physiotherapy)
-                </button>
-                <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 border border-gray-100">
-                  📥 Import CSV
-                </button>
-                <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-50 border border-gray-100">
-                  ⚙ Manage Templates
-                </button>
-              </div>
-            </div>
-
-            {/* Announcements */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <h3 className="text-sm font-semibold text-gray-800 mb-2">Announcements</h3>
-              <p className="text-xs text-gray-500">
-                No announcements right now. Check back later.
-              </p>
-            </div>
-          </div>
+        {/* RECENT ENTRIES ONLY */}
+        <section>
+          <RecentEntries />
         </section>
       </main>
     </div>
