@@ -252,7 +252,7 @@ export default function PhysioFormPage() {
         {errorMsg && <div className="mb-4 text-red-600">{errorMsg}</div>}
         {successMsg && <div className="mb-4 text-green-600">{successMsg}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-2xl shadow-sm border">
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-2xl shadow-md border">
           {/* Section 1 - Demographic */}
           <section>
             <h2 className="text-lg font-semibold mb-3">Section 1: Demographic Details</h2>
