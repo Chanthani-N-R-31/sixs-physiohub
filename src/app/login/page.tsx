@@ -30,19 +30,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
-
-      {/* LEFT SIDE (Blue Gradient Area) */}
-      <div className="hidden md:flex flex-col justify-center px-12 bg-gradient-to-b from-blue-700 to-blue-500 text-white">
-        <h1 className="text-4xl font-bold mb-4">PhysioHub</h1>
-        <p className="text-lg opacity-90 max-w-sm">
-          Empowering physiotherapy centers with seamless data management.
-          Your patients, your records, your control.
-        </p>
-      </div>
-
-      {/* RIGHT SIDE - LOGIN FORM */}
-      <div className="flex justify-center items-center p-8 bg-white">
+    <div className="min-h-screen flex justify-center items-center p-8 bg-white">
 
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Login</h2>
@@ -97,8 +85,6 @@ export default function LoginPage() {
             </Link>
           </p>
         </div>
-
-      </div>
     </div>
   );
 }

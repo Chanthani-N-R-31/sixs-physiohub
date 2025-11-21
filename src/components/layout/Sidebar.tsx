@@ -44,8 +44,8 @@ export default function Sidebar() {
             PH
           </div>
           <div>
-            <div className="font-semibold text-gray-900">PH PhysioHub</div>
-            <div className="text-xs text-gray-500">Clinical Dashboard</div>
+            <div className="font-semibold text-gray-900">Data Collection</div>
+            <div className="text-xs text-gray-500">Dashboard</div>
           </div>
         </div>
 
