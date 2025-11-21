@@ -16,8 +16,8 @@ export default function OverviewPage() {
     { id: "P-003", name: "Meera S", age: 24, date: "2025-11-15", status: "Incomplete" },
   ];
 
-  const totalPatients = demoEntries.length;
-  const assessmentsThisMonth = 42;
+  const totalPatients = 50;
+  const assessmentsThisMonth = 10;
   const pendingReports = demoEntries.filter((d) => d.status === "Pending").length;
 
   return (
@@ -36,7 +36,7 @@ export default function OverviewPage() {
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Assessments This Month</div>
+          <div className="text-xs text-gray-500">Assessments Today</div>
           <div className="mt-2 text-2xl font-bold text-gray-900">
             {assessmentsThisMonth}
           </div>
