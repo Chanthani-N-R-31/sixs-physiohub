@@ -255,7 +255,7 @@ export default function PhysioFormPage() {
         <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-2xl shadow-md border">
           {/* Section 1 - Demographic */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 1: Demographic Details</h2>
+            <h2 className="text-lg font-semibold mb-3">Demographic Details</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
@@ -299,7 +299,7 @@ export default function PhysioFormPage() {
 
           {/* Section 2 - Injury History */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 2: Injury History</h2>
+            <h2 className="text-lg font-semibold mb-3">Injury History</h2>
 
             <div className="grid grid-cols-1 gap-4">
               <textarea
@@ -388,7 +388,7 @@ export default function PhysioFormPage() {
 
           {/* Section 3 - Static Posture (Anterior) */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 3: Static Posture (Anterior View)</h2>
+            <h2 className="text-lg font-semibold mb-3">Static Posture (Anterior View)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 className="p-3 border rounded"
@@ -425,7 +425,7 @@ export default function PhysioFormPage() {
 
           {/* Section 3 - Static Posture (Lateral) */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 3: Static Posture (Lateral View)</h2>
+            <h2 className="text-lg font-semibold mb-3">Static Posture (Lateral View)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 className="p-3 border rounded"
@@ -462,7 +462,7 @@ export default function PhysioFormPage() {
 
           {/* Section 4 - ROM */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 4: Joint Range of Motion (ROM)</h2>
+            <h2 className="text-lg font-semibold mb-3">Joint Range of Motion (ROM)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="number"
@@ -532,7 +532,7 @@ export default function PhysioFormPage() {
 
           {/* Section 5 - Strength & Stability */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 5: Strength & Stability</h2>
+            <h2 className="text-lg font-semibold mb-3">Strength & Stability</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <textarea
                 className="p-3 border rounded"
@@ -594,7 +594,7 @@ export default function PhysioFormPage() {
 
           {/* Section 6 - FMS */}
           <section>
-            <h2 className="text-lg font-semibold mb-3">Section 6: Functional Movement Screening (FMS)</h2>
+            <h2 className="text-lg font-semibold mb-3">Functional Movement Screening (FMS)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="number"

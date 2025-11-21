@@ -210,7 +210,7 @@ export default function RegistrationDetails({
       onClick={() => toggleSection(num)}
     >
       <h4 className="text-lg font-bold text-gray-900">
-        SECTION {num} — {title}
+        {title}
       </h4>
       <span className="text-gray-600">
         {expandedSections.has(num) ? "▼" : "▶"}
