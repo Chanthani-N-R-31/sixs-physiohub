@@ -5,14 +5,21 @@ import { useState } from "react";
 
 export default function StaticPosture() {
   const [form, setForm] = useState({
-    standingPosture: "",
-    sittingPosture: "",
-    headAlignment: "",
-    shoulderLevel: "",
-    scapulaPosition: "",
-    pelvisTilt: "",
-    kneeAlignment: "",
-    footPosture: "",
+    // Anterior View
+    headTilt: "",
+    shoulderAlignment: "",
+    trunkAlignment: "",
+    pelvicAlignment: "",
+    kneeAlignmentAnterior: "",
+
+    // Lateral View
+    headAlignmentLat: "",
+    shoulderAlignmentLat: "",
+    spinalCurves: "",
+    pelvicTilt: "",
+    kneeAlignmentLat: "",
+
+    // Assessment Findings
     observations: "",
   });
 
@@ -20,155 +27,179 @@ export default function StaticPosture() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Reusable select cell renderer
+  const SelectCell = ({ value, onChange, options }: any) => (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
+    >
+      <option value="">Select</option>
+      {options.map((opt: string) => (
+        <option key={opt} value={opt}>
+          {opt}
+        </option>
+      ))}
+    </select>
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <h3 className="text-xl font-semibold text-gray-900">
         Static Posture Assessment
       </h3>
 
-      {/* GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* ===================== ANTERIOR VIEW ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Anterior View</h4>
 
-        {/* Standing Posture */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Standing Posture</label>
-          <select
-            value={form.standingPosture}
-            onChange={(e) => update("standingPosture", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Normal</option>
-            <option>Forward Lean</option>
-            <option>Backward Lean</option>
-            <option>Lateral Shift</option>
-            <option>Kyphotic</option>
-            <option>Lordotic</option>
-            <option>Sway Back</option>
-          </select>
-        </div>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-700 font-medium">
+              <th className="py-2">Parameter</th>
+              <th className="py-2">Observation</th>
+            </tr>
+          </thead>
 
-        {/* Sitting Posture */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Sitting Posture</label>
-          <select
-            value={form.sittingPosture}
-            onChange={(e) => update("sittingPosture", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Upright</option>
-            <option>Slouched</option>
-            <option>Rounded Shoulders</option>
-            <option>Forward Head</option>
-          </select>
-        </div>
+          <tbody className="divide-y">
+            <tr>
+              <td className="py-2 text-gray-900">Head Tilt</td>
+              <td>
+                <SelectCell
+                  value={form.headTilt}
+                  onChange={(v: string) => update("headTilt", v)}
+                  options={["Neutral", "Left", "Right"]}
+                />
+              </td>
+            </tr>
 
-        {/* Head/Neck Alignment */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Head / Neck Alignment</label>
-          <select
-            value={form.headAlignment}
-            onChange={(e) => update("headAlignment", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Neutral</option>
-            <option>Forward Head</option>
-            <option>Side Tilt</option>
-            <option>Protracted</option>
-          </select>
-        </div>
+            <tr>
+              <td className="py-2 text-gray-900">Shoulder Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.shoulderAlignment}
+                  onChange={(v: string) => update("shoulderAlignment", v)}
+                  options={[
+                    "Symmetrical",
+                    "Elevated (L)",
+                    "Elevated (R)",
+                    "Depressed (L)",
+                    "Depressed (R)",
+                  ]}
+                />
+              </td>
+            </tr>
 
-        {/* Shoulder Level */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Shoulder Level</label>
-          <select
-            value={form.shoulderLevel}
-            onChange={(e) => update("shoulderLevel", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Even</option>
-            <option>Right Elevated</option>
-            <option>Left Elevated</option>
-          </select>
-        </div>
+            <tr>
+              <td className="py-2 text-gray-900">Trunk Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.trunkAlignment}
+                  onChange={(v: string) => update("trunkAlignment", v)}
+                  options={[
+                    "Midline",
+                    "Lateral tilt – Left",
+                    "Lateral tilt – Right",
+                  ]}
+                />
+              </td>
+            </tr>
 
-        {/* Scapular Position */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Scapular Position</label>
-          <select
-            value={form.scapulaPosition}
-            onChange={(e) => update("scapulaPosition", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Neutral</option>
-            <option>Winging</option>
-            <option>Protracted</option>
-            <option>Retracted</option>
-          </select>
-        </div>
+            <tr>
+              <td className="py-2 text-gray-900">Pelvic Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.pelvicAlignment}
+                  onChange={(v: string) => update("pelvicAlignment", v)}
+                  options={["Level", "Tilted (L)", "Tilted (R)"]}
+                />
+              </td>
+            </tr>
 
-        {/* Pelvic Tilt */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Pelvic Tilt</label>
-          <select
-            value={form.pelvisTilt}
-            onChange={(e) => update("pelvisTilt", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Neutral</option>
-            <option>Anterior Tilt</option>
-            <option>Posterior Tilt</option>
-          </select>
-        </div>
+            <tr>
+              <td className="py-2 text-gray-900">Knee Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.kneeAlignmentAnterior}
+                  onChange={(v: string) => update("kneeAlignmentAnterior", v)}
+                  options={["Normal", "Valgus", "Varus"]}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-        {/* Knee Alignment */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Knee Alignment</label>
-          <select
-            value={form.kneeAlignment}
-            onChange={(e) => update("kneeAlignment", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Neutral</option>
-            <option>Genu Varum (Bow Legs)</option>
-            <option>Genu Valgum (Knock Knees)</option>
-            <option>Genu Recurvatum (Hyperextension)</option>
-          </select>
-        </div>
+      {/* ===================== LATERAL VIEW ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Lateral View</h4>
 
-        {/* Foot Posture */}
-        <div>
-          <label className="text-sm font-medium text-gray-900">Foot Posture</label>
-          <select
-            value={form.footPosture}
-            onChange={(e) => update("footPosture", e.target.value)}
-            className="w-full mt-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Neutral</option>
-            <option>Pronated</option>
-            <option>Supinated</option>
-          </select>
-        </div>
-      </div>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-700 font-medium">
+              <th className="py-2">Parameter</th>
+              <th className="py-2">Observation</th>
+            </tr>
+          </thead>
 
-      {/* Observations */}
-      <div>
-        <label className="text-sm font-medium text-gray-900">Additional Observations</label>
-        <textarea
-          value={form.observations}
-          onChange={(e) => update("observations", e.target.value)}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          rows={3}
-          placeholder="Describe any visible asymmetries, compensations, or abnormal posture patterns"
-        />
-      </div>
+          <tbody className="divide-y">
+            <tr>
+              <td className="py-2 text-gray-900">Head Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.headAlignmentLat}
+                  onChange={(v: string) => update("headAlignmentLat", v)}
+                  options={["Neutral", "Forward", "Retracted"]}
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td className="py-2 text-gray-900">Shoulder Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.shoulderAlignmentLat}
+                  onChange={(v: string) => update("shoulderAlignmentLat", v)}
+                  options={["Aligned", "Rounded", "Protracted"]}
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td className="py-2 text-gray-900">Spinal Curves</td>
+              <td>
+                <SelectCell
+                  value={form.spinalCurves}
+                  onChange={(v: string) => update("spinalCurves", v)}
+                  options={["Normal", "Increased", "Decreased"]}
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td className="py-2 text-gray-900">Pelvic Tilt</td>
+              <td>
+                <SelectCell
+                  value={form.pelvicTilt}
+                  onChange={(v: string) => update("pelvicTilt", v)}
+                  options={["Neutral", "Anterior", "Posterior"]}
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td className="py-2 text-gray-900">Knee Alignment</td>
+              <td>
+                <SelectCell
+                  value={form.kneeAlignmentLat}
+                  onChange={(v: string) => update("kneeAlignmentLat", v)}
+                  options={["Neutral", "Hyperextension", "Flexed"]}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </div>
   );
 }

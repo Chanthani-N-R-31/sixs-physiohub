@@ -32,7 +32,7 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
     "Demographics",
     "Injury Details",
     "Posture",
-    "ROM",
+    "ROM & Flexibility",
     "Strength",
     "FMS",
   ];
@@ -149,7 +149,7 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
             {/* Notes */}
             <div className="mt-6">
               <label className="block text-sm font-medium text-gray-900 mb-1">
-                Additional Notes
+                Assessments Findings
               </label>
               <textarea
                 className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-300"

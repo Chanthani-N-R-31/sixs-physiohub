@@ -53,6 +53,11 @@ export default function ROM() {
     anklePFL: "",
     anklePFR: "",
 
+    // Flexibility
+    sitAndReach: "",
+    poplitealAngle: "",
+    thomasTest: "",
+
     notes: "",
   });
 
@@ -72,7 +77,7 @@ export default function ROM() {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Range of Motion (ROM)</h3>
+      <h3 className="text-xl font-semibold text-gray-900">Range of Motion(ROM) and Flexibility assessments</h3>
 
       {/* ===================== CERVICAL ROM ====================== */}
       <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
@@ -173,19 +178,7 @@ export default function ROM() {
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Abduction</td>
-              <td><InputCell value={rom.shAbdL} onChange={(v: any) => u("shAbdL", v)} /></td>
-              <td><InputCell value={rom.shAbdR} onChange={(v: any) => u("shAbdR", v)} /></td>
-            </tr>
-
-            <tr>
-              <td className="py-2 text-gray-900">External Rotation</td>
-              <td><InputCell value={rom.shERL} onChange={(v: any) => u("shERL", v)} /></td>
-              <td><InputCell value={rom.shERR} onChange={(v: any) => u("shERR", v)} /></td>
-            </tr>
-
-            <tr>
-              <td className="py-2 text-gray-900">Internal Rotation</td>
+              <td className="py-2 text-gray-900">Apley's Test (cm)</td>
               <td><InputCell value={rom.shIRL} onChange={(v: any) => u("shIRL", v)} /></td>
               <td><InputCell value={rom.shIRR} onChange={(v: any) => u("shIRR", v)} /></td>
             </tr>
@@ -213,8 +206,8 @@ export default function ROM() {
               <td><InputCell value={rom.hipFlexR} onChange={(v: any) => u("hipFlexR", v)} /></td>
             </tr>
 
-            <tr>
-              <td className="py-2 text-gray-900">Abduction</td>
+            <tr>  
+              <td className="py-2 text-gray-900">Extension</td>
               <td><InputCell value={rom.hipAbdL} onChange={(v: any) => u("hipAbdL", v)} /></td>
               <td><InputCell value={rom.hipAbdR} onChange={(v: any) => u("hipAbdR", v)} /></td>
             </tr>
@@ -278,7 +271,7 @@ export default function ROM() {
 
           <tbody className="divide-y">
             <tr>
-              <td className="py-2 text-gray-900">Dorsiflexion</td>
+              <td className="py-2 text-gray-900">Dorsiflexion (Knee to Wall test)</td>
               <td><InputCell value={rom.ankleDFL} onChange={(v: any) => u("ankleDFL", v)} /></td>
               <td><InputCell value={rom.ankleDFR} onChange={(v: any) => u("ankleDFR", v)} /></td>
             </tr>
@@ -292,17 +285,42 @@ export default function ROM() {
         </table>
       </section>
 
-      {/* NOTES */}
-      <div>
-        <label className="text-sm font-medium text-gray-900">Additional Notes</label>
-        <textarea
-          value={rom.notes}
-          onChange={(e) => u("notes", e.target.value)}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          rows={3}
-          placeholder="Observations, restrictions, compensations..."
-        />
-      </div>
+      {/* ===================== FLEXIBILITY ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Flexibility</h4>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-900 mb-1 block">Sit & Reach (cm)</label>
+            <input
+              value={rom.sitAndReach}
+              onChange={(e) => u("sitAndReach", e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+              placeholder="cm"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-900 mb-1 block">Popliteal Angle (deg)</label>
+            <input
+              value={rom.poplitealAngle}
+              onChange={(e) => u("poplitealAngle", e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+              placeholder="°"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-900 mb-1 block">Thomas Test (deg)</label>
+            <input
+              value={rom.thomasTest}
+              onChange={(e) => u("thomasTest", e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+              placeholder="°"
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
