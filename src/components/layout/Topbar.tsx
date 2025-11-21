@@ -2,9 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import {
-  BellIcon,
-} from "@heroicons/react/24/outline";
 import SearchBar from "@/components/SearchBar";
 import { getAllPatients } from "@/lib/patientData";
 
@@ -18,14 +15,6 @@ export default function Topbar() {
           {/* Search */}
           <div className="flex items-center gap-4 w-full sm:w-auto">
             <SearchBar patients={patients} />
-          </div>
-
-          {/* Right Section */}
-          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
-            {/* Notifications */}
-            <button className="p-2 rounded-md text-gray-600 hover:bg-gray-100">
-              <BellIcon className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </div>
