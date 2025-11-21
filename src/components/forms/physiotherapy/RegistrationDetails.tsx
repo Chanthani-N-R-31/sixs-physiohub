@@ -30,6 +30,9 @@ export default function RegistrationDetails({
     age: initialData?.age || "",
     gender: initialData?.gender || "",
     bloodGroup: initialData?.bloodGroup || "",
+    height: initialData?.height || "",
+    weight: initialData?.weight || "",
+    bmi: initialData?.bmi || "",
     dominantHand: initialData?.dominantHand || "",
     dominantLeg: initialData?.dominantLeg || "",
     dominantEye: initialData?.dominantEye || "",
@@ -149,6 +152,18 @@ export default function RegistrationDetails({
       }
     }
   }, [form.dob]);
+
+  // Auto-calculate BMI
+  useEffect(() => {
+    if (form.height && form.weight) {
+      const heightInMeters = parseFloat(form.height) / 100;
+      const weightInKg = parseFloat(form.weight);
+      if (heightInMeters > 0 && weightInKg > 0) {
+        const bmi = (weightInKg / (heightInMeters * heightInMeters)).toFixed(1);
+        setForm((prev) => ({ ...prev, bmi }));
+      }
+    }
+  }, [form.height, form.weight]);
 
   // Auto-calculate Years in Service
   useEffect(() => {
@@ -313,6 +328,9 @@ export default function RegistrationDetails({
                 {renderField("Age (Auto-Calculated)", "age", "text", undefined, "", true)}
                 {renderField("Gender", "gender", "select", ["Male", "Female", "Other"])}
                 {renderField("Blood Group", "bloodGroup", "select", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])}
+                {renderField("Height (cm)", "height", "number", undefined, "Enter height in cm")}
+                {renderField("Weight (kg)", "weight", "number", undefined, "Enter weight in kg")}
+                {renderField("BMI (Auto-Calculated)", "bmi", "text", undefined, "", true)}
                 {renderField("Dominant Hand", "dominantHand", "select", ["Left", "Right", "Ambidextrous"])}
                 {renderField("Dominant Leg", "dominantLeg", "select", ["Left", "Right"])}
                 {renderField("Dominant Eye", "dominantEye", "select", ["Left", "Right"])}
