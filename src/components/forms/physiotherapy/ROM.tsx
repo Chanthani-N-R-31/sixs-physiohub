@@ -173,19 +173,19 @@ export default function ROM() {
             </tr>
 
             <tr>
-              <td>Abduction</td>
+              <td className="py-2 text-gray-900">Abduction</td>
               <td><InputCell value={rom.shAbdL} onChange={(v: any) => u("shAbdL", v)} /></td>
               <td><InputCell value={rom.shAbdR} onChange={(v: any) => u("shAbdR", v)} /></td>
             </tr>
 
             <tr>
-              <td>External Rotation</td>
+              <td className="py-2 text-gray-900">External Rotation</td>
               <td><InputCell value={rom.shERL} onChange={(v: any) => u("shERL", v)} /></td>
               <td><InputCell value={rom.shERR} onChange={(v: any) => u("shERR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Internal Rotation</td>
+              <td className="py-2 text-gray-900">Internal Rotation</td>
               <td><InputCell value={rom.shIRL} onChange={(v: any) => u("shIRL", v)} /></td>
               <td><InputCell value={rom.shIRR} onChange={(v: any) => u("shIRR", v)} /></td>
             </tr>
@@ -214,19 +214,19 @@ export default function ROM() {
             </tr>
 
             <tr>
-              <td>Abduction</td>
+              <td className="py-2 text-gray-900">Abduction</td>
               <td><InputCell value={rom.hipAbdL} onChange={(v: any) => u("hipAbdL", v)} /></td>
               <td><InputCell value={rom.hipAbdR} onChange={(v: any) => u("hipAbdR", v)} /></td>
             </tr>
 
             <tr>
-              <td>External Rotation</td>
+              <td className="py-2 text-gray-900">External Rotation</td>
               <td><InputCell value={rom.hipERL} onChange={(v: any) => u("hipERL", v)} /></td>
               <td><InputCell value={rom.hipERR} onChange={(v: any) => u("hipERR", v)} /></td>
             </tr>
 
             <tr>
-              <td>Internal Rotation</td>
+              <td className="py-2 text-gray-900">Internal Rotation</td>
               <td><InputCell value={rom.hipIRL} onChange={(v: any) => u("hipIRL", v)} /></td>
               <td><InputCell value={rom.hipIRR} onChange={(v: any) => u("hipIRR", v)} /></td>
             </tr>
@@ -255,7 +255,7 @@ export default function ROM() {
             </tr>
 
             <tr>
-              <td>Extension</td>
+              <td className="py-2 text-gray-900">Extension</td>
               <td><InputCell value={rom.kneeExtL} onChange={(v: any) => u("kneeExtL", v)} /></td>
               <td><InputCell value={rom.kneeExtR} onChange={(v: any) => u("kneeExtR", v)} /></td>
             </tr>
@@ -284,7 +284,7 @@ export default function ROM() {
             </tr>
 
             <tr>
-              <td>Plantarflexion</td>
+              <td className="py-2 text-gray-900">Plantarflexion</td>
               <td><InputCell value={rom.anklePFL} onChange={(v: any) => u("anklePFL", v)} /></td>
               <td><InputCell value={rom.anklePFR} onChange={(v: any) => u("anklePFR", v)} /></td>
             </tr>
