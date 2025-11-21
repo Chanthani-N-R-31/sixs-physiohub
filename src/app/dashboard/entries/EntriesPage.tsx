@@ -22,11 +22,6 @@ export default function EntriesPage({ onNewEntry }: EntriesPageProps) {
         <h2 className="text-2xl font-bold text-gray-900">All Entries</h2>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <input
-            placeholder="Search entries..."
-            className="flex-1 sm:flex-none p-2.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-green-300"
-          />
-
           <button
             onClick={onNewEntry}
             className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 whitespace-nowrap"
