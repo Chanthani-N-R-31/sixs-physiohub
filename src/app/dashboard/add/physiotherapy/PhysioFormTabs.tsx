@@ -3,8 +3,7 @@
 
 import { useState } from "react";
 
-import BasicDetails from "@/components/forms/physiotherapy/BasicDetails";
-import Demographics from "@/components/forms/physiotherapy/Demographics";
+import RegistrationDetails from "@/components/forms/physiotherapy/RegistrationDetails";
 import InjuryHistory from "@/components/forms/physiotherapy/InjuryHistory";
 import StaticPosture from "@/components/forms/physiotherapy/StaticPosture";
 import ROM from "@/components/forms/physiotherapy/ROM";
@@ -15,21 +14,21 @@ interface PhysioFormTabsProps {
   onBack?: () => void;
 }
 
-interface BasicDetailsData {
+interface RegistrationDetailsData {
   name: string;
   dob: string;
   serviceNumber: string;
   age: string;
+  gender: string;
+  contact: string;
   trainingDepartment: string;
   rank: string;
   dateOfAssessment: string;
-  chiefComplaints: string;
 }
 
 export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
   const tabs = [
-    "Basic Details",
-    "Demographics",
+    "Registration Details",
     "Injury Details",
     "Posture",
     "ROM",
@@ -38,21 +37,21 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
   ];
 
   const [activeTab, setActiveTab] = useState(0);
-  const [basicDetailsData, setBasicDetailsData] =
-    useState<BasicDetailsData | null>(null);
-  const [isBasicDetailsSaved, setIsBasicDetailsSaved] = useState(false);
+  const [registrationDetailsData, setRegistrationDetailsData] =
+    useState<RegistrationDetailsData | null>(null);
+  const [isRegistrationDetailsSaved, setIsRegistrationDetailsSaved] = useState(false);
 
-  const handleBasicDetailsSave = (data: BasicDetailsData) => {
-    setBasicDetailsData(data);
-    setIsBasicDetailsSaved(true);
+  const handleRegistrationDetailsSave = (data: RegistrationDetailsData) => {
+    setRegistrationDetailsData(data);
+    setIsRegistrationDetailsSaved(true);
   };
 
   const handleTabClick = (idx: number) => {
-    // Allow access to Basic Details always, but require it to be saved for other tabs
-    if (idx === 0 || isBasicDetailsSaved) {
+    // Allow access to Registration Details always, but require it to be saved for other tabs
+    if (idx === 0 || isRegistrationDetailsSaved) {
       setActiveTab(idx);
     } else {
-      alert("Please save Basic Details first before accessing other sections.");
+      alert("Please save Registration Details first before accessing other sections.");
     }
   };
 
@@ -60,28 +59,25 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
     switch (activeTab) {
       case 0:
         return (
-          <BasicDetails
-            initialData={basicDetailsData || undefined}
-            onSave={handleBasicDetailsSave}
+          <RegistrationDetails
+            initialData={registrationDetailsData || undefined}
+            onSave={handleRegistrationDetailsSave}
           />
         );
 
       case 1:
-        return <Demographics basicDetailsData={basicDetailsData} />;
-
-      case 2:
         return <InjuryHistory />;
 
-      case 3:
+      case 2:
         return <StaticPosture />;
 
-      case 4:
+      case 3:
         return <ROM />;
 
-      case 5:
+      case 4:
         return <StrengthStability />;
 
-      case 6:
+      case 5:
         return <FMS />;
 
       default:
@@ -111,7 +107,7 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
       <div className="sticky top-20 z-10 bg-white/60 backdrop-blur-md border-b border-gray-200 -mx-6 px-6">
         <div className="flex overflow-x-auto gap-3 py-3 scrollbar-hide">
           {tabs.map((tab, idx) => {
-            const isDisabled = idx > 0 && !isBasicDetailsSaved;
+            const isDisabled = idx > 0 && !isRegistrationDetailsSaved;
             return (
               <button
                 key={tab}
@@ -128,7 +124,7 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
                 `}
                 title={
                   isDisabled
-                    ? "Please save Basic Details first"
+                    ? "Please save Registration Details first"
                     : undefined
                 }
               >
@@ -143,7 +139,7 @@ export default function PhysioFormTabs({ onBack }: PhysioFormTabsProps) {
       <div className="mt-6 bg-white rounded-xl p-6 shadow-md border border-gray-100">
         {renderSection()}
 
-        {/* Notes and Save Button - only show for non-Basic Details tabs */}
+        {/* Notes and Save Button - only show for non-Registration Details tabs */}
         {activeTab !== 0 && (
           <>
             {/* Notes */}
