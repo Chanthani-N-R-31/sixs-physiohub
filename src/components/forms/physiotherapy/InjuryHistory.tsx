@@ -1,9 +1,14 @@
 // src/components/forms/physiotherapy/InjuryHistory.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-export default function InjuryHistory() {
+interface InjuryHistoryProps {
+  initialData?: any;
+  onSave?: (data: any) => void;
+}
+
+export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProps) {
   const [form, setForm] = useState({
     // Previous Injuries
     previousInjuriesDiagnosis: "",
@@ -27,11 +32,60 @@ export default function InjuryHistory() {
     modeOfTreatment: "",
   });
 
-  const update = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Load initial data if provided
+  useEffect(() => {
+    if (initialData) {
+      setForm((prev) => ({ ...prev, ...initialData }));
+    }
+  }, [initialData]);
+
+  // Auto-save to parent when form changes (debounced)
+  useEffect(() => {
+    if (onSave) {
+      const timer = setTimeout(() => {
+        onSave(form);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [form, onSave]);
+
+  // Helper function to remove numbers from text-only fields
+  const filterTextOnly = (value: string): string => {
+    return value.replace(/[0-9]/g, '');
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Stable update function to prevent re-renders and cursor jumps
+  const update = useCallback((key: string, value: string, isTextOnly: boolean = false) => {
+    let processedValue = value;
+    
+    // Filter numbers from text-only fields
+    if (isTextOnly && typeof value === 'string') {
+      processedValue = filterTextOnly(value);
+    }
+    
+    setForm((prev) => {
+      // Only update if value actually changed to prevent unnecessary re-renders
+      if (prev[key as keyof typeof prev] === processedValue) {
+        return prev;
+      }
+      return { ...prev, [key]: processedValue };
+    });
+
+    // Clear validation error when user starts typing
+    setValidationErrors((prev) => {
+      if (prev[key]) {
+        const newErrors = { ...prev };
+        delete newErrors[key];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
+
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type
@@ -50,18 +104,20 @@ export default function InjuryHistory() {
         diagnosisImagePreview: URL.createObjectURL(file),
       }));
     }
-  };
+  }, []);
 
-  const handleRemoveImage = () => {
-    if (form.diagnosisImagePreview) {
-      URL.revokeObjectURL(form.diagnosisImagePreview);
-    }
-    setForm((prev) => ({
-      ...prev,
-      diagnosisImage: null,
-      diagnosisImagePreview: "",
-    }));
-  };
+  const handleRemoveImage = useCallback(() => {
+    setForm((prev) => {
+      if (prev.diagnosisImagePreview) {
+        URL.revokeObjectURL(prev.diagnosisImagePreview);
+      }
+      return {
+        ...prev,
+        diagnosisImage: null,
+        diagnosisImagePreview: "",
+      };
+    });
+  }, []);
 
   // Cleanup object URL on unmount
   useEffect(() => {
@@ -72,43 +128,64 @@ export default function InjuryHistory() {
     };
   }, [form.diagnosisImagePreview]);
 
-  // Reusable input cell renderer
-  const InputCell = ({ value, onChange, placeholder, type = "text" }: any) => (
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
-      placeholder={placeholder}
-    />
-  );
+  // Reusable input cell renderer - stable controlled component
+  const InputCell = useCallback(({ value, onChange, placeholder, type = "text", error, isTextOnly = false }: any) => (
+    <div>
+      <input
+        type={type}
+        value={value || ""}
+        onChange={(e) => {
+          const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+          onChange(newValue);
+        }}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+        placeholder={placeholder}
+      />
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
 
-  // Reusable select cell renderer
-  const SelectCell = ({ value, onChange, options }: any) => (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-    >
-      <option value="">Select</option>
-      {options.map((opt: string) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  );
+  // Reusable select cell renderer - stable controlled component
+  const SelectCell = useCallback(({ value, onChange, options, error }: any) => (
+    <div>
+      <select
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+      >
+        <option value="">Select</option>
+        {options.map((opt: string) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
 
-  // Reusable textarea cell renderer
-  const TextareaCell = ({ value, onChange, placeholder, rows = 2 }: any) => (
-    <textarea
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
-      placeholder={placeholder}
-      rows={rows}
-    />
-  );
+  // Reusable textarea cell renderer - stable controlled component
+  const TextareaCell = useCallback(({ value, onChange, placeholder, rows = 2, error, isTextOnly = false }: any) => (
+    <div>
+      <textarea
+        value={value || ""}
+        onChange={(e) => {
+          const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+          onChange(newValue);
+        }}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+        placeholder={placeholder}
+        rows={rows}
+      />
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
 
   return (
     <div className="space-y-8">
@@ -134,8 +211,10 @@ export default function InjuryHistory() {
               <td>
                 <InputCell
                   value={form.previousInjuriesDiagnosis}
-                  onChange={(v: string) => update("previousInjuriesDiagnosis", v)}
-                  placeholder="Enter diagnosis"
+                  onChange={(v: string) => update("previousInjuriesDiagnosis", v, true)}
+                  placeholder="Enter diagnosis (text only)"
+                  isTextOnly={true}
+                  error={validationErrors.previousInjuriesDiagnosis}
                 />
               </td>
             </tr>
@@ -207,9 +286,11 @@ export default function InjuryHistory() {
               <td>
                 <TextareaCell
                   value={form.chiefComplaints}
-                  onChange={(v: string) => update("chiefComplaints", v)}
-                  placeholder="Enter chief complaints"
+                  onChange={(v: string) => update("chiefComplaints", v, true)}
+                  placeholder="Enter chief complaints (text only, no numbers)"
                   rows={3}
+                  isTextOnly={true}
+                  error={validationErrors.chiefComplaints}
                 />
               </td>
             </tr>
@@ -219,9 +300,11 @@ export default function InjuryHistory() {
               <td>
                 <TextareaCell
                   value={form.history}
-                  onChange={(v: string) => update("history", v)}
-                  placeholder="Enter history"
+                  onChange={(v: string) => update("history", v, true)}
+                  placeholder="Enter history (text only, no numbers)"
                   rows={3}
+                  isTextOnly={true}
+                  error={validationErrors.history}
                 />
               </td>
             </tr>
@@ -259,9 +342,11 @@ export default function InjuryHistory() {
               <td>
                 <TextareaCell
                   value={form.assessmentFindings}
-                  onChange={(v: string) => update("assessmentFindings", v)}
-                  placeholder="Enter assessment findings"
+                  onChange={(v: string) => update("assessmentFindings", v, true)}
+                  placeholder="Enter assessment findings (text only, no numbers)"
                   rows={3}
+                  isTextOnly={true}
+                  error={validationErrors.assessmentFindings}
                 />
               </td>
             </tr>

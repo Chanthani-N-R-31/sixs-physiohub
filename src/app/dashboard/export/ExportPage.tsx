@@ -1,30 +1,166 @@
-// src/app/dashboard/export/ExportPage.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, getDoc, doc, query, orderBy } from "firebase/firestore";
+
+interface Patient {
+  id: string;
+  name: string;
+}
 
 export default function ExportPage() {
   const [selectedPatient, setSelectedPatient] = useState("");
   const [domainFilter, setDomainFilter] = useState<"all" | "specific">("all");
   const [specificDomain, setSpecificDomain] = useState("Physiotherapy");
   const [exportFormat, setExportFormat] = useState<"csv" | "xlsx">("csv");
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  // demo patients
-  const patients = [
-    { id: "P-001", name: "Asha K" },
-    { id: "P-002", name: "Rohit P" },
-    { id: "P-003", name: "Meera S" },
-    { id: "P-004", name: "Rahul V" },
-  ];
+  useEffect(() => {
+    loadPatients();
+  }, []);
 
-  const handleDownload = () => {
-    alert(
-      `Preparing ${exportFormat.toUpperCase()} report for ${
-        selectedPatient ? selectedPatient : "All Patients"
-      } | Domain: ${
-        domainFilter === "all" ? "All Domains" : specificDomain
-      }`
-    );
+  // --- 1. LOAD PATIENTS ---
+  const loadPatients = async () => {
+    try {
+      setLoading(true);
+      
+      // Use the correct collection name: physioAssessments
+      const q = query(
+        collection(db, "physioAssessments"),
+        orderBy("updatedAt", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      
+      const loadedPatients: Patient[] = [];
+      querySnapshot.forEach((docSnapshot) => {
+        const data = docSnapshot.data();
+        const regDetails = data.registrationDetails || {};
+        
+        // Extract full name from registrationDetails
+        let fullName = regDetails.fullName || "";
+        if (!fullName) {
+          const parts = [
+            regDetails.firstName,
+            regDetails.initials,
+            regDetails.lastName
+          ].filter(Boolean);
+          fullName = parts.join(" ").trim() || "Unknown Patient";
+        }
+        
+        loadedPatients.push({
+          id: docSnapshot.id,
+          name: fullName,
+        });
+      });
+      
+      setPatients(loadedPatients);
+    } catch (error) {
+      console.error("Error loading patients:", error);
+      alert("Error loading data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- 2. HELPER: FLATTEN OBJECTS (for CSV) ---
+  const flattenObject = (obj: any, prefix = ""): any => {
+    return Object.keys(obj).reduce((acc: any, key: string) => {
+      const pre = prefix.length ? prefix + "_" : "";
+      
+      if (typeof obj[key] === "object" && obj[key] !== null && !(obj[key] instanceof Date)) {
+        // Recursively flatten nested objects (like 'fms' or 'rom')
+        Object.assign(acc, flattenObject(obj[key], pre + key));
+      } else {
+        // Handle Firebase Timestamps or standard JS Dates
+        let value = obj[key];
+        if (obj[key] && typeof obj[key].toDate === 'function') {
+            value = obj[key].toDate().toLocaleDateString(); // Firebase Timestamp
+        } else if (obj[key] instanceof Date) {
+            value = obj[key].toLocaleDateString();
+        }
+        acc[pre + key] = value;
+      }
+      return acc;
+    }, {});
+  };
+
+  // --- 3. HELPER: GENERATE CSV STRING ---
+  const convertToCSV = (objArray: any[]) => {
+    if (!objArray || objArray.length === 0) return "";
+    
+    // Get all unique headers from all objects to ensure columns align
+    const headers = Array.from(new Set(objArray.flatMap(obj => Object.keys(obj))));
+    
+    const csvRows = [
+      headers.join(","), // Header row
+      ...objArray.map(row => 
+        headers.map(fieldName => {
+          let val = row[fieldName] ?? ""; 
+          // Escape quotes and wrap in quotes to handle text with commas
+          const stringVal = String(val).replace(/"/g, '""'); 
+          return `"${stringVal}"`;
+        }).join(",")
+      )
+    ];
+
+    return csvRows.join("\n");
+  };
+
+  // --- 4. HANDLE DOWNLOAD ---
+  const handleDownload = async () => {
+    setIsGenerating(true);
+    try {
+      let rawData: any[] = [];
+
+      // Fetch logic - use correct collection name
+      if (selectedPatient) {
+        // Fetch ONE patient
+        const docRef = doc(db, "physioAssessments", selectedPatient);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          rawData.push({ id: docSnap.id, ...docSnap.data() });
+        }
+      } else {
+        // Fetch ALL patients
+        const q = query(
+          collection(db, "physioAssessments"),
+          orderBy("updatedAt", "desc")
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          rawData.push({ id: doc.id, ...doc.data() });
+        });
+      }
+
+      if (rawData.length === 0) {
+        alert("No data found to export.");
+        setIsGenerating(false);
+        return;
+      }
+
+      // Process Data
+      const flatData = rawData.map(item => flattenObject(item));
+      const csvString = convertToCSV(flatData);
+      
+      // Create Download Link
+      const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `physio_export_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    } catch (error) {
+      console.error("Export failed", error);
+      alert("Failed to export data. Check console.");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -41,18 +177,35 @@ export default function ExportPage() {
               Select Patient
             </label>
 
-            <select
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:ring-2 focus:ring-green-300"
-              value={selectedPatient}
-              onChange={(e) => setSelectedPatient(e.target.value)}
-            >
-              <option value="">All Patients</option>
-              {patients.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} ({p.id})
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-2">
+              <select
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:ring-2 focus:ring-green-300"
+                value={selectedPatient}
+                onChange={(e) => setSelectedPatient(e.target.value)}
+                disabled={loading || isGenerating}
+              >
+                <option value="">All Patients</option>
+                {loading ? (
+                  <option disabled>Loading patients...</option>
+                ) : patients.length === 0 ? (
+                  <option disabled>No entries found</option>
+                ) : (
+                  patients.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} (P-{p.id.slice(0, 6)})
+                    </option>
+                  ))
+                )}
+              </select>
+              <button
+                onClick={loadPatients}
+                disabled={loading || isGenerating}
+                className="px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Refresh patient list"
+              >
+                ↻
+              </button>
+            </div>
           </div>
 
           {/* Domain Choice */}
@@ -90,9 +243,8 @@ export default function ExportPage() {
                 >
                   <option>Physiotherapy</option>
                   <option>Physiology</option>
-                  <option>Biomechanics</option>
                   <option>Nutrition</option>
-                  <option>Psychology</option>
+                  <option>Biomechanics</option>
                 </select>
               )}
             </div>
@@ -106,7 +258,6 @@ export default function ExportPage() {
           </label>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* CSV Card */}
             <button
               onClick={() => setExportFormat("csv")}
               className={`p-6 rounded-xl border transition ${
@@ -121,7 +272,6 @@ export default function ExportPage() {
               </div>
             </button>
 
-            {/* Excel Card */}
             <button
               onClick={() => setExportFormat("xlsx")}
               className={`p-6 rounded-xl border transition ${
@@ -132,7 +282,7 @@ export default function ExportPage() {
             >
               <div className="text-lg font-semibold text-gray-800">Excel</div>
               <div className="text-sm text-gray-500 mt-1">
-                Microsoft Excel (.xlsx)
+                (Exports as CSV - Open in Excel)
               </div>
             </button>
           </div>
@@ -142,9 +292,14 @@ export default function ExportPage() {
         <div className="mt-8 flex justify-end">
           <button
             onClick={handleDownload}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+            disabled={isGenerating || loading}
+            className={`px-6 py-3 text-white rounded-lg shadow transition ${
+              isGenerating || loading 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-green-600 hover:bg-green-700"
+            }`}
           >
-            Download Report
+            {isGenerating ? "Generating File..." : "Download Report"}
           </button>
         </div>
       </div>

@@ -1,9 +1,14 @@
 // src/components/forms/physiotherapy/ROM.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-export default function ROM() {
+interface ROMProps {
+  initialData?: any;
+  onSave?: (data: any) => void;
+}
+
+export default function ROM({ initialData, onSave }: ROMProps) {
   const [rom, setRom] = useState({
     // Cervical
     cervFlex: "",
@@ -61,19 +66,79 @@ export default function ROM() {
     notes: "",
   });
 
-  const u = (key: string, val: string) => {
-    setRom((prev) => ({ ...prev, [key]: val }));
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  // Load initial data if provided
+  useEffect(() => {
+    if (initialData) {
+      setRom((prev) => ({ ...prev, ...initialData }));
+    }
+  }, [initialData]);
+
+  // Auto-save to parent when form changes (debounced)
+  useEffect(() => {
+    if (onSave) {
+      const timer = setTimeout(() => {
+        onSave(rom);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [rom, onSave]);
+
+  // Helper function to remove numbers from text-only fields
+  const filterTextOnly = (value: string): string => {
+    return value.replace(/[0-9]/g, '');
   };
 
-  // Reusable cell renderer
-  const InputCell = ({ value, onChange }: any) => (
-    <input
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
-      placeholder="°"
-    />
-  );
+  // Stable update function to prevent re-renders and cursor jumps
+  const u = useCallback((key: string, val: string, isTextOnly: boolean = false) => {
+    let processedValue = val;
+    
+    // Filter numbers from text-only fields
+    if (isTextOnly && typeof val === 'string') {
+      processedValue = filterTextOnly(val);
+    }
+    
+    setRom((prev) => {
+      // Only update if value actually changed to prevent unnecessary re-renders
+      if (prev[key as keyof typeof prev] === processedValue) {
+        return prev;
+      }
+      return { ...prev, [key]: processedValue };
+    });
+
+    // Clear validation error when user starts typing
+    setValidationErrors((prev) => {
+      if (prev[key]) {
+        const newErrors = { ...prev };
+        delete newErrors[key];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
+
+  // Reusable cell renderer - stable controlled component for numeric inputs
+  const InputCell = useCallback(({ value, onChange, placeholder = "°", error }: any) => (
+    <div>
+      <input
+        type="number"
+        value={value || ""}
+        onChange={(e) => {
+          const val = e.target.value;
+          // Only allow numbers, no letters
+          if (val === "" || /^-?\d*\.?\d*$/.test(val)) {
+            onChange(val);
+          }
+        }}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+        placeholder={placeholder}
+      />
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
 
   return (
     <div className="space-y-8">
@@ -292,32 +357,50 @@ export default function ROM() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="text-sm font-medium text-gray-900 mb-1 block">Sit & Reach (cm)</label>
-            <input
+            <InputCell
               value={rom.sitAndReach}
-              onChange={(e) => u("sitAndReach", e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+              onChange={(v: string) => u("sitAndReach", v)}
               placeholder="cm"
+              error={validationErrors.sitAndReach}
             />
           </div>
 
           <div>
             <label className="text-sm font-medium text-gray-900 mb-1 block">Popliteal Angle (deg)</label>
-            <input
+            <InputCell
               value={rom.poplitealAngle}
-              onChange={(e) => u("poplitealAngle", e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+              onChange={(v: string) => u("poplitealAngle", v)}
               placeholder="°"
+              error={validationErrors.poplitealAngle}
             />
           </div>
 
           <div>
             <label className="text-sm font-medium text-gray-900 mb-1 block">Thomas Test (deg)</label>
-            <input
+            <InputCell
               value={rom.thomasTest}
-              onChange={(e) => u("thomasTest", e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-green-500"
+              onChange={(v: string) => u("thomasTest", v)}
               placeholder="°"
+              error={validationErrors.thomasTest}
             />
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="text-sm font-medium text-gray-900 mb-1 block">Notes</label>
+          <div>
+            <textarea
+              value={rom.notes}
+              onChange={(e) => u("notes", e.target.value, true)}
+              className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+                validationErrors.notes ? "border-red-500" : "border-gray-300"
+              }`}
+              rows={3}
+              placeholder="Enter notes (text only, no numbers)"
+            />
+            {validationErrors.notes && (
+              <p className="text-red-500 text-xs mt-1">{validationErrors.notes}</p>
+            )}
           </div>
         </div>
       </section>

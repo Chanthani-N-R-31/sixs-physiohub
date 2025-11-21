@@ -12,18 +12,41 @@ import { useDashboard } from "./layout";
 export default function DashboardPage() {
   const { activeTab, setActiveTab } = useDashboard();
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [editingEntryData, setEditingEntryData] = useState<any>(null);
 
   const handleDomainSelect = (domain: string) => {
     setSelectedDomain(domain);
+    setEditingEntryId(null);
+    setEditingEntryData(null);
   };
 
   const handleBackFromForm = () => {
     setSelectedDomain(null);
+    setEditingEntryId(null);
+    setEditingEntryData(null);
   };
 
   const handleBackFromDomainSelect = () => {
     setSelectedDomain(null);
     setActiveTab("overview");
+    setEditingEntryId(null);
+    setEditingEntryData(null);
+  };
+
+  const handleEditEntry = (id: string, data: any) => {
+    setEditingEntryId(id);
+    setEditingEntryData(data);
+    setSelectedDomain("Physiotherapy");
+    setActiveTab("add");
+  };
+
+  const handleViewEntry = (data: any) => {
+    // For now, just show an alert with key information
+    const regDetails = data.registrationDetails || {};
+    const name = regDetails.fullName || "Unknown";
+    alert(`Viewing entry for: ${name}\n\nStatus: ${data.status || "N/A"}\n\nCheck console for full data.`);
+    console.log("Full entry data:", data);
   };
 
   return (
@@ -31,7 +54,11 @@ export default function DashboardPage() {
       {/* TAB CONTROLLER */}
       {activeTab === "overview" && <OverviewPage />}
       {activeTab === "entries" && (
-        <EntriesPage onNewEntry={() => setActiveTab("add")} />
+        <EntriesPage 
+          onNewEntry={() => setActiveTab("add")}
+          onEdit={handleEditEntry}
+          onView={handleViewEntry}
+        />
       )}
       {activeTab === "add" && (
         <>
@@ -41,7 +68,11 @@ export default function DashboardPage() {
               onSelect={handleDomainSelect}
             />
           ) : selectedDomain === "Physiotherapy" ? (
-            <PhysioFormTabs onBack={handleBackFromForm} />
+            <PhysioFormTabs 
+              onBack={handleBackFromForm}
+              initialData={editingEntryData}
+              entryId={editingEntryId}
+            />
           ) : (
             <div>
               <div className="flex items-center justify-between mb-6">

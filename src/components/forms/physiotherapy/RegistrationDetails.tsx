@@ -1,7 +1,7 @@
 // src/components/forms/physiotherapy/RegistrationDetails.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface RegistrationDetailsProps {
   initialData?: any;
@@ -30,9 +30,6 @@ export default function RegistrationDetails({
     age: initialData?.age || "",
     gender: initialData?.gender || "",
     bloodGroup: initialData?.bloodGroup || "",
-    height: initialData?.height || "",
-    weight: initialData?.weight || "",
-    bmi: initialData?.bmi || "",
     dominantHand: initialData?.dominantHand || "",
     dominantLeg: initialData?.dominantLeg || "",
     dominantEye: initialData?.dominantEye || "",
@@ -129,73 +126,199 @@ export default function RegistrationDetails({
 
   const [isSaved, setIsSaved] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([1]));
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  
+  // Refs to track if auto-calculated fields should update (prevents cursor jumps)
+  const isUpdatingFullName = useRef(false);
+  const isUpdatingAge = useRef(false);
+  const isUpdatingYearsInService = useRef(false);
 
-  // Auto-calculate Full Name
+  // Load initial data when it changes (for editing)
   useEffect(() => {
-    const parts = [form.firstName, form.initials, form.lastName].filter(Boolean);
-    setForm((prev) => ({ ...prev, fullName: parts.join(" ").trim() }));
-  }, [form.firstName, form.initials, form.lastName]);
+    if (initialData) {
+      setForm((prev) => {
+        // Create a new form object with initialData values, preserving file fields
+        const updated: any = { ...prev };
+        
+        // Update all fields from initialData except file fields
+        Object.keys(initialData).forEach((key) => {
+          // Skip file fields - they're handled separately
+          if (key === 'photograph' || key === 'serviceIdScan' || key === 'medicalCategoryDoc') {
+            return;
+          }
+          
+          // Update if the value exists and is not null/undefined
+          if (initialData[key] !== null && initialData[key] !== undefined) {
+            // For empty strings, still update to allow clearing fields
+            updated[key] = initialData[key];
+          }
+        });
+        
+        return updated;
+      });
+    }
+  }, [initialData]);
 
-  // Auto-calculate Age from DOB
+  // Helper function to remove numbers from text-only fields
+  const filterTextOnly = (value: string): string => {
+    return value.replace(/[0-9]/g, '');
+  };
+
+  // Helper function to validate text-only fields
+  const validateTextOnly = (key: string, value: string): string | null => {
+    const textOnlyFields = [
+      'firstName', 'initials', 'lastName', 'currentAppointment',
+      'strengthAreas', 'weakAreas', 'observedStrengths', 'observedLimitations',
+      'terrainSuitability', 'recommendedScFocusAreas', 'trainingDepartment',
+      'painLocation', 'painTriggers', 'medicalDowngrades'
+    ];
+    
+    if (textOnlyFields.includes(key) && /[0-9]/.test(value)) {
+      return 'This field should only contain text, no numbers allowed';
+    }
+    return null;
+  };
+
+  // Helper function to calculate full name from parts
+  const calculateFullName = useCallback((firstName: string, initials: string, lastName: string): string => {
+    // Trim each part and filter out empty strings and whitespace-only strings
+    const first = (firstName || "").trim();
+    const init = (initials || "").trim();
+    const last = (lastName || "").trim();
+    
+    // Only include non-empty parts
+    const parts: string[] = [];
+    if (first) parts.push(first);
+    if (init) parts.push(init);
+    if (last) parts.push(last);
+    
+    return parts.join(" ").trim();
+  }, []);
+
+  // Auto-calculate Full Name (only when name fields change, not on every render)
   useEffect(() => {
+    if (isUpdatingFullName.current) {
+      isUpdatingFullName.current = false;
+      return;
+    }
+    
+    const newFullName = calculateFullName(form.firstName, form.initials, form.lastName);
+    
+    // Always update if the calculated name is different from current
+    // This ensures it updates even if initialData had wrong fullName
+    if (newFullName !== form.fullName) {
+      isUpdatingFullName.current = true;
+      setForm((prev) => ({ ...prev, fullName: newFullName }));
+    }
+  }, [form.firstName, form.initials, form.lastName, calculateFullName]);
+
+  // Auto-calculate Age from DOB (only when DOB changes)
+  useEffect(() => {
+    if (isUpdatingAge.current) {
+      isUpdatingAge.current = false;
+      return;
+    }
     if (form.dob) {
       const dobParts = form.dob.split("/");
       if (dobParts.length === 3) {
-        const dobDate = new Date(`${dobParts[2]}-${dobParts[1]}-${dobParts[0]}`);
-        const today = new Date();
-        let age = today.getFullYear() - dobDate.getFullYear();
-        const monthDiff = today.getMonth() - dobDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
-          age--;
+        try {
+          const dobDate = new Date(`${dobParts[2]}-${dobParts[1]}-${dobParts[0]}`);
+          const today = new Date();
+          let age = today.getFullYear() - dobDate.getFullYear();
+          const monthDiff = today.getMonth() - dobDate.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dobDate.getDate())) {
+            age--;
+          }
+          const newAge = age.toString();
+          if (newAge !== form.age) {
+            isUpdatingAge.current = true;
+            setForm((prev) => ({ ...prev, age: newAge }));
+          }
+        } catch (e) {
+          // Invalid date, don't update
         }
-        setForm((prev) => ({ ...prev, age: age.toString() }));
       }
     }
   }, [form.dob]);
 
-  // Auto-calculate BMI
+  // Auto-calculate Years in Service (only when enlistment date changes)
   useEffect(() => {
-    if (form.height && form.weight) {
-      const heightInMeters = parseFloat(form.height) / 100;
-      const weightInKg = parseFloat(form.weight);
-      if (heightInMeters > 0 && weightInKg > 0) {
-        const bmi = (weightInKg / (heightInMeters * heightInMeters)).toFixed(1);
-        setForm((prev) => ({ ...prev, bmi }));
-      }
+    if (isUpdatingYearsInService.current) {
+      isUpdatingYearsInService.current = false;
+      return;
     }
-  }, [form.height, form.weight]);
-
-  // Auto-calculate Years in Service
-  useEffect(() => {
     if (form.enlistmentDate) {
       const enlistParts = form.enlistmentDate.split("/");
       if (enlistParts.length === 3) {
-        const enlistDate = new Date(`${enlistParts[2]}-${enlistParts[1]}-${enlistParts[0]}`);
-        const today = new Date();
-        let years = today.getFullYear() - enlistDate.getFullYear();
-        const monthDiff = today.getMonth() - enlistDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < enlistDate.getDate())) {
-          years--;
+        try {
+          const enlistDate = new Date(`${enlistParts[2]}-${enlistParts[1]}-${enlistParts[0]}`);
+          const today = new Date();
+          let years = today.getFullYear() - enlistDate.getFullYear();
+          const monthDiff = today.getMonth() - enlistDate.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < enlistDate.getDate())) {
+            years--;
+          }
+          const newYears = years.toString();
+          if (newYears !== form.yearsInService) {
+            isUpdatingYearsInService.current = true;
+            setForm((prev) => ({ ...prev, yearsInService: newYears }));
+          }
+        } catch (e) {
+          // Invalid date, don't update
         }
-        setForm((prev) => ({ ...prev, yearsInService: years.toString() }));
       }
     }
   }, [form.enlistmentDate]);
 
-  const update = (key: string, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  // Stable update function with validation
+  const update = useCallback((key: string, value: any, isTextOnly: boolean = false) => {
+    let processedValue = value;
+    
+    // Filter numbers from text-only fields
+    if (isTextOnly && typeof value === 'string') {
+      processedValue = filterTextOnly(value);
+    }
+    
+    // Validate text-only fields
+    if (typeof processedValue === 'string') {
+      const error = validateTextOnly(key, processedValue);
+      if (error) {
+        setValidationErrors((prev) => ({ ...prev, [key]: error }));
+      } else {
+        setValidationErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[key];
+          return newErrors;
+        });
+      }
+    }
+    
+    setForm((prev) => {
+      // Only update if value actually changed to prevent unnecessary re-renders
+      if (prev[key as keyof typeof prev] === processedValue) {
+        return prev;
+      }
+      return { ...prev, [key]: processedValue };
+    });
     setIsSaved(false);
-  };
+  }, []);
 
-  const updateNested = (key: string, subKey: string, value: any) => {
-    setForm((prev) => ({
-      ...prev,
-      [key]: { ...prev[key as keyof typeof prev], [subKey]: value },
-    }));
+  // Stable nested update function
+  const updateNested = useCallback((key: string, subKey: string, value: any) => {
+    setForm((prev) => {
+      const current = prev[key as keyof typeof prev] as any;
+      if (current?.[subKey] === value) {
+        return prev; // No change, prevent re-render
+      }
+      return {
+        ...prev,
+        [key]: { ...current, [subKey]: value },
+      };
+    });
     setIsSaved(false);
-  };
+  }, []);
 
-  const toggleSection = (sectionNum: number) => {
+  const toggleSection = useCallback((sectionNum: number) => {
     setExpandedSections((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(sectionNum)) {
@@ -205,12 +328,17 @@ export default function RegistrationDetails({
       }
       return newSet;
     });
-  };
+  }, []);
 
-  const handleFileChange = (key: string, file: File | null) => {
-    setForm((prev) => ({ ...prev, [key]: file }));
+  const handleFileChange = useCallback((key: string, file: File | null) => {
+    setForm((prev) => {
+      if (prev[key as keyof typeof prev] === file) {
+        return prev; // No change, prevent re-render
+      }
+      return { ...prev, [key]: file };
+    });
     setIsSaved(false);
-  };
+  }, []);
 
   const handleSave = () => {
     if (onSave) {
@@ -225,7 +353,7 @@ export default function RegistrationDetails({
       onClick={() => toggleSection(num)}
     >
       <h4 className="text-lg font-bold text-gray-900">
-        {title}
+        SECTION {num} — {title}
       </h4>
       <span className="text-gray-600">
         {expandedSections.has(num) ? "▼" : "▶"}
@@ -233,64 +361,120 @@ export default function RegistrationDetails({
     </div>
   );
 
+  // Determine if a field should be text-only
+  const isTextOnlyField = (key: string): boolean => {
+    const textOnlyFields = [
+      'firstName', 'initials', 'lastName', 'currentAppointment',
+      'strengthAreas', 'weakAreas', 'observedStrengths', 'observedLimitations',
+      'terrainSuitability', 'recommendedScFocusAreas', 'trainingDepartment',
+      'painLocation', 'painTriggers', 'medicalDowngrades'
+    ];
+    return textOnlyFields.includes(key);
+  };
+
   const renderField = (
     label: string,
     key: string,
     type: "text" | "select" | "number" | "textarea" | "file" = "text",
     options?: string[],
     placeholder?: string,
-    readOnly = false
-  ) => (
-    <tr className="border-b border-gray-300">
-      <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50">
-        <label className="text-sm font-medium text-gray-900">{label}</label>
-      </td>
-      <td className="w-2/3 p-3">
-        {type === "select" ? (
-          <select
-            value={form[key as keyof typeof form] as string}
-            onChange={(e) => update(key, e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-            disabled={readOnly}
-          >
-            <option value="">-</option>
-            {options?.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-        ) : type === "textarea" ? (
-          <textarea
-            value={form[key as keyof typeof form] as string}
-            onChange={(e) => update(key, e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-            rows={3}
-            placeholder={placeholder}
-            readOnly={readOnly}
-          />
-        ) : type === "file" ? (
-          <input
-            type="file"
-            onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
-            className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-            accept="image/*,.pdf"
-          />
-        ) : (
-          <input
-            type={type}
-            value={form[key as keyof typeof form] as string}
-            onChange={(e) => update(key, e.target.value)}
-            className={`w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-              readOnly ? "bg-gray-100" : ""
-            }`}
-            placeholder={placeholder}
-            readOnly={readOnly}
-          />
-        )}
-      </td>
-    </tr>
-  );
+    readOnly = false,
+    required = false
+  ) => {
+    const fieldValue = form[key as keyof typeof form] as string;
+    const error = validationErrors[key];
+    const isTextOnly = isTextOnlyField(key);
+    const shouldUseTextarea = type === "textarea" || (type === "text" && (key.includes("description") || key.includes("notes") || key.includes("Areas") || key.includes("Strengths") || key.includes("Limitations") || key.includes("Suitability")));
+
+    return (
+      <tr className="border-b border-gray-300">
+        <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50">
+          <label className="text-sm font-medium text-gray-900">
+            {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </label>
+        </td>
+        <td className="w-2/3 p-3">
+          {type === "select" ? (
+            <select
+              value={fieldValue || ""}
+              onChange={(e) => update(key, e.target.value, false)}
+              className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+              disabled={readOnly}
+            >
+              <option value="">-</option>
+              {options?.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          ) : type === "file" ? (
+            <input
+              type="file"
+              onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
+              className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+              accept="image/*,.pdf"
+            />
+          ) : shouldUseTextarea ? (
+            <>
+              <textarea
+                value={fieldValue || ""}
+                onChange={(e) => {
+                  const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+                  update(key, newValue, isTextOnly);
+                }}
+                onBlur={() => {
+                  if (required && !fieldValue) {
+                    setValidationErrors((prev) => ({
+                      ...prev,
+                      [key]: "This field is required",
+                    }));
+                  }
+                }}
+                className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+                  error ? "border-red-500" : "border-gray-300"
+                } ${readOnly ? "bg-gray-100" : ""}`}
+                rows={3}
+                placeholder={placeholder}
+                readOnly={readOnly}
+              />
+              {error && (
+                <p className="text-red-500 text-xs mt-1">{error}</p>
+              )}
+            </>
+          ) : (
+            <>
+              <input
+                type={type === "number" ? "number" : "text"}
+                value={fieldValue || ""}
+                onChange={(e) => {
+                  const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+                  update(key, newValue, isTextOnly);
+                }}
+                onBlur={() => {
+                  if (required && !fieldValue) {
+                    setValidationErrors((prev) => ({
+                      ...prev,
+                      [key]: "This field is required",
+                    }));
+                  }
+                }}
+                className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  error ? "border-red-500" : "border-gray-300"
+                } ${readOnly ? "bg-gray-100" : ""}`}
+                placeholder={placeholder}
+                readOnly={readOnly}
+              />
+              {error && (
+                <p className="text-red-500 text-xs mt-1">{error}</p>
+              )}
+            </>
+          )}
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div className="space-y-6 w-full overflow-x-hidden">
@@ -307,10 +491,10 @@ export default function RegistrationDetails({
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                {renderField("First Name", "firstName", "text", undefined, "Enter first name")}
+                {renderField("First Name", "firstName", "text", undefined, "Enter first name", false, true)}
                 {renderField("Initials", "initials", "text", undefined, "Enter initials")}
-                {renderField("Last Name", "lastName", "text", undefined, "Enter last name")}
-                {renderField("Full Name (Auto-Generated)", "fullName", "text", undefined, "", true)}
+                {renderField("Last Name", "lastName", "text", undefined, "Enter last name", false, true)}
+                {renderField("Full Name ", "fullName", "text", undefined, "", true)}
                 {renderField("Photograph Upload", "photograph", "file")}
                 {renderField(
                   "Service Branch",
@@ -328,9 +512,6 @@ export default function RegistrationDetails({
                 {renderField("Age (Auto-Calculated)", "age", "text", undefined, "", true)}
                 {renderField("Gender", "gender", "select", ["Male", "Female", "Other"])}
                 {renderField("Blood Group", "bloodGroup", "select", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])}
-                {renderField("Height (cm)", "height", "number", undefined, "Enter height in cm")}
-                {renderField("Weight (kg)", "weight", "number", undefined, "Enter weight in kg")}
-                {renderField("BMI (Auto-Calculated)", "bmi", "text", undefined, "", true)}
                 {renderField("Dominant Hand", "dominantHand", "select", ["Left", "Right", "Ambidextrous"])}
                 {renderField("Dominant Leg", "dominantLeg", "select", ["Left", "Right"])}
                 {renderField("Dominant Eye", "dominantEye", "select", ["Left", "Right"])}
@@ -354,10 +535,10 @@ export default function RegistrationDetails({
                 {renderField("Total Years in Special Forces", "totalYearsSpecialForces", "text", undefined, "Enter years")}
                 <tr className="border-b border-gray-300">
                   <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
-                    <label className="text-sm font-medium text-gray-900">Special Forces Courses (with Certificate Upload)</label>
+                    <label className="text-sm font-medium text-gray-900">Special Forces Courses</label>
                   </td>
                   <td className="w-2/3 p-3">
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {[
                         "Para SF Probation",
                         "Garud Commando Qualification",
@@ -375,93 +556,29 @@ export default function RegistrationDetails({
                         "Sniper Course",
                         "Breacher Course",
                         "UAV/Drone Recon Course",
-                      ].map((course) => {
-                        const courseData = (form.sfCourses as any)?.[course];
-                        const certificateFile = (form.sfCourses as any)?.[course + "_cert"];
-                        return (
-                          <div key={course} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-                            <div className="flex items-center gap-2 mb-2">
-                              <input
-                                type="checkbox"
-                                checked={courseData || false}
-                                onChange={(e) => updateNested("sfCourses", course, e.target.checked)}
-                                className="w-4 h-4"
-                              />
-                              <label className="text-sm font-medium text-gray-700 flex-1">{course}</label>
-                            </div>
-                            {courseData && (
-                              <div className="ml-6 mt-2">
-                                <label className="text-xs text-gray-600 mb-1 block">Certificate Upload</label>
-                                {certificateFile ? (
-                                  <div className="flex items-center gap-2 p-2 bg-white border border-gray-300 rounded">
-                                    <span className="text-xs text-gray-700 flex-1 truncate">
-                                      {certificateFile.name}
-                                    </span>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        const files = { ...(form.sfCourses as any) };
-                                        files[course + "_cert"] = null;
-                                        update("sfCourses", files);
-                                      }}
-                                      className="text-red-600 hover:text-red-800 p-1"
-                                      title="Remove certificate"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-4 w-4"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M6 18L18 6M6 6l12 12"
-                                        />
-                                      </svg>
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                    <label className="block">
-                                      <div className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg bg-white/50 hover:border-green-500 hover:bg-green-50/50 transition cursor-pointer">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          className="h-5 w-5 text-gray-500"
-                                          fill="none"
-                                          viewBox="0 0 24 24"
-                                          stroke="currentColor"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                          />
-                                        </svg>
-                                        <span className="text-sm font-medium text-gray-700">Choose File</span>
-                                        <span className="text-xs text-gray-500">(PDF, JPG, PNG)</span>
-                                      </div>
-                                      <input
-                                        type="file"
-                                        onChange={(e) => {
-                                          const files = { ...(form.sfCourses as any) };
-                                          files[course + "_cert"] = e.target.files?.[0] || null;
-                                          update("sfCourses", files);
-                                        }}
-                                        className="hidden"
-                                        accept=".pdf,.jpg,.jpeg,.png"
-                                      />
-                                    </label>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                      ].map((course) => (
+                        <div key={course} className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={(form.sfCourses as any)?.[course] || false}
+                            onChange={(e) => updateNested("sfCourses", course, e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <label className="text-sm text-gray-700">{course}</label>
+                          {(form.sfCourses as any)?.[course] && (
+                            <input
+                              type="file"
+                              onChange={(e) => {
+                                const files = { ...(form.sfCourses as any) };
+                                files[course + "_cert"] = e.target.files?.[0] || null;
+                                update("sfCourses", files);
+                              }}
+                              className="ml-auto text-xs"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                            />
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </td>
                 </tr>
@@ -787,7 +904,7 @@ export default function RegistrationDetails({
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
                 {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["-", "SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"])}
-                {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details")}
+                {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details (text only, no numbers)")}
                 <tr className="border-b border-gray-300">
                   <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
                     <label className="text-sm font-medium text-gray-900">Injury History (5-Year Log)</label>
@@ -807,7 +924,7 @@ export default function RegistrationDetails({
                                   onChange={(e) => {
                                     const newHistory = [...(form.injuryHistory as any[])];
                                     newHistory[idx] = { ...newHistory[idx], bodyArea: e.target.value };
-                                    update("injuryHistory", newHistory);
+                                    update("injuryHistory", newHistory, false);
                                   }}
                                   className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
                                 >
@@ -897,18 +1014,18 @@ export default function RegistrationDetails({
                                   <option>No</option>
                                 </select>
                               </div>
-                              <div>
+                              <div className="col-span-2">
                                 <label className="text-xs text-gray-600">Treatment Received</label>
-                                <input
-                                  type="text"
+                                <textarea
                                   value={injury.treatment || ""}
                                   onChange={(e) => {
                                     const newHistory = [...(form.injuryHistory as any[])];
                                     newHistory[idx] = { ...newHistory[idx], treatment: e.target.value };
-                                    update("injuryHistory", newHistory);
+                                    update("injuryHistory", newHistory, false);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                                  placeholder="Enter treatment"
+                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm resize-vertical"
+                                  placeholder="Enter treatment details"
+                                  rows={2}
                                 />
                               </div>
                               <div className="col-span-2">
@@ -975,9 +1092,9 @@ export default function RegistrationDetails({
                         <input
                           type="text"
                           value={form.painLocation}
-                          onChange={(e) => update("painLocation", e.target.value)}
+                          onChange={(e) => update("painLocation", filterTextOnly(e.target.value), true)}
                           className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-                          placeholder="Enter location"
+                          placeholder="Enter location (text only)"
                         />
                       </div>
                       <div>
@@ -1004,10 +1121,10 @@ export default function RegistrationDetails({
                         <label className="text-xs text-gray-600 mb-1 block">Pain Triggers</label>
                         <textarea
                           value={form.painTriggers}
-                          onChange={(e) => update("painTriggers", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          onChange={(e) => update("painTriggers", filterTextOnly(e.target.value), true)}
+                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
                           rows={3}
-                          placeholder="Enter triggers"
+                          placeholder="Enter triggers (text only, no numbers)"
                         />
                       </div>
                     </div>
@@ -1299,8 +1416,8 @@ export default function RegistrationDetails({
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                {renderField("Strength Areas", "strengthAreas", "textarea", undefined, "Enter strength areas")}
-                {renderField("Weak Areas", "weakAreas", "textarea", undefined, "Enter weak areas")}
+                {renderField("Strength Areas", "strengthAreas", "textarea", undefined, "Enter strength areas (text only, no numbers)")}
+                {renderField("Weak Areas", "weakAreas", "textarea", undefined, "Enter weak areas (text only, no numbers)")}
                 <tr className="border-b border-gray-300">
                   <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
                     <label className="text-sm font-medium text-gray-900">Terrain Readiness (1–10)</label>
@@ -1352,12 +1469,12 @@ export default function RegistrationDetails({
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                {renderField("Observed Strengths", "observedStrengths", "textarea", undefined, "Enter observed strengths")}
-                {renderField("Observed Limitations", "observedLimitations", "textarea", undefined, "Enter observed limitations")}
-                {renderField("Terrain Suitability", "terrainSuitability", "textarea", undefined, "Enter terrain suitability")}
+                {renderField("Observed Strengths", "observedStrengths", "textarea", undefined, "Enter observed strengths (text only, no numbers)")}
+                {renderField("Observed Limitations", "observedLimitations", "textarea", undefined, "Enter observed limitations (text only, no numbers)")}
+                {renderField("Terrain Suitability", "terrainSuitability", "textarea", undefined, "Enter terrain suitability (text only, no numbers)")}
                 {renderField("Deployment Readiness", "deploymentReadiness", "select", ["-", "Ready", "Conditional", "Not Ready"])}
                 {renderField("Requalification Requirement", "requalificationRequirement", "select", ["-", "Yes", "No", "Partial"])}
-                {renderField("Recommended S&C Focus Areas", "recommendedScFocusAreas", "textarea", undefined, "Enter recommended focus areas")}
+                {renderField("Recommended S&C Focus Areas", "recommendedScFocusAreas", "textarea", undefined, "Enter recommended focus areas (text only, no numbers)")}
               </tbody>
             </table>
           </div>
@@ -1373,7 +1490,7 @@ export default function RegistrationDetails({
           <table className="w-full border-collapse min-w-[500px]">
             <tbody>
               {renderField("Contact Number", "contact", "text", undefined, "Enter contact number")}
-              {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department")}
+              {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department (text only)")}
               {renderField("Date of Assessment", "dateOfAssessment", "text", undefined, "DD/MM/YYYY")}
             </tbody>
           </table>

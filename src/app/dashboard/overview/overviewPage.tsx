@@ -1,24 +1,109 @@
 // src/app/dashboard/overview/OverviewPage.tsx
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   ArrowUpRightIcon,
   EyeIcon,
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import { db } from "@/lib/firebase";
+import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+
+interface Entry {
+  id: string;
+  name: string;
+  age: string;
+  date: string;
+  status: string;
+}
 
 export default function OverviewPage() {
-  // demo data
-  const demoEntries = [
-    { id: "P-001", name: "Asha K", age: 28, date: "2025-11-18", status: "Completed" },
-    { id: "P-002", name: "Rohit P", age: 31, date: "2025-11-17", status: "Pending" },
-    { id: "P-003", name: "Meera S", age: 24, date: "2025-11-15", status: "Incomplete" },
-  ];
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPatients, setTotalPatients] = useState(0);
+  const [assessmentsToday, setAssessmentsToday] = useState(0);
 
-  const totalPatients = 50;
-  const assessmentsThisMonth = 10;
-  const pendingReports = demoEntries.filter((d) => d.status === "Pending").length;
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      // Fetch recent entries (last 5)
+      const recentQuery = query(
+        collection(db, "physioAssessments"),
+        orderBy("updatedAt", "desc"),
+        limit(5)
+      );
+      const recentSnapshot = await getDocs(recentQuery);
+      
+      const loadedEntries: Entry[] = [];
+      recentSnapshot.forEach((docSnapshot) => {
+        const data = docSnapshot.data();
+        const regDetails = data.registrationDetails || {};
+        
+        let fullName = regDetails.fullName || "";
+        if (!fullName) {
+          const parts = [
+            regDetails.firstName,
+            regDetails.initials,
+            regDetails.lastName
+          ].filter(Boolean);
+          fullName = parts.join(" ").trim() || "Unknown Patient";
+        }
+        
+        const age = regDetails.age || regDetails.yearsInService || "N/A";
+        
+        let date = regDetails.dateOfAssessment || "";
+        if (!date && data.createdAt) {
+          const timestamp = data.createdAt.toDate ? data.createdAt.toDate() : null;
+          if (timestamp) {
+            date = timestamp.toLocaleDateString();
+          }
+        }
+        if (!date) date = "N/A";
+        
+        const status = data.status === "completed" ? "Completed" : data.status === "in_progress" ? "In Progress" : "Incomplete";
+        
+        loadedEntries.push({
+          id: docSnapshot.id.slice(0, 6),
+          name: fullName,
+          age: String(age),
+          date: date,
+          status: status,
+        });
+      });
+      
+      setEntries(loadedEntries);
+
+      // Fetch total count
+      const allQuery = query(collection(db, "physioAssessments"));
+      const allSnapshot = await getDocs(allQuery);
+      setTotalPatients(allSnapshot.size);
+
+      // Count assessments today
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let todayCount = 0;
+      allSnapshot.forEach((doc) => {
+        const data = doc.data();
+        const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+        if (createdAt && createdAt >= today) {
+          todayCount++;
+        }
+      });
+      setAssessmentsToday(todayCount);
+    } catch (error) {
+      console.error("Error loading overview data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pendingReports = entries.filter((d) => d.status === "In Progress" || d.status === "Pending").length;
 
   return (
     <div className="w-full overflow-x-hidden">
@@ -38,7 +123,7 @@ export default function OverviewPage() {
         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
           <div className="text-xs text-gray-500">Assessments Today</div>
           <div className="mt-2 text-2xl font-bold text-gray-900">
-            {assessmentsThisMonth}
+            {loading ? "..." : assessmentsToday}
           </div>
         </div>
 
@@ -73,9 +158,22 @@ export default function OverviewPage() {
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-              {demoEntries.map((row) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-gray-500">
+                    Loading entries...
+                  </td>
+                </tr>
+              ) : entries.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-gray-500">
+                    No entries found. Create a new entry to get started.
+                  </td>
+                </tr>
+              ) : (
+                entries.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
-                  <td className="py-4 text-gray-900">{row.id}</td>
+                  <td className="py-4 text-gray-900">P-{row.id}</td>
 
                   <td className="py-4 text-gray-900 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-700">
@@ -134,7 +232,7 @@ export default function OverviewPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>

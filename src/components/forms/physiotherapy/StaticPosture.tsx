@@ -1,9 +1,14 @@
 // src/components/forms/physiotherapy/StaticPosture.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-export default function StaticPosture() {
+interface StaticPostureProps {
+  initialData?: any;
+  onSave?: (data: any) => void;
+}
+
+export default function StaticPosture({ initialData, onSave }: StaticPostureProps) {
   const [form, setForm] = useState({
     // Anterior View
     headTilt: "",
@@ -23,25 +28,97 @@ export default function StaticPosture() {
     observations: "",
   });
 
-  const update = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  // Load initial data if provided
+  useEffect(() => {
+    if (initialData) {
+      setForm((prev) => ({ ...prev, ...initialData }));
+    }
+  }, [initialData]);
+
+  // Auto-save to parent when form changes (debounced)
+  useEffect(() => {
+    if (onSave) {
+      const timer = setTimeout(() => {
+        onSave(form);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [form, onSave]);
+
+  // Helper function to remove numbers from text-only fields
+  const filterTextOnly = (value: string): string => {
+    return value.replace(/[0-9]/g, '');
   };
 
-  // Reusable select cell renderer
-  const SelectCell = ({ value, onChange, options }: any) => (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-    >
-      <option value="">Select</option>
-      {options.map((opt: string) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  );
+  // Stable update function to prevent re-renders and cursor jumps
+  const update = useCallback((key: string, value: string, isTextOnly: boolean = false) => {
+    let processedValue = value;
+    
+    // Filter numbers from text-only fields
+    if (isTextOnly && typeof value === 'string') {
+      processedValue = filterTextOnly(value);
+    }
+    
+    setForm((prev) => {
+      // Only update if value actually changed to prevent unnecessary re-renders
+      if (prev[key as keyof typeof prev] === processedValue) {
+        return prev;
+      }
+      return { ...prev, [key]: processedValue };
+    });
+
+    // Clear validation error when user starts typing
+    setValidationErrors((prev) => {
+      if (prev[key]) {
+        const newErrors = { ...prev };
+        delete newErrors[key];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
+
+  // Reusable select cell renderer - stable controlled component
+  const SelectCell = useCallback(({ value, onChange, options, error }: any) => (
+    <div>
+      <select
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+      >
+        <option value="">Select</option>
+        {options.map((opt: string) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
+
+  // Reusable textarea cell renderer for observations - stable controlled component
+  const TextareaCell = useCallback(({ value, onChange, placeholder, rows = 3, error, isTextOnly = false }: any) => (
+    <div>
+      <textarea
+        value={value || ""}
+        onChange={(e) => {
+          const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+          onChange(newValue);
+        }}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+        placeholder={placeholder}
+        rows={rows}
+      />
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
 
   return (
     <div className="space-y-8">
@@ -199,6 +276,19 @@ export default function StaticPosture() {
             </tr>
           </tbody>
         </table>
+      </section>
+
+      {/* ===================== ASSESSMENT FINDINGS ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings / Observations</h4>
+        <TextareaCell
+          value={form.observations}
+          onChange={(v: string) => update("observations", v, true)}
+          placeholder="Enter observations and findings (text only, no numbers)"
+          rows={4}
+          isTextOnly={true}
+          error={validationErrors.observations}
+        />
       </section>
     </div>
   );
