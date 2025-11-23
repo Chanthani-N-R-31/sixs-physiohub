@@ -1,4 +1,3 @@
-// src/components/forms/physiotherapy/RegistrationDetails.tsx
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -218,7 +217,7 @@ export default function RegistrationDetails({
       isUpdatingAge.current = false;
       return;
     }
-    if (form.dob) {
+    if (form.dob && form.dob.length === 10) { // Only calc if full date present
       const dobParts = form.dob.split("/");
       if (dobParts.length === 3) {
         try {
@@ -247,7 +246,7 @@ export default function RegistrationDetails({
       isUpdatingYearsInService.current = false;
       return;
     }
-    if (form.enlistmentDate) {
+    if (form.enlistmentDate && form.enlistmentDate.length === 10) {
       const enlistParts = form.enlistmentDate.split("/");
       if (enlistParts.length === 3) {
         try {
@@ -270,17 +269,77 @@ export default function RegistrationDetails({
     }
   }, [form.enlistmentDate]);
 
-  // Stable update function with validation
-  const update = useCallback((key: string, value: any, isTextOnly: boolean = false) => {
+  // --- STRICT DATE FORMATTER (DD/MM/YYYY) ---
+  const formatStrictDate = (value: string): string => {
+    // 1. Remove non-digits (Prevents letters)
+    const cleaned = value.replace(/\D/g, '');
+    
+    // 2. Limit to 8 chars (DDMMYYYY)
+    const truncated = cleaned.slice(0, 8);
+    
+    // 3. Auto-Insert Slashes
+    let formatted = truncated;
+    if (truncated.length > 2) {
+      formatted = truncated.slice(0, 2) + '/' + truncated.slice(2);
+    }
+    if (truncated.length > 4) {
+      formatted = formatted.slice(0, 5) + '/' + formatted.slice(5);
+    }
+    return formatted;
+  };
+
+  // --- DATE VALIDATION (Calendar Logic) ---
+  const validateDateInput = (key: string, value: string) => {
+    // If empty, clear error
+    if (!value) {
+       setValidationErrors((prev) => {
+         const newErrors = { ...prev };
+         delete newErrors[key];
+         return newErrors;
+       });
+       return;
+    }
+
+    const cleaned = value.replace(/\D/g, '');
+    
+    // Validate Day (1-31)
+    if (cleaned.length >= 2) {
+      const day = parseInt(cleaned.slice(0, 2));
+      if (day > 31 || day === 0) {
+        setValidationErrors((prev) => ({ ...prev, [key]: "Invalid Day (Max 31)" }));
+        return;
+      }
+    }
+
+    // Validate Month (1-12)
+    if (cleaned.length >= 4) {
+      const month = parseInt(cleaned.slice(2, 4));
+      if (month > 12 || month === 0) {
+        setValidationErrors((prev) => ({ ...prev, [key]: "Invalid Month (Max 12)" }));
+        return;
+      }
+    }
+
+    // Clear errors if valid so far
+    setValidationErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[key];
+      return newErrors;
+    });
+  };
+
+  // --- UPDATED UPDATE FUNCTION ---
+  const update = useCallback((key: string, value: any, isTextOnly: boolean = false, isDate: boolean = false) => {
     let processedValue = value;
     
-    // Filter numbers from text-only fields
-    if (isTextOnly && typeof value === 'string') {
-      processedValue = filterTextOnly(value);
+    // DATE LOGIC
+    if (isDate && typeof value === 'string') {
+        processedValue = formatStrictDate(value);
+        validateDateInput(key, processedValue);
     }
-    
-    // Validate text-only fields
-    if (typeof processedValue === 'string') {
+    // TEXT ONLY LOGIC
+    else if (isTextOnly && typeof value === 'string') {
+      processedValue = filterTextOnly(value);
       const error = validateTextOnly(key, processedValue);
       if (error) {
         setValidationErrors((prev) => ({ ...prev, [key]: error }));
@@ -353,7 +412,7 @@ export default function RegistrationDetails({
       onClick={() => toggleSection(num)}
     >
       <h4 className="text-lg font-bold text-gray-900">
-        SECTION {num} — {title}
+        {title}
       </h4>
       <span className="text-gray-600">
         {expandedSections.has(num) ? "▼" : "▶"}
@@ -375,7 +434,7 @@ export default function RegistrationDetails({
   const renderField = (
     label: string,
     key: string,
-    type: "text" | "select" | "number" | "textarea" | "file" = "text",
+    type: "text" | "select" | "number" | "textarea" | "file" | "date-masked" = "text",
     options?: string[],
     placeholder?: string,
     readOnly = false,
@@ -437,6 +496,24 @@ export default function RegistrationDetails({
                 } ${readOnly ? "bg-gray-100" : ""}`}
                 rows={3}
                 placeholder={placeholder}
+                readOnly={readOnly}
+              />
+              {error && (
+                <p className="text-red-500 text-xs mt-1">{error}</p>
+              )}
+            </>
+          ) : type === "date-masked" ? (
+            // --- DATE MASKED INPUT (DD/MM/YYYY) ---
+            <>
+              <input
+                type="text"
+                value={fieldValue || ""}
+                onChange={(e) => update(key, e.target.value, false, true)} // Trigger Date Logic
+                maxLength={10}
+                className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  error ? "border-red-500" : "border-gray-300"
+                } ${readOnly ? "bg-gray-100" : ""}`}
+                placeholder="DD/MM/YYYY"
                 readOnly={readOnly}
               />
               {error && (
@@ -505,10 +582,16 @@ export default function RegistrationDetails({
                 {renderField("Service Number", "serviceNumber", "text", undefined, "Enter service number")}
                 {renderField("Rank", "rank", "text", undefined, "Enter rank")}
                 {renderField("Current Appointment / Designation", "currentAppointment", "text", undefined, "Enter appointment/designation")}
-                {renderField("Enlistment Date", "enlistmentDate", "text", undefined, "DD/MM/YYYY")}
+                
+                {/* --- DATE FIELDS HERE --- */}
+                {renderField("Enlistment Date", "enlistmentDate", "date-masked")}
+                
                 {renderField("Years in Service (Auto-Calculated)", "yearsInService", "text", undefined, "", true)}
                 {renderField("Years in Special Forces (Auto-Calculated)", "yearsInSpecialForces", "text", undefined, "Enter years")}
-                {renderField("Date of Birth", "dob", "text", undefined, "DD/MM/YYYY")}
+                
+                {/* --- DATE FIELDS HERE --- */}
+                {renderField("Date of Birth", "dob", "date-masked")}
+                
                 {renderField("Age (Auto-Calculated)", "age", "text", undefined, "", true)}
                 {renderField("Gender", "gender", "select", ["Male", "Female", "Other"])}
                 {renderField("Blood Group", "bloodGroup", "select", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])}
@@ -1491,7 +1574,9 @@ export default function RegistrationDetails({
             <tbody>
               {renderField("Contact Number", "contact", "text", undefined, "Enter contact number")}
               {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department (text only)")}
-              {renderField("Date of Assessment", "dateOfAssessment", "text", undefined, "DD/MM/YYYY")}
+              
+              {/* --- DATE FIELD HERE --- */}
+              {renderField("Date of Assessment", "dateOfAssessment", "date-masked")}
             </tbody>
           </table>
         </div>
