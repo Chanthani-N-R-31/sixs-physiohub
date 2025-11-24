@@ -4,9 +4,9 @@
 import { useState } from "react";
 import OverviewPage from "./overview/page";
 import EntriesPage from "./entries/page";
-import DomainSelect from "./add/DomainSelect";
+import DomainCard from "@/components/ui/DomainCard";
 import ExportPage from "./export/ExportPage";
-import PhysioFormTabs from "./add/physiotherapy/sections/PhysioFormTabs";
+import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import { useDashboard } from "./layout";
 
 export default function DashboardPage() {
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       {activeTab === "add" && (
         <>
           {selectedDomain === null ? (
-            <DomainSelect
+            <DomainCard
               onBack={handleBackFromDomainSelect}
               onSelect={handleDomainSelect}
             />

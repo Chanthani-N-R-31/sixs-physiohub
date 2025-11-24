@@ -1,5 +1,5 @@
 "use client";
-import PhysioFormTabs from "./sections/PhysioFormTabs";
+import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 
 export default function PhysioForm() {
   return (
