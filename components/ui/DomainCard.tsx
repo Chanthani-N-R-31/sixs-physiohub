@@ -1,4 +1,4 @@
-// src/app/dashboard/add/DomainSelect.tsx
+// components/ui/DomainCard.tsx
 "use client";
 
 import {
@@ -9,12 +9,12 @@ import {
   LightBulbIcon,
 } from "@heroicons/react/24/solid";
 
-interface DomainSelectProps {
+interface DomainCardProps {
   onBack?: () => void;
   onSelect?: (domain: string) => void;
 }
 
-export default function DomainSelect({ onBack, onSelect }: DomainSelectProps) {
+export default function DomainCard({ onBack, onSelect }: DomainCardProps) {
   const domains = [
     {
       name: "Physiotherapy",
@@ -86,3 +86,4 @@ export default function DomainSelect({ onBack, onSelect }: DomainSelectProps) {
     </div>
   );
 }
+

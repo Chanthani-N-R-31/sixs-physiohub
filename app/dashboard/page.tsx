@@ -2,11 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import OverviewPage from "./overview/overviewPage";
-import EntriesPage from "./entries/EntriesPage";
-import DomainSelect from "./add/DomainSelect";
+import OverviewPage from "./overview/page";
+import EntriesPage from "./entries/page";
+import DomainCard from "@/components/ui/DomainCard";
 import ExportPage from "./export/ExportPage";
-import PhysioFormTabs from "./add/physiotherapy/PhysioFormTabs";
+import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import { useDashboard } from "./layout";
 
 export default function DashboardPage() {
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       {activeTab === "add" && (
         <>
           {selectedDomain === null ? (
-            <DomainSelect
+            <DomainCard
               onBack={handleBackFromDomainSelect}
               onSelect={handleDomainSelect}
             />
