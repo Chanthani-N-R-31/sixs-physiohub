@@ -51,9 +51,7 @@ export default function LoginPage() {
 
             {/* Email */}
             <div>
-              <div className="mb-1 p-2 bg-white/15 backdrop-blur-sm rounded-lg border border-white/25">
-                <label className="text-sm text-black font-medium">Email</label>
-              </div>
+              <label className="text-sm text-black font-bold mb-1 block">Email</label>
               <input
                 type="email"
                 className="w-full mt-1 p-3 bg-white/35 backdrop-blur-sm border border-white/30 rounded-lg text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/45"
@@ -65,9 +63,7 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <div className="mb-1 p-2 bg-white/15 backdrop-blur-sm rounded-lg border border-white/25">
-                <label className="text-sm text-black font-medium">Password</label>
-              </div>
+              <label className="text-sm text-black font-bold mb-1 block">Password</label>
               <input
                 type="password"
                 className="w-full mt-1 p-3 bg-white/35 backdrop-blur-sm border border-white/30 rounded-lg text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/45"
@@ -93,6 +89,8 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Login"}
             </button>
           </form>
+
+        
         </div>
     </div>
   );
