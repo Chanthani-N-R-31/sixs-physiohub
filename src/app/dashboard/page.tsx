@@ -2,11 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import OverviewPage from "./overview/overviewPage";
-import EntriesPage from "./entries/EntriesPage";
+import OverviewPage from "./overview/page";
+import EntriesPage from "./entries/page";
 import DomainSelect from "./add/DomainSelect";
 import ExportPage from "./export/ExportPage";
-import PhysioFormTabs from "./add/physiotherapy/PhysioFormTabs";
+import PhysioFormTabs from "./add/physiotherapy/sections/PhysioFormTabs";
 import { useDashboard } from "./layout";
 
 export default function DashboardPage() {
