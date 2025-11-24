@@ -30,20 +30,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center p-8 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
+    <div 
+      className="min-h-screen flex justify-center items-center p-8 relative overflow-hidden"
+      style={{
+        backgroundImage: 'url(/background.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Login Form Container */}
+      <div className="w-full max-w-md relative z-10 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/30">
+          {/* Title */}
+          <h2 className="text-3xl font-bold text-white mb-2">Login</h2>
 
-        <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Login</h2>
-          <p className="text-gray-500 text-sm mb-6">Welcome back! Please sign in to continue.</p>
+          {/* Welcome message */}
+          <p className="text-white/90 text-sm mb-6">Welcome back! Please sign in to continue.</p>
 
           <form onSubmit={handleLogin} className="space-y-5">
 
             {/* Email */}
             <div>
-              <label className="text-sm text-gray-700">Email</label>
+              <div className="mb-1 p-2 bg-white/15 backdrop-blur-sm rounded-lg border border-white/25">
+                <label className="text-sm text-black font-medium">Email</label>
+              </div>
               <input
                 type="email"
-                className="w-full mt-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mt-1 p-3 bg-white/35 backdrop-blur-sm border border-white/30 rounded-lg text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/45"
                 placeholder="Enter your email"
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -52,10 +65,12 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label className="text-sm text-gray-700">Password</label>
+              <div className="mb-1 p-2 bg-white/15 backdrop-blur-sm rounded-lg border border-white/25">
+                <label className="text-sm text-black font-medium">Password</label>
+              </div>
               <input
                 type="password"
-                className="w-full mt-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mt-1 p-3 bg-white/35 backdrop-blur-sm border border-white/30 rounded-lg text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/45"
                 placeholder="Enter your password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -64,26 +79,30 @@ export default function LoginPage() {
 
             {/* Error Message */}
             {errorMsg && (
-              <p className="text-red-600 text-sm">{errorMsg}</p>
+              <div className="p-2 bg-red-500/20 backdrop-blur-sm rounded-lg border border-red-500/30">
+                <p className="text-red-500 text-sm font-medium">{errorMsg}</p>
+              </div>
             )}
 
             {/* Login Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-shadow shadow-md hover:shadow-lg disabled:bg-blue-300"
+              className="w-full py-3 bg-[#1a4d4d]/80 backdrop-blur-sm text-white rounded-lg font-medium hover:bg-[#1a4d4d]/90 transition-all shadow-lg hover:shadow-xl disabled:bg-[#1a4d4d]/60 border border-[#1a4d4d]/50"
             >
               {loading ? "Signing in..." : "Login"}
             </button>
           </form>
 
           {/* Sign Up Link */}
-          <p className="text-sm text-gray-600 mt-6 text-center">
-            Don't have an account?{" "}
-            <Link href="/signup" className="text-blue-600 font-medium hover:underline">
-              Sign Up
-            </Link>
-          </p>
+          <div className="mt-6 p-2 bg-white/15 backdrop-blur-sm rounded-lg border border-white/25">
+            <p className="text-sm text-black/80 text-center">
+              Don't have an account?{" "}
+              <Link href="/signup" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
+                Sign Up
+              </Link>
+            </p>
+          </div>
         </div>
     </div>
   );
