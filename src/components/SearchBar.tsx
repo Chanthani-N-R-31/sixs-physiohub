@@ -14,9 +14,10 @@ interface Patient {
 
 interface SearchBarProps {
   patients: Patient[];
+  onPatientSelect?: (patient: Patient) => void;
 }
 
-export default function SearchBar({ patients }: SearchBarProps) {
+export default function SearchBar({ patients, onPatientSelect }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Patient[]>([]);
   const [showResults, setShowResults] = useState(false);
@@ -43,15 +44,23 @@ export default function SearchBar({ patients }: SearchBarProps) {
       return;
     }
 
+    if (!patients || patients.length === 0) {
+      setSearchResults([]);
+      setShowResults(false);
+      return;
+    }
+
     const query = searchQuery.toLowerCase().trim();
     const filtered = patients.filter(
       (patient) =>
         patient.name.toLowerCase().includes(query) ||
-        patient.id.toLowerCase().includes(query)
+        patient.id.toLowerCase().includes(query) ||
+        (patient.age && String(patient.age).includes(query)) ||
+        (patient.date && patient.date.toLowerCase().includes(query))
     );
 
     setSearchResults(filtered);
-    setShowResults(true);
+    setShowResults(filtered.length > 0);
   }, [searchQuery, patients]);
 
   const handleClear = () => {
@@ -93,7 +102,14 @@ export default function SearchBar({ patients }: SearchBarProps) {
               {searchResults.map((patient) => (
                 <div
                   key={patient.id}
-                  className="px-3 py-3 hover:bg-gray-50 rounded-lg cursor-pointer border-b border-gray-100 last:border-b-0"
+                  onClick={() => {
+                    if (onPatientSelect) {
+                      onPatientSelect(patient);
+                    }
+                    setSearchQuery("");
+                    setShowResults(false);
+                  }}
+                  className="px-3 py-3 hover:bg-gray-50 rounded-lg cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-700 font-medium">
