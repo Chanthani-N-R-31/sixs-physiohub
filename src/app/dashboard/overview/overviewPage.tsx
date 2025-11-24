@@ -8,17 +8,24 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 interface Entry {
   id: string;
+  fullId: string; // Full document ID for operations
   name: string;
   age: string;
   date: string;
   status: string;
+  fullData?: any; // Full document data
 }
 
-export default function OverviewPage() {
+interface OverviewPageProps {
+  onEdit?: (id: string, data: any) => void;
+  onView?: (data: any) => void;
+}
+
+export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {}) {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,10 +76,12 @@ export default function OverviewPage() {
         
         loadedEntries.push({
           id: docSnapshot.id.slice(0, 6),
+          fullId: docSnapshot.id, // Store full ID for operations
           name: fullName,
           age: String(regDetails.age || regDetails.yearsInService || "N/A"),
           date: date || "N/A",
           status: statusLabel,
+          fullData: { id: docSnapshot.id, ...data }, // Store full data
         });
       });
       setEntries(loadedEntries);
@@ -114,6 +123,44 @@ export default function OverviewPage() {
       console.error("Error loading overview data:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleView = (entry: Entry) => {
+    if (onView && entry.fullData) {
+      onView(entry.fullData);
+    } else if (entry.fullData) {
+      // Fallback: show data in alert or console
+      const regDetails = entry.fullData.registrationDetails || {};
+      const name = regDetails.fullName || entry.name;
+      alert(`Viewing entry for: ${name}\n\nStatus: ${entry.fullData.status || "N/A"}\n\nCheck console for full data.`);
+      console.log("Full entry data:", entry.fullData);
+    }
+  };
+
+  const handleEdit = (entry: Entry) => {
+    if (onEdit && entry.fullData) {
+      onEdit(entry.fullId, entry.fullData);
+    } else {
+      console.log("Edit entry:", entry.fullId, entry.fullData);
+      alert("Edit functionality - Entry data logged to console");
+    }
+  };
+
+  const handleDelete = async (entry: Entry) => {
+    if (!confirm(`Are you sure you want to delete the entry for ${entry.name}?`)) {
+      return;
+    }
+    
+    try {
+      await deleteDoc(doc(db, "physioAssessments", entry.fullId));
+      // Remove from local state
+      setEntries((prev) => prev.filter((e) => e.fullId !== entry.fullId));
+      // Reload data to update stats
+      await loadData();
+    } catch (error) {
+      console.error("Error deleting entry:", error);
+      alert("Error deleting entry. Please try again.");
     }
   };
 
@@ -201,9 +248,27 @@ export default function OverviewPage() {
                     </td>
                     <td className="py-4">
                        <div className="flex items-center gap-2">
-                          <button className="p-2 rounded-md text-gray-600 hover:bg-gray-100"><EyeIcon className="w-4 h-4" /></button>
-                          <button className="p-2 rounded-md text-gray-600 hover:bg-gray-100"><PencilIcon className="w-4 h-4" /></button>
-                          <button className="p-2 rounded-md text-red-600 hover:bg-red-50"><TrashIcon className="w-4 h-4" /></button>
+                          <button 
+                            title="View"
+                            onClick={() => handleView(row)}
+                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                          >
+                            <EyeIcon className="w-4 h-4" />
+                          </button>
+                          <button 
+                            title="Edit"
+                            onClick={() => handleEdit(row)}
+                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                          >
+                            <PencilIcon className="w-4 h-4" />
+                          </button>
+                          <button 
+                            title="Delete"
+                            onClick={() => handleDelete(row)}
+                            className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors"
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                          </button>
                        </div>
                     </td>
                   </tr>

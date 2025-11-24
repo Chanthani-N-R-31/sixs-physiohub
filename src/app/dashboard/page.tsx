@@ -52,7 +52,12 @@ export default function DashboardPage() {
   return (
     <div className="w-full h-full overflow-x-hidden">
       {/* TAB CONTROLLER */}
-      {activeTab === "overview" && <OverviewPage />}
+      {activeTab === "overview" && (
+        <OverviewPage 
+          onEdit={handleEditEntry}
+          onView={handleViewEntry}
+        />
+      )}
       {activeTab === "entries" && (
         <EntriesPage 
           onNewEntry={() => setActiveTab("add")}
