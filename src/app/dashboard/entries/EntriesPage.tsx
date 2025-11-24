@@ -179,7 +179,6 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
 
                     <div>
                       <div className="font-medium">{row.name}</div>
-                      <div className="text-xs text-gray-500">Physiotherapy</div>
                     </div>
                   </td>
 
