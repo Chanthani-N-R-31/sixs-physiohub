@@ -213,7 +213,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
           <table className="w-full text-sm min-w-[600px]">
             <thead className="text-xs text-gray-500 text-left">
               <tr>
-                <th className="py-2">ID</th>
+                <th className="py-2">Patient ID</th>
                 <th className="py-2">Name</th>
                 <th className="py-2">Age</th>
                 <th className="py-2">Assessment Date</th>
