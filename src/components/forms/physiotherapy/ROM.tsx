@@ -385,24 +385,6 @@ export default function ROM({ initialData, onSave }: ROMProps) {
             />
           </div>
         </div>
-
-        <div className="mt-4">
-          <label className="text-sm font-medium text-gray-900 mb-1 block">Notes</label>
-          <div>
-            <textarea
-              value={rom.notes}
-              onChange={(e) => u("notes", e.target.value, true)}
-              className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
-                validationErrors.notes ? "border-red-500" : "border-gray-300"
-              }`}
-              rows={3}
-              placeholder="Enter notes (text only, no numbers)"
-            />
-            {validationErrors.notes && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.notes}</p>
-            )}
-          </div>
-        </div>
       </section>
     </div>
   );
