@@ -166,6 +166,11 @@ export default function RegistrationDetails({
     return value.replace(/[0-9]/g, '');
   };
 
+  // Helper function to filter only integers (remove all non-digit characters)
+  const filterIntegerOnly = (value: string): string => {
+    return value.replace(/[^0-9]/g, '');
+  };
+
   // Helper function to validate text-only fields
   const validateTextOnly = (key: string, value: string): string | null => {
     const textOnlyFields = [
@@ -179,6 +184,16 @@ export default function RegistrationDetails({
       return 'This field should only contain text, no numbers allowed';
     }
     return null;
+  };
+
+  // Helper function to check if a field should be integer-only
+  const isIntegerOnlyField = (key: string): boolean => {
+    const integerOnlyFields = [
+      'totalYearsArmedForces',
+      'totalYearsCombatRole',
+      'totalYearsSpecialForces'
+    ];
+    return integerOnlyFields.includes(key);
   };
 
   // Helper function to calculate full name from parts
@@ -359,8 +374,18 @@ export default function RegistrationDetails({
   const update = useCallback((key: string, value: any, isTextOnly: boolean = false, isDate: boolean = false) => {
     let processedValue = value;
     
+    // INTEGER ONLY LOGIC (must come before date and text logic)
+    if (isIntegerOnlyField(key) && typeof value === 'string') {
+      processedValue = filterIntegerOnly(value);
+      // Clear any validation errors for integer fields
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[key];
+        return newErrors;
+      });
+    }
     // DATE LOGIC
-    if (isDate && typeof value === 'string') {
+    else if (isDate && typeof value === 'string') {
         processedValue = formatStrictDate(value);
         validateDateInput(key, processedValue);
     }
@@ -651,7 +676,13 @@ export default function RegistrationDetails({
                 type={type === "number" ? "number" : "text"}
                 value={fieldValue || ""}
                 onChange={(e) => {
-                  const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+                  let newValue = e.target.value;
+                  // Apply integer-only filter if this is an integer-only field
+                  if (isIntegerOnlyField(key)) {
+                    newValue = filterIntegerOnly(newValue);
+                  } else if (isTextOnly) {
+                    newValue = filterTextOnly(newValue);
+                  }
                   update(key, newValue, isTextOnly);
                 }}
                 onBlur={() => {
@@ -1175,7 +1206,7 @@ export default function RegistrationDetails({
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["-", "SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"])}
+                {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"])}
                 {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details (text only, no numbers)")}
                 <tr className="border-b border-gray-300">
                   <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
@@ -1727,7 +1758,7 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                {renderField("Mission Readiness Score (1–10)", "missionReadinessScore", "select", ["-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"])}
+                {renderField("Mission Readiness Score (1–10)", "missionReadinessScore", "select", ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"])}
               </tbody>
             </table>
           </div>
@@ -1744,8 +1775,8 @@ export default function RegistrationDetails({
                 {renderField("Observed Strengths", "observedStrengths", "textarea", undefined, "Enter observed strengths (text only, no numbers)")}
                 {renderField("Observed Limitations", "observedLimitations", "textarea", undefined, "Enter observed limitations (text only, no numbers)")}
                 {renderField("Terrain Suitability", "terrainSuitability", "textarea", undefined, "Enter terrain suitability (text only, no numbers)")}
-                {renderField("Deployment Readiness", "deploymentReadiness", "select", ["-", "Ready", "Conditional", "Not Ready"])}
-                {renderField("Requalification Requirement", "requalificationRequirement", "select", ["-", "Yes", "No", "Partial"])}
+                {renderField("Deployment Readiness", "deploymentReadiness", "select", ["Ready", "Conditional", "Not Ready"])}
+                {renderField("Requalification Requirement", "requalificationRequirement", "select", ["Yes", "No", "Partial"])}
                 {renderField("Recommended S&C Focus Areas", "recommendedScFocusAreas", "textarea", undefined, "Enter recommended focus areas (text only, no numbers)")}
               </tbody>
             </table>
