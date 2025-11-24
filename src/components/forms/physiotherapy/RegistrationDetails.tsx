@@ -531,54 +531,74 @@ export default function RegistrationDetails({
           ) : type === "file" ? (
             <div className="space-y-2">
               {(form[`${key}Preview` as keyof typeof form] as string) ? (
-                <div className="relative inline-block">
-                  <img
-                    src={form[`${key}Preview` as keyof typeof form] as string}
-                    alt={`${label} preview`}
-                    className="max-w-full h-auto max-h-48 rounded-lg border border-gray-300"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveFile(key)}
-                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 hover:bg-red-700 shadow-md transition-colors"
-                    title="Remove image"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                <>
+                  <div className="relative inline-block">
+                    <img
+                      src={form[`${key}Preview` as keyof typeof form] as string}
+                      alt={`${label} preview`}
+                      className="max-w-full h-auto max-h-48 rounded-lg border border-gray-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(key)}
+                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 hover:bg-red-700 shadow-md transition-colors"
+                      title="Remove image"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              ) : null}
-              {form[key as keyof typeof form] && !(form[`${key}Preview` as keyof typeof form] as string) ? (
-                <div className="flex items-center gap-2 p-2 border border-gray-300 rounded bg-gray-50">
-                  <span className="text-sm text-gray-700">
-                    {(form[key as keyof typeof form] as File)?.name || "File selected"}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveFile(key)}
-                    className="ml-auto text-red-600 hover:text-red-700 text-sm font-medium"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ) : null}
-              <input
-                type="file"
-                onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
-                className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-                accept="image/*,.pdf"
-              />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div>
+                    <input
+                      type="file"
+                      id={`file-input-${key}`}
+                      onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
+                      className="hidden"
+                      accept="image/*,.pdf"
+                    />
+                    <label
+                      htmlFor={`file-input-${key}`}
+                      className="inline-block px-4 py-2 text-sm font-medium text-green-600 bg-green-50 border border-green-300 rounded-lg hover:bg-green-100 cursor-pointer transition"
+                    >
+                      Change Image
+                    </label>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {form[key as keyof typeof form] && !(form[`${key}Preview` as keyof typeof form] as string) ? (
+                    <div className="flex items-center gap-2 p-2 border border-gray-300 rounded bg-gray-50">
+                      <span className="text-sm text-gray-700">
+                        {(form[key as keyof typeof form] as File)?.name || "File selected"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(key)}
+                        className="ml-auto text-red-600 hover:text-red-700 text-sm font-medium"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : null}
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
+                    className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    accept="image/*,.pdf"
+                  />
+                </>
+              )}
             </div>
           ) : shouldUseTextarea ? (
             <>
