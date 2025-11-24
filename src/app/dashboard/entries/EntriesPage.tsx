@@ -141,7 +141,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
           <table className="w-full text-sm min-w-[800px]">
             <thead className="text-xs text-gray-500 text-left border-b border-gray-100">
               <tr>
-                <th className="py-3">Patient ID</th>
+                <th className="py-3">ID</th>
                 <th className="py-3">Name</th>
                 <th className="py-3">Age</th>
                 <th className="py-3">Assessment Date</th>

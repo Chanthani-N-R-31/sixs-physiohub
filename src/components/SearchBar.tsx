@@ -78,7 +78,7 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => searchQuery && setShowResults(true)}
-          placeholder="Search patient details..."
+          placeholder="Search by ID/Name"
           className="w-full p-2.5 pl-10 pr-10 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-300"
         />
         {searchQuery && (
@@ -152,7 +152,7 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
               </div>
               <div className="text-gray-600 font-medium">No patients found</div>
               <div className="text-sm text-gray-500 mt-1">
-                Try searching with a different name or patient ID
+                Try searching with a different name or ID
               </div>
             </div>
           )}
