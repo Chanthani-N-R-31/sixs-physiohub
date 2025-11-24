@@ -70,21 +70,6 @@ export default function Sidebar() {
 
       {/* Bottom items */}
       <div className="mt-auto px-6 py-6 border-t border-gray-100">
-        {/* User Avatar */}
-        <div className="mb-4 flex items-center justify-center">
-          <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white font-semibold">
-            N
-          </div>
-        </div>
-
-        <button
-          onClick={() => alert("Settings page coming soon")}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-4"
-        >
-          <Cog6ToothIcon className="w-5 h-5" />
-          Settings
-        </button>
-
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700"
