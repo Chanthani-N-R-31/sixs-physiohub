@@ -486,7 +486,7 @@ export default function PhysioFormPage() {
 
   return (
 
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6">
 
       <div className="max-w-4xl mx-auto">
 

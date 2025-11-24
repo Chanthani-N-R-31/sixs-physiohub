@@ -37,7 +37,7 @@ export default function DashboardLayout({
   return (
     <DashboardContext.Provider value={{ activeTab, setActiveTab }}>
       <div
-        className={`${inter.className} flex min-h-screen bg-[#f5f7ff] overflow-hidden`}
+        className={`${inter.className} flex min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 overflow-hidden`}
       >
         {/* Sidebar */}
         <Sidebar />
