@@ -122,6 +122,7 @@ export default function RegistrationDetails({
     
     // Existing fields
     contact: initialData?.contact || "",
+    email: initialData?.email || "",
     trainingDepartment: initialData?.trainingDepartment || "",
     dateOfAssessment: initialData?.dateOfAssessment || "",
   });
@@ -169,6 +170,14 @@ export default function RegistrationDetails({
   // Helper function to filter only integers (remove all non-digit characters)
   const filterIntegerOnly = (value: string): string => {
     return value.replace(/[^0-9]/g, '');
+  };
+
+  // Helper function to filter contact number to exactly 10 digits
+  const filterContactNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const digitsOnly = value.replace(/[^0-9]/g, '');
+    // Limit to 10 digits
+    return digitsOnly.slice(0, 10);
   };
 
   // Helper function to validate text-only fields
@@ -677,8 +686,12 @@ export default function RegistrationDetails({
                 value={fieldValue || ""}
                 onChange={(e) => {
                   let newValue = e.target.value;
+                  // Apply contact number filter (10 digits only)
+                  if (key === "contact") {
+                    newValue = filterContactNumber(newValue);
+                  }
                   // Apply integer-only filter if this is an integer-only field
-                  if (isIntegerOnlyField(key)) {
+                  else if (isIntegerOnlyField(key)) {
                     newValue = filterIntegerOnly(newValue);
                   } else if (isTextOnly) {
                     newValue = filterTextOnly(newValue);
@@ -693,6 +706,7 @@ export default function RegistrationDetails({
                     }));
                   }
                 }}
+                maxLength={key === "contact" ? 10 : undefined}
                 className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   error ? "border-red-500" : "border-gray-300"
                 } ${readOnly ? "bg-gray-100" : ""}`}
@@ -1792,7 +1806,8 @@ export default function RegistrationDetails({
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full border-collapse min-w-[500px]">
             <tbody>
-              {renderField("Contact Number", "contact", "text", undefined, "Enter contact number")}
+              {renderField("Contact Number", "contact", "text", undefined, "Enter 10-digit contact number")}
+              {renderField("Email ID", "email", "text", undefined, "Enter email address")}
               {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department (text only)")}
               
               {/* --- DATE FIELD HERE --- */}

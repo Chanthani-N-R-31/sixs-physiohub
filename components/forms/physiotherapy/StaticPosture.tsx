@@ -199,7 +199,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
                 <SelectCell
                   value={form.kneeAlignmentAnterior}
                   onChange={(v: string) => update("kneeAlignmentAnterior", v)}
-                  options={["Normal", "Valgus", "Varus"]}
+                  options={["Valgus", "Varus"]}
                 />
               </td>
             </tr>
@@ -237,7 +237,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
                 <SelectCell
                   value={form.shoulderAlignmentLat}
                   onChange={(v: string) => update("shoulderAlignmentLat", v)}
-                  options={["Aligned", "Rounded", "Protracted"]}
+                  options={["Aligned", "Protracted"]}
                 />
               </td>
             </tr>
@@ -248,7 +248,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
                 <SelectCell
                   value={form.spinalCurves}
                   onChange={(v: string) => update("spinalCurves", v)}
-                  options={["Normal", "Increased", "Decreased"]}
+                  options={["Neutral","Lordotic", "Kyphotic","Swayback","Flatback"]}
                 />
               </td>
             </tr>

@@ -208,55 +208,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
       </section>
 
       {/* ===================== BALANCE SECTION ====================== */}
-      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Balance Assessment</h4>
-
-        <div>
-          <label className="text-sm font-medium text-gray-900">Static Balance</label>
-          <select
-            value={data.staticBalance}
-            onChange={(e) => u("staticBalance", e.target.value)}
-            className="w-full mt-2 p-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Good</option>
-            <option>Fair</option>
-            <option>Poor</option>
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <label className="text-sm font-medium text-gray-900">Dynamic Balance</label>
-          <select
-            value={data.dynamicBalance}
-            onChange={(e) => u("dynamicBalance", e.target.value)}
-            className="w-full mt-2 p-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-green-500"
-          >
-            <option value="">Select</option>
-            <option>Good</option>
-            <option>Fair</option>
-            <option>Poor</option>
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <label className="text-sm font-medium text-gray-900">Balance Notes</label>
-          <div>
-            <textarea
-              value={data.balanceNotes}
-              onChange={(e) => u("balanceNotes", e.target.value, true)}
-              className={`w-full p-3 mt-1 border rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
-                validationErrors.balanceNotes ? "border-red-500" : "border-gray-300"
-              }`}
-              rows={3}
-              placeholder="SLS time, wobble, stability issues... (text only, no numbers)"
-            />
-            {validationErrors.balanceNotes && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.balanceNotes}</p>
-            )}
-          </div>
-        </div>
-      </section>
+   
     </div>
   );
 }
