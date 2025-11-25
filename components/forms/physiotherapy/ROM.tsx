@@ -64,9 +64,11 @@ export default function ROM({ initialData, onSave }: ROMProps) {
     thomasTest: "",
 
     notes: "",
+    assessmentFindings: "",
   });
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isSaved, setIsSaved] = useState(false);
 
   // Load initial data if provided
   useEffect(() => {
@@ -75,15 +77,6 @@ export default function ROM({ initialData, onSave }: ROMProps) {
     }
   }, [initialData]);
 
-  // Auto-save to parent when form changes (debounced)
-  useEffect(() => {
-    if (onSave) {
-      const timer = setTimeout(() => {
-        onSave(rom);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [rom, onSave]);
 
   // Helper function to remove numbers from text-only fields
   const filterTextOnly = (value: string): string => {
@@ -135,6 +128,25 @@ export default function ROM({ initialData, onSave }: ROMProps) {
           error ? "border-red-500" : "border-gray-300"
         }`}
         placeholder={placeholder}
+      />
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  ), []);
+
+  // Reusable textarea cell renderer - stable controlled component
+  const TextareaCell = useCallback(({ value, onChange, placeholder, rows = 3, error, isTextOnly = false }: any) => (
+    <div>
+      <textarea
+        value={value || ""}
+        onChange={(e) => {
+          const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
+          onChange(newValue);
+        }}
+        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+          error ? "border-red-500" : "border-gray-300"
+        }`}
+        placeholder={placeholder}
+        rows={rows}
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
@@ -386,6 +398,40 @@ export default function ROM({ initialData, onSave }: ROMProps) {
           </div>
         </div>
       </section>
+
+      {/* ===================== ASSESSMENT FINDINGS ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+        <TextareaCell
+          value={rom.assessmentFindings}
+          onChange={(v: string) => u("assessmentFindings", v, true)}
+          placeholder="Enter assessment findings (text only, no numbers)"
+          rows={4}
+          isTextOnly={true}
+          error={validationErrors.assessmentFindings}
+        />
+      </section>
+
+      {/* Save Button */}
+      <div className="flex justify-end gap-3">
+        {isSaved && (
+          <span className="text-green-600 text-sm flex items-center">
+            ✓ Saved successfully
+          </span>
+        )}
+        <button
+          onClick={() => {
+            if (onSave) {
+              onSave(rom);
+              setIsSaved(true);
+              setTimeout(() => setIsSaved(false), 3000);
+            }
+          }}
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+        >
+          Save Section
+        </button>
+      </div>
     </div>
   );
 }

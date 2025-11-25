@@ -20,9 +20,11 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
     staticBalance: "",
     dynamicBalance: "",
     balanceNotes: "",
+    assessmentFindings: "",
   });
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isSaved, setIsSaved] = useState(false);
 
   // Load initial data if provided
   useEffect(() => {
@@ -31,15 +33,6 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
     }
   }, [initialData]);
 
-  // Auto-save to parent when form changes (debounced)
-  useEffect(() => {
-    if (onSave) {
-      const timer = setTimeout(() => {
-        onSave(data);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [data, onSave]);
 
   // Helper function to remove numbers from text-only fields
   const filterTextOnly = (value: string): string => {
@@ -208,7 +201,87 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
       </section>
 
       {/* ===================== BALANCE SECTION ====================== */}
-   
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Balance</h4>
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium text-gray-900">Static Balance</label>
+            <input
+              type="text"
+              value={data.staticBalance}
+              onChange={(e) => u("staticBalance", e.target.value)}
+              className="w-full mt-1 p-2 border rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 border-gray-300"
+              placeholder="Enter static balance assessment"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-900">Dynamic Balance</label>
+            <input
+              type="text"
+              value={data.dynamicBalance}
+              onChange={(e) => u("dynamicBalance", e.target.value)}
+              className="w-full mt-1 p-2 border rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 border-gray-300"
+              placeholder="Enter dynamic balance assessment"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-900">Notes</label>
+            <textarea
+              value={data.balanceNotes}
+              onChange={(e) => u("balanceNotes", e.target.value, true)}
+              className={`w-full p-3 mt-1 border rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+                validationErrors.balanceNotes ? "border-red-500" : "border-gray-300"
+              }`}
+              rows={3}
+              placeholder="Balance notes (text only, no numbers)"
+            />
+            {validationErrors.balanceNotes && (
+              <p className="text-red-500 text-xs mt-1">{validationErrors.balanceNotes}</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================== ASSESSMENT FINDINGS ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+        <textarea
+          value={data.assessmentFindings}
+          onChange={(e) => {
+            const newValue = filterTextOnly(e.target.value);
+            u("assessmentFindings", newValue, true);
+          }}
+          className={`w-full p-3 border rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
+            validationErrors.assessmentFindings ? "border-red-500" : "border-gray-300"
+          }`}
+          rows={4}
+          placeholder="Enter assessment findings (text only, no numbers)"
+        />
+        {validationErrors.assessmentFindings && (
+          <p className="text-red-500 text-xs mt-1">{validationErrors.assessmentFindings}</p>
+        )}
+      </section>
+
+      {/* Save Button */}
+      <div className="flex justify-end gap-3">
+        {isSaved && (
+          <span className="text-green-600 text-sm flex items-center">
+            ✓ Saved successfully
+          </span>
+        )}
+        <button
+          onClick={() => {
+            if (onSave) {
+              onSave(data);
+              setIsSaved(true);
+              setTimeout(() => setIsSaved(false), 3000);
+            }
+          }}
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+        >
+          Save Section
+        </button>
+      </div>
     </div>
   );
 }

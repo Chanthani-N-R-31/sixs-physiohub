@@ -7,6 +7,7 @@ import EntriesPage from "./entries/page";
 import DomainCard from "@/components/ui/DomainCard";
 import ExportPage from "./export/ExportPage";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
+import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
 import { useDashboard } from "./layout";
 
 export default function DashboardPage() {
@@ -74,6 +75,12 @@ export default function DashboardPage() {
             />
           ) : selectedDomain === "Physiotherapy" ? (
             <PhysioFormTabs 
+              onBack={handleBackFromForm}
+              initialData={editingEntryData}
+              entryId={editingEntryId}
+            />
+          ) : selectedDomain === "Biomechanics" ? (
+            <BiomechanicsFormTabs
               onBack={handleBackFromForm}
               initialData={editingEntryData}
               entryId={editingEntryId}

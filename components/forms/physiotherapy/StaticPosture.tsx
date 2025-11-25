@@ -29,6 +29,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
   });
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isSaved, setIsSaved] = useState(false);
 
   // Load initial data if provided
   useEffect(() => {
@@ -37,15 +38,6 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
     }
   }, [initialData]);
 
-  // Auto-save to parent when form changes (debounced)
-  useEffect(() => {
-    if (onSave) {
-      const timer = setTimeout(() => {
-        onSave(form);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [form, onSave]);
 
   // Helper function to remove numbers from text-only fields
   const filterTextOnly = (value: string): string => {
@@ -290,6 +282,27 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
           error={validationErrors.observations}
         />
       </section>
+
+      {/* Save Button */}
+      <div className="flex justify-end gap-3">
+        {isSaved && (
+          <span className="text-green-600 text-sm flex items-center">
+            ✓ Saved successfully
+          </span>
+        )}
+        <button
+          onClick={() => {
+            if (onSave) {
+              onSave(form);
+              setIsSaved(true);
+              setTimeout(() => setIsSaved(false), 3000);
+            }
+          }}
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+        >
+          Save Section
+        </button>
+      </div>
     </div>
   );
 }

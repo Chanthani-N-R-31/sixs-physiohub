@@ -153,7 +153,10 @@ export default function FMS({ initialData, onSave }: FMSProps) {
     clearingTestTrunk: "",
     rotaryL: "",
     rotaryR: "",
+    assessmentFindings: "",
   });
+
+  const [isSaved, setIsSaved] = useState(false);
 
   const update = useCallback((key: string, value: string) => {
     setForm((prev) => {
@@ -164,20 +167,17 @@ export default function FMS({ initialData, onSave }: FMSProps) {
     });
   }, []);
 
+  // Helper function to remove numbers from text-only fields
+  const filterTextOnly = (value: string): string => {
+    return value.replace(/[0-9]/g, '');
+  };
+
   useEffect(() => {
     if (initialData) {
       setForm((prev) => ({ ...prev, ...initialData }));
     }
   }, [initialData]);
 
-  useEffect(() => {
-    if (onSave) {
-      const timer = setTimeout(() => {
-        onSave(form);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [form, onSave]);
 
   const totalScore = useMemo(() => {
     const numericValues = Object.values(form)
@@ -357,6 +357,42 @@ export default function FMS({ initialData, onSave }: FMSProps) {
           <span className="text-green-700 ml-2">{totalScore}</span>
         </div>
       </section>
+
+      {/* ===================== ASSESSMENT FINDINGS ====================== */}
+      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+        <textarea
+          value={form.assessmentFindings}
+          onChange={(e) => {
+            const newValue = filterTextOnly(e.target.value);
+            update("assessmentFindings", newValue);
+          }}
+          className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
+          rows={4}
+          placeholder="Enter assessment findings (text only, no numbers)"
+        />
+      </section>
+
+      {/* Save Button */}
+      <div className="flex justify-end gap-3">
+        {isSaved && (
+          <span className="text-green-600 text-sm flex items-center">
+            ✓ Saved successfully
+          </span>
+        )}
+        <button
+          onClick={() => {
+            if (onSave) {
+              onSave(form);
+              setIsSaved(true);
+              setTimeout(() => setIsSaved(false), 3000);
+            }
+          }}
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+        >
+          Save Section
+        </button>
+      </div>
     </div>
   );
 }

@@ -42,15 +42,6 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
     }
   }, [initialData]);
 
-  // Auto-save to parent when form changes (debounced)
-  useEffect(() => {
-    if (onSave) {
-      const timer = setTimeout(() => {
-        onSave(form);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [form, onSave]);
 
   // Helper function to remove numbers from text-only fields
   const filterTextOnly = (value: string): string => {
@@ -336,20 +327,6 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
                 </div>
               </td>
             </tr>
-
-            <tr>
-              <td className="py-2 text-gray-900">Assessment findings</td>
-              <td>
-                <TextareaCell
-                  value={form.assessmentFindings}
-                  onChange={(v: string) => update("assessmentFindings", v, true)}
-                  placeholder="Enter assessment findings (text only, no numbers)"
-                  rows={3}
-                  isTextOnly={true}
-                  error={validationErrors.assessmentFindings}
-                />
-              </td>
-            </tr>
           </tbody>
         </table>
       </section>
@@ -468,6 +445,40 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
           </tbody>
         </table>
       </section>
+
+      {/* ===================== ASSESSMENT FINDINGS ====================== */}
+      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+        <TextareaCell
+          value={form.assessmentFindings}
+          onChange={(v: string) => update("assessmentFindings", v, true)}
+          placeholder="Enter assessment findings (text only, no numbers)"
+          rows={4}
+          isTextOnly={true}
+          error={validationErrors.assessmentFindings}
+        />
+      </section>
+
+      {/* Save Button */}
+      <div className="flex justify-end gap-3">
+        {isSaved && (
+          <span className="text-green-600 text-sm flex items-center">
+            ✓ Saved successfully
+          </span>
+        )}
+        <button
+          onClick={() => {
+            if (onSave) {
+              onSave(form);
+              setIsSaved(true);
+              setTimeout(() => setIsSaved(false), 3000);
+            }
+          }}
+          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+        >
+          Save Section
+        </button>
+      </div>
     </div>
   );
 }
