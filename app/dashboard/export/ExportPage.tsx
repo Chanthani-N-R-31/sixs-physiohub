@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, getDoc, doc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, query, orderBy, onSnapshot } from "firebase/firestore";
 import {
   loadAllAssessmentData,
   formatExportData,
@@ -27,7 +27,39 @@ export default function ExportPage() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    loadPatients();
+    const q = query(collection(db, "physioAssessments"), orderBy("updatedAt", "desc"));
+    setLoading(true);
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const loadedPatients: Patient[] = [];
+        snapshot.forEach((docSnapshot) => {
+          const data = docSnapshot.data();
+          const regDetails = data.registrationDetails || {};
+
+          let fullName = regDetails.fullName || "";
+          if (!fullName) {
+            const parts = [regDetails.firstName, regDetails.initials, regDetails.lastName].filter(Boolean);
+            fullName = parts.join(" ").trim() || "Unknown Individual";
+          }
+
+          loadedPatients.push({
+            id: docSnapshot.id,
+            name: fullName,
+          });
+        });
+
+        setPatients(loadedPatients);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Realtime update failed:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
   // --- LOAD PATIENTS FROM ALL DOMAINS ---
@@ -55,7 +87,7 @@ export default function ExportPage() {
             regDetails.initials,
             regDetails.lastName
           ].filter(Boolean);
-          fullName = parts.join(" ").trim() || "Unknown Patient";
+          fullName = parts.join(" ").trim() || "Unknown Individual";
         }
         
         loadedPatients.push({
@@ -79,7 +111,7 @@ export default function ExportPage() {
           
           let fullName = metadata.participantName || metadata.name || "";
           if (!fullName) {
-            fullName = "Unknown Patient";
+          fullName = "Unknown Individual";
           }
           
           loadedPatients.push({
@@ -181,7 +213,7 @@ export default function ExportPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Select Patient
+              Select Individuals
             </label>
 
             <div className="flex gap-2">
@@ -191,7 +223,7 @@ export default function ExportPage() {
                 onChange={(e) => setSelectedPatient(e.target.value)}
                 disabled={loading || isGenerating}
               >
-                <option value="">All Patients</option>
+                <option value="">All</option>
                 {loading ? (
                   <option disabled>Loading patients...</option>
                 ) : patients.length === 0 ? (
@@ -302,12 +334,7 @@ export default function ExportPage() {
         </div>
 
         {/* Info Message */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>Note:</strong> The export will include all assessment data from the selected domains.
-            Data will be flattened with nested fields separated by underscores (e.g., registrationDetails_fullName).
-          </p>
-        </div>
+       
 
         {/* Download Button */}
         <div className="mt-8 flex justify-end">

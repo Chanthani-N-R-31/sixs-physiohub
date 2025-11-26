@@ -1,4 +1,3 @@
-// src/app/dashboard/page.tsx
 "use client";
 
 import { useState, useCallback } from "react";
@@ -9,36 +8,80 @@ import ExportPage from "./export/ExportPage";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
 import { useDashboard } from "./layout";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase"; // Ensure auth is imported
+import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 export default function DashboardPage() {
   const { activeTab, setActiveTab } = useDashboard();
+  
+  // State
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editingEntryData, setEditingEntryData] = useState<any>(null);
-  const [domainEntryIds, setDomainEntryIds] = useState<Record<string, string>>({});
-  const [domainEntryData, setDomainEntryData] = useState<Record<string, any>>({});
+  const [isCreating, setIsCreating] = useState(false); // Loading state for new entry
+
+  // 1. NEW LOGIC: Create a Blank Shell Document immediately
+  const handleCreateNewEntry = async () => {
+    if (!auth.currentUser) {
+      alert("Please log in to create an entry");
+      return;
+    }
+
+    setIsCreating(true);
+    try {
+      // Create a skeleton document in the main collection
+      const docRef = await addDoc(collection(db, "physioAssessments"), {
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        createdBy: auth.currentUser.uid,
+        status: "in_progress",
+        // Initialize statuses so Domain Cards show "Not Started"
+        registrationDetails: {
+            fullName: "New Patient", // Placeholder until filled
+            dateOfAssessment: new Date().toISOString()
+        },
+        // You can add a helper to track status of sub-domains here if needed
+      });
+
+      console.log("Created new session:", docRef.id);
+
+      // 2. Set the State to this NEW ID
+      setEditingEntryId(docRef.id);
+      
+      // 3. Set Data to Empty/Default
+      setEditingEntryData({
+        registrationDetails: {},
+        status: "in_progress"
+      });
+
+      // 4. Reset Domain Selection
+      setSelectedDomain(null);
+
+      // 5. Finally, Switch Tab
+      setActiveTab("add");
+
+    } catch (error) {
+      console.error("Error creating new entry:", error);
+      alert("Failed to initialize new entry");
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   // Reload entry data from Firebase for a specific domain
   const reloadDomainData = useCallback(async (domain: string, entryId: string) => {
     try {
       let collectionName = "";
-      if (domain === "Physiotherapy") {
-        collectionName = "physioAssessments";
-      } else if (domain === "Biomechanics") {
-        collectionName = "biomechanicsAssessments";
-      } else {
-        return;
-      }
+      // Logic to choose collection based on domain
+      if (domain === "Physiotherapy") collectionName = "physioAssessments";
+      else if (domain === "Biomechanics") collectionName = "biomechanicsAssessments";
+      else return null;
 
       const docRef = doc(db, collectionName, entryId);
       const docSnap = await getDoc(docRef);
+      
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        setDomainEntryIds((prev) => ({ ...prev, [domain]: entryId }));
-        setDomainEntryData((prev) => ({ ...prev, [domain]: data }));
-        return data;
+        return docSnap.data();
       }
     } catch (error) {
       console.error("Error reloading domain data:", error);
@@ -46,182 +89,141 @@ export default function DashboardPage() {
     return null;
   }, []);
 
-  const handleDomainSelect = (domain: string) => {
+  const handleDomainSelect = async (domain: string) => {
     setSelectedDomain(domain);
-
-    // Prefer domain-specific data if we've cached it, otherwise fall back to the last loaded entry data
-    const domainEntryId = domainEntryIds[domain] || (domain === "Physiotherapy" ? editingEntryId : null);
-    const domainData = domainEntryData[domain] || editingEntryData;
-
-    setEditingEntryId(domainEntryId || null);
-    setEditingEntryData(domainData || null);
+    
+    // If we have an ID, try to fetch latest data for this specific domain
+    if (editingEntryId) {
+        const freshData = await reloadDomainData(domain, editingEntryId);
+        if (freshData) {
+            // Merge fresh data with what we have
+            setEditingEntryData((prev: any) => ({...prev, ...freshData}));
+        }
+    }
   };
 
   const handleBackFromForm = async () => {
-    // Reload data from Firebase before going back if we have an entryId
-    if (selectedDomain && editingEntryId) {
-      await reloadDomainData(selectedDomain, editingEntryId);
-    }
+    // When coming back from a specific form to the Domain Card view
+    // We keep the editingEntryId so the session stays active
     setSelectedDomain(null);
-    // Keep editingEntryId and editingEntryData so DomainCard can show updated statuses
   };
 
   const handleBackFromDomainSelect = () => {
+    // When leaving the "Add/Edit" tab completely
     setSelectedDomain(null);
     setActiveTab("overview");
+    // CRITICAL: Clear the ID so next time it doesn't show old data
     setEditingEntryId(null);
     setEditingEntryData(null);
   };
 
   const handleEditEntry = (id: string, data: any) => {
+    console.log("Editing Existing Entry:", id);
     setEditingEntryId(id);
     setEditingEntryData(data);
-    // Show domain selection first so user can see statuses
     setSelectedDomain(null);
     setActiveTab("add");
-    // Since entries currently list physiotherapy assessments, seed the domain cache
-    setDomainEntryIds((prev) => ({ ...prev, Physiotherapy: id }));
-    setDomainEntryData((prev) => ({ ...prev, Physiotherapy: data }));
   };
 
   // Handle data saved callback from form components
   const handleDataSaved = useCallback((domain: string, entryId: string, data: any) => {
-    setEditingEntryId(entryId);
-    setEditingEntryData((prev: any) => {
-      // Merge with existing data to preserve other domains
-      return { ...prev, ...data };
-    });
-    setDomainEntryIds((prev) => ({ ...prev, [domain]: entryId }));
-    setDomainEntryData((prev) => ({ ...prev, [domain]: data }));
+    setEditingEntryId(entryId); // Ensure ID is synced
+    setEditingEntryData((prev: any) => ({ ...prev, ...data }));
   }, []);
 
-  const handleViewEntry = (data: any) => {
-    // For now, just show an alert with key information
-    const regDetails = data.registrationDetails || {};
-    const name = regDetails.fullName || "Unknown";
-    alert(`Viewing entry for: ${name}\n\nStatus: ${data.status || "N/A"}\n\nCheck console for full data.`);
-    console.log("Full entry data:", data);
-  };
-
   return (
-    <div className="w-full h-full overflow-x-hidden">
+    <div className="w-full h-full overflow-x-hidden relative">
+        
+      {/* Loading Overlay during creation */}
+      {isCreating && (
+        <div className="absolute inset-0 z-50 bg-white/80 flex items-center justify-center">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+                <p className="text-gray-600 font-medium">Initializing New Assessment...</p>
+            </div>
+        </div>
+      )}
+
       {/* TAB CONTROLLER */}
       {activeTab === "overview" && (
         <OverviewPage 
           onEdit={handleEditEntry}
-          onView={handleViewEntry}
         />
       )}
+      
       {activeTab === "entries" && (
         <EntriesPage 
-          onNewEntry={() => setActiveTab("add")}
+          // Connect the new Logic here
+          onNewEntry={handleCreateNewEntry} 
           onEdit={handleEditEntry}
-          onView={handleViewEntry}
         />
       )}
+
       {activeTab === "add" && (
         <>
           {selectedDomain === null ? (
             <DomainCard
+              // Force re-render when ID changes to update status badges
+              key={editingEntryId || "new-domain-card"} 
               onBack={handleBackFromDomainSelect}
               onSelect={handleDomainSelect}
-              entryData={(() => {
-                // Merge all domain data into a flat structure
-                // domainEntryData is Record<string, any> where keys are domain names
-                // We need to flatten it so entryData has direct access to fields like registrationDetails, metadata, etc.
-                const merged: any = {};
-                
-                // First, merge data from all stored domains (most up-to-date)
-                Object.values(domainEntryData).forEach((domainData: any) => {
-                  if (domainData) {
-                    Object.assign(merged, domainData);
-                  }
-                });
-                
-                // Then merge with editingEntryData (current session data)
-                if (editingEntryData) {
-                  Object.assign(merged, editingEntryData);
-                }
-                
-                return merged;
-              })()}
-            />
-          ) : selectedDomain === "Physiotherapy" ? (
-            <PhysioFormTabs 
-              onBack={handleBackFromForm}
-              initialData={editingEntryData}
-              entryId={editingEntryId}
-              onDataSaved={(entryId, data) => handleDataSaved("Physiotherapy", entryId, data)}
-            />
-          ) : selectedDomain === "Biomechanics" ? (
-            <BiomechanicsFormTabs
-              onBack={handleBackFromForm}
-              initialData={editingEntryData}
-              entryId={editingEntryId}
-              onDataSaved={(entryId, data) => handleDataSaved("Biomechanics", entryId, data)}
+              entryData={editingEntryData}
             />
           ) : (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {selectedDomain} Assessment
-                </h2>
-                <button
-                  onClick={handleBackFromForm}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                >
-                  ← Back
-                </button>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-                <p className="text-gray-600">
-                  {selectedDomain} form coming soon...
-                </p>
-              </div>
-            </div>
+            /* FORM RENDERER */
+            <>
+              {selectedDomain === "Physiotherapy" && (
+                <PhysioFormTabs 
+                  // CRITICAL: The 'key' prop forces React to destroy the old form 
+                  // and build a new one when the ID changes. This fixes "stuck data".
+                  key={`physio-${editingEntryId}`} 
+                  
+                  onBack={handleBackFromForm}
+                  initialData={editingEntryData}
+                  entryId={editingEntryId}
+                  onDataSaved={(id, data) => handleDataSaved("Physiotherapy", id, data)}
+                />
+              )}
+
+              {selectedDomain === "Biomechanics" && (
+                <BiomechanicsFormTabs
+                  // CRITICAL: The 'key' prop
+                  key={`biomech-${editingEntryId}`}
+
+                  onBack={handleBackFromForm}
+                  initialData={editingEntryData}
+                  entryId={editingEntryId}
+                  onDataSaved={(id, data) => handleDataSaved("Biomechanics", id, data)}
+                />
+              )}
+
+              {/* Placeholder for other domains */}
+              {!["Physiotherapy", "Biomechanics"].includes(selectedDomain) && (
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      {selectedDomain} Assessment
+                    </h2>
+                    <button
+                      onClick={handleBackFromForm}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                    >
+                      ← Back
+                    </button>
+                  </div>
+                  <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                    <p className="text-gray-600">
+                      {selectedDomain} form coming soon...
+                    </p>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
+      
       {activeTab === "export" && <ExportPage />}
-
-      {/* MOBILE BOTTOM NAV */}
-      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-md px-4 py-2 flex gap-4 lg:hidden border border-gray-200">
-        <button
-          onClick={() => setActiveTab("overview")}
-          className={`p-2 ${
-            activeTab === "overview" ? "text-green-600" : "text-gray-600"
-          }`}
-        >
-          <i className="fas fa-home text-xl" />
-        </button>
-
-        <button
-          onClick={() => setActiveTab("entries")}
-          className={`p-2 ${
-            activeTab === "entries" ? "text-green-600" : "text-gray-600"
-          }`}
-        >
-          <i className="fas fa-table text-xl" />
-        </button>
-
-        <button
-          onClick={() => setActiveTab("add")}
-          className={`p-2 ${
-            activeTab === "add" ? "text-green-600" : "text-gray-600"
-          }`}
-        >
-          <i className="fas fa-plus-circle text-xl" />
-        </button>
-
-        <button
-          onClick={() => setActiveTab("export")}
-          className={`p-2 ${
-            activeTab === "export" ? "text-green-600" : "text-gray-600"
-          }`}
-        >
-          <i className="fas fa-download text-xl" />
-        </button>
-      </nav>
     </div>
   );
 }
