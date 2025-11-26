@@ -8,6 +8,13 @@ interface MetadataProps {
 }
 
 export default function Metadata({ initialData, onSave }: MetadataProps) {
+  // HELPER: Convert Boolean to String for the Form
+  const getWarmupString = (val: boolean | undefined | null) => {
+    if (val === true) return "Yes";
+    if (val === false) return "No";
+    return "";
+  };
+
   const [form, setForm] = useState({
     height: initialData?.height ?? "",
     mass: initialData?.mass ?? "",
@@ -15,7 +22,8 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
     footStrikeHabit: initialData?.footStrikeHabit || "",
     environment: initialData?.environment || "",
     footwearType: initialData?.footwearType || "",
-    warmupStandardized: initialData?.warmupStandardized ?? "",
+    // FIX 1: Initialize as String ("Yes"/"No") instead of Boolean
+    warmupStandardized: getWarmupString(initialData?.warmupStandardized),
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -31,7 +39,8 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
         footStrikeHabit: initialData.footStrikeHabit || "",
         environment: initialData.environment || "",
         footwearType: initialData.footwearType || "",
-        warmupStandardized: initialData.warmupStandardized ?? "",
+        // FIX 2: Handle updates from props correctly
+        warmupStandardized: getWarmupString(initialData.warmupStandardized),
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -39,23 +48,21 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
   // Validate numeric input (allows decimals)
   const validateNumber = (value: string): string | null => {
-    if (value === "") return null; // Empty is allowed
+    if (value === "") return null;
     const num = Number(value);
     if (isNaN(num)) return "Must be a number";
     if (num < 0) return "Must be positive";
     return null;
   };
 
-  // Filter to only allow numbers and decimal point
   const filterNumeric = (value: string): string => {
-    return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); // Only one decimal point
+    return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
   };
 
-  const update = useCallback((key: string, value: string | boolean) => {
-    let processedValue: string | boolean = value;
+  const update = useCallback((key: string, value: string) => {
+    let processedValue = value;
     
-    // Handle numeric fields (height, mass)
-    if ((key === "height" || key === "mass") && typeof value === "string") {
+    if (key === "height" || key === "mass") {
       processedValue = filterNumeric(value);
       const error = validateNumber(processedValue);
       if (error) {
@@ -68,7 +75,6 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
         });
       }
     } else {
-      // Clear validation error for other fields
       setValidationErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[key];
@@ -81,7 +87,11 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
   }, []);
 
   const handleSave = () => {
-    // Convert values to proper types before saving
+    // FIX 3: Convert String back to Boolean for Saving
+    let warmupBoolean: boolean | undefined = undefined;
+    if (form.warmupStandardized === "Yes") warmupBoolean = true;
+    if (form.warmupStandardized === "No") warmupBoolean = false;
+
     const dataToSave = {
       height: form.height ? parseFloat(form.height as string) : undefined,
       mass: form.mass ? parseFloat(form.mass as string) : undefined,
@@ -89,7 +99,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
       footStrikeHabit: form.footStrikeHabit || undefined,
       environment: form.environment || undefined,
       footwearType: form.footwearType || undefined,
-      warmupStandardized: form.warmupStandardized === "Yes" ? true : form.warmupStandardized === "No" ? false : undefined,
+      warmupStandardized: warmupBoolean, // Use the converted boolean
       assessmentFindings: form.assessmentFindings || undefined,
     };
 
@@ -114,6 +124,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
           </thead>
 
           <tbody className="divide-y">
+            {/* Height Input */}
             <tr>
               <td className="py-2 text-gray-900">Height (cm)</td>
               <td>
@@ -123,12 +134,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
                   className={`input-field ${validationErrors.height ? "border-red-500" : ""}`}
                   placeholder="Enter height in cm"
                   value={form.height}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                      update("height", val);
-                    }
-                  }}
+                  onChange={(e) => update("height", e.target.value)}
                 />
                 {validationErrors.height && (
                   <p className="text-red-500 text-xs mt-1">{validationErrors.height}</p>
@@ -136,6 +142,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               </td>
             </tr>
 
+            {/* Mass Input */}
             <tr>
               <td className="py-2 text-gray-900">Mass (kg)</td>
               <td>
@@ -145,12 +152,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
                   className={`input-field ${validationErrors.mass ? "border-red-500" : ""}`}
                   placeholder="Enter mass in kg"
                   value={form.mass}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                      update("mass", val);
-                    }
-                  }}
+                  onChange={(e) => update("mass", e.target.value)}
                 />
                 {validationErrors.mass && (
                   <p className="text-red-500 text-xs mt-1">{validationErrors.mass}</p>
@@ -158,6 +160,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               </td>
             </tr>
 
+            {/* Dominant Side */}
             <tr>
               <td className="py-2 text-gray-900">Dominant Side</td>
               <td>
@@ -173,6 +176,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               </td>
             </tr>
 
+            {/* Foot Strike Habit */}
             <tr>
               <td className="py-2 text-gray-900">Foot Strike Habit</td>
               <td>
@@ -189,6 +193,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               </td>
             </tr>
 
+            {/* Environment */}
             <tr>
               <td className="py-2 text-gray-900">Environment</td>
               <td>
@@ -206,6 +211,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               </td>
             </tr>
 
+            {/* Footwear Type */}
             <tr>
               <td className="py-2 text-gray-900">Footwear Type</td>
               <td>
@@ -219,12 +225,14 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               </td>
             </tr>
 
+            {/* Warm-up Standardized - FIXED */}
             <tr>
               <td className="py-2 text-gray-900">Warm-up Standardized</td>
               <td>
                 <select
                   className="input-field"
-                  value={form.warmupStandardized === true ? "Yes" : form.warmupStandardized === false ? "No" : ""}
+                  /* FIX 4: Bind directly to the string value in state */
+                  value={form.warmupStandardized}
                   onChange={(e) => update("warmupStandardized", e.target.value)}
                 >
                   <option value="">Select</option>
