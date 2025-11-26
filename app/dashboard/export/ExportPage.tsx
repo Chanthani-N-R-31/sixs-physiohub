@@ -3,10 +3,18 @@
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, getDoc, doc, query, orderBy } from "firebase/firestore";
+import {
+  loadAllAssessmentData,
+  formatExportData,
+  convertToCSV,
+  downloadCSV,
+  downloadExcelCSV,
+} from "@/lib/exportData";
 
 interface Patient {
   id: string;
   name: string;
+  domain?: string;
 }
 
 export default function ExportPage() {
@@ -22,24 +30,24 @@ export default function ExportPage() {
     loadPatients();
   }, []);
 
-  // --- 1. LOAD PATIENTS ---
+  // --- LOAD PATIENTS FROM ALL DOMAINS ---
   const loadPatients = async () => {
     try {
       setLoading(true);
       
-      // Use the correct collection name: physioAssessments
-      const q = query(
+      const loadedPatients: Patient[] = [];
+      
+      // Load from Physiotherapy
+      const physioQuery = query(
         collection(db, "physioAssessments"),
         orderBy("updatedAt", "desc")
       );
-      const querySnapshot = await getDocs(q);
+      const physioSnapshot = await getDocs(physioQuery);
       
-      const loadedPatients: Patient[] = [];
-      querySnapshot.forEach((docSnapshot) => {
+      physioSnapshot.forEach((docSnapshot) => {
         const data = docSnapshot.data();
         const regDetails = data.registrationDetails || {};
         
-        // Extract full name from registrationDetails
         let fullName = regDetails.fullName || "";
         if (!fullName) {
           const parts = [
@@ -53,10 +61,43 @@ export default function ExportPage() {
         loadedPatients.push({
           id: docSnapshot.id,
           name: fullName,
+          domain: "Physiotherapy",
         });
       });
       
-      setPatients(loadedPatients);
+      // Load from Biomechanics
+      try {
+        const biomechQuery = query(
+          collection(db, "biomechanicsAssessments"),
+          orderBy("updatedAt", "desc")
+        );
+        const biomechSnapshot = await getDocs(biomechQuery);
+        
+        biomechSnapshot.forEach((docSnapshot) => {
+          const data = docSnapshot.data();
+          const metadata = data.metadata || {};
+          
+          let fullName = metadata.participantName || metadata.name || "";
+          if (!fullName) {
+            fullName = "Unknown Patient";
+          }
+          
+          loadedPatients.push({
+            id: docSnapshot.id,
+            name: fullName,
+            domain: "Biomechanics",
+          });
+        });
+      } catch (error) {
+        console.warn("Could not load biomechanics assessments:", error);
+      }
+      
+      // Remove duplicates (same ID)
+      const uniquePatients = Array.from(
+        new Map(loadedPatients.map(p => [p.id, p])).values()
+      );
+      
+      setPatients(uniquePatients);
     } catch (error) {
       console.error("Error loading patients:", error);
       alert("Error loading data. Please try again.");
@@ -65,74 +106,29 @@ export default function ExportPage() {
     }
   };
 
-  // --- 2. HELPER: FLATTEN OBJECTS (for CSV) ---
-  const flattenObject = (obj: any, prefix = ""): any => {
-    return Object.keys(obj).reduce((acc: any, key: string) => {
-      const pre = prefix.length ? prefix + "_" : "";
-      
-      if (typeof obj[key] === "object" && obj[key] !== null && !(obj[key] instanceof Date)) {
-        // Recursively flatten nested objects (like 'fms' or 'rom')
-        Object.assign(acc, flattenObject(obj[key], pre + key));
-      } else {
-        // Handle Firebase Timestamps or standard JS Dates
-        let value = obj[key];
-        if (obj[key] && typeof obj[key].toDate === 'function') {
-            value = obj[key].toDate().toLocaleDateString(); // Firebase Timestamp
-        } else if (obj[key] instanceof Date) {
-            value = obj[key].toLocaleDateString();
-        }
-        acc[pre + key] = value;
-      }
-      return acc;
-    }, {});
-  };
-
-  // --- 3. HELPER: GENERATE CSV STRING ---
-  const convertToCSV = (objArray: any[]) => {
-    if (!objArray || objArray.length === 0) return "";
-    
-    // Get all unique headers from all objects to ensure columns align
-    const headers = Array.from(new Set(objArray.flatMap(obj => Object.keys(obj))));
-    
-    const csvRows = [
-      headers.join(","), // Header row
-      ...objArray.map(row => 
-        headers.map(fieldName => {
-          let val = row[fieldName] ?? ""; 
-          // Escape quotes and wrap in quotes to handle text with commas
-          const stringVal = String(val).replace(/"/g, '""'); 
-          return `"${stringVal}"`;
-        }).join(",")
-      )
-    ];
-
-    return csvRows.join("\n");
-  };
-
-  // --- 4. HANDLE DOWNLOAD ---
+  // --- HANDLE DOWNLOAD ---
   const handleDownload = async () => {
     setIsGenerating(true);
     try {
       let rawData: any[] = [];
-
-      // Fetch logic - use correct collection name
+      
+      // Load data based on filters
       if (selectedPatient) {
-        // Fetch ONE patient
-        const docRef = doc(db, "physioAssessments", selectedPatient);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          rawData.push({ id: docSnap.id, ...docSnap.data() });
+        // Load specific patient from all domains
+        rawData = await loadAllAssessmentData(selectedPatient);
+        
+        // Filter by domain if specific domain selected
+        if (domainFilter === "specific") {
+          rawData = rawData.filter(item => item._domain === specificDomain);
         }
       } else {
-        // Fetch ALL patients
-        const q = query(
-          collection(db, "physioAssessments"),
-          orderBy("updatedAt", "desc")
-        );
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          rawData.push({ id: doc.id, ...doc.data() });
-        });
+        // Load all patients
+        rawData = await loadAllAssessmentData();
+        
+        // Filter by domain if specific domain selected
+        if (domainFilter === "specific") {
+          rawData = rawData.filter(item => item._domain === specificDomain);
+        }
       }
 
       if (rawData.length === 0) {
@@ -141,23 +137,34 @@ export default function ExportPage() {
         return;
       }
 
-      // Process Data
-      const flatData = rawData.map(item => flattenObject(item));
+      // Format data for export
+      const flatData = formatExportData(rawData) as Record<string, any>[];
+      
+      // Generate CSV
       const csvString = convertToCSV(flatData);
       
-      // Create Download Link
-      const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `physio_export_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
+      // Determine filename
+      let filename = "assessments_export";
+      if (selectedPatient) {
+        const patient = patients.find(p => p.id === selectedPatient);
+        filename = patient ? `patient_${patient.name.replace(/\s+/g, "_")}` : "patient_export";
+      }
+      if (domainFilter === "specific") {
+        filename += `_${specificDomain.toLowerCase()}`;
+      }
+      
+      // Download based on format
+      if (exportFormat === "xlsx") {
+        downloadExcelCSV(csvString, filename);
+      } else {
+        downloadCSV(csvString, filename);
+      }
+      
+      alert(`Export completed! ${rawData.length} record(s) exported.`);
+      
     } catch (error) {
-      console.error("Export failed", error);
-      alert("Failed to export data. Check console.");
+      console.error("Export failed:", error);
+      alert("Failed to export data. Please check the console for details.");
     } finally {
       setIsGenerating(false);
     }
@@ -192,7 +199,7 @@ export default function ExportPage() {
                 ) : (
                   patients.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name} (P-{p.id.slice(0, 6)})
+                      {p.name} (P-{p.id.slice(0, 6)}) {p.domain ? `- ${p.domain}` : ""}
                     </option>
                   ))
                 )}
@@ -221,6 +228,7 @@ export default function ExportPage() {
                   name="domain"
                   checked={domainFilter === "all"}
                   onChange={() => setDomainFilter("all")}
+                  disabled={isGenerating}
                 />
                 All Domains
               </label>
@@ -231,6 +239,7 @@ export default function ExportPage() {
                   name="domain"
                   checked={domainFilter === "specific"}
                   onChange={() => setDomainFilter("specific")}
+                  disabled={isGenerating}
                 />
                 Specific Domain
               </label>
@@ -240,11 +249,13 @@ export default function ExportPage() {
                   className="p-2 border border-gray-300 rounded-lg bg-white text-gray-800"
                   value={specificDomain}
                   onChange={(e) => setSpecificDomain(e.target.value)}
+                  disabled={isGenerating}
                 >
                   <option>Physiotherapy</option>
+                  <option>Biomechanics</option>
                   <option>Physiology</option>
                   <option>Nutrition</option>
-                  <option>Biomechanics</option>
+                  <option>Psychology</option>
                 </select>
               )}
             </div>
@@ -254,17 +265,18 @@ export default function ExportPage() {
         {/* Format Selector */}
         <div className="mt-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Format
+            Export Format
           </label>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => setExportFormat("csv")}
+              disabled={isGenerating}
               className={`p-6 rounded-xl border transition ${
                 exportFormat === "csv"
                   ? "border-green-600 bg-green-50"
                   : "border-gray-200 bg-white hover:bg-gray-50"
-              }`}
+              } ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <div className="text-lg font-semibold text-gray-800">CSV</div>
               <div className="text-sm text-gray-500 mt-1">
@@ -274,18 +286,27 @@ export default function ExportPage() {
 
             <button
               onClick={() => setExportFormat("xlsx")}
+              disabled={isGenerating}
               className={`p-6 rounded-xl border transition ${
                 exportFormat === "xlsx"
                   ? "border-green-600 bg-green-50"
                   : "border-gray-200 bg-white hover:bg-gray-50"
-              }`}
+              } ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <div className="text-lg font-semibold text-gray-800">Excel</div>
               <div className="text-sm text-gray-500 mt-1">
-                (Exports as CSV - Open in Excel)
+                Excel-compatible CSV (UTF-8 BOM)
               </div>
             </button>
           </div>
+        </div>
+
+        {/* Info Message */}
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Note:</strong> The export will include all assessment data from the selected domains.
+            Data will be flattened with nested fields separated by underscores (e.g., registrationDetails_fullName).
+          </p>
         </div>
 
         {/* Download Button */}

@@ -38,7 +38,8 @@ export default function DashboardPage() {
   const handleEditEntry = (id: string, data: any) => {
     setEditingEntryId(id);
     setEditingEntryData(data);
-    setSelectedDomain("Physiotherapy");
+    // Show domain selection first so user can see statuses
+    setSelectedDomain(null);
     setActiveTab("add");
   };
 
@@ -72,6 +73,7 @@ export default function DashboardPage() {
             <DomainCard
               onBack={handleBackFromDomainSelect}
               onSelect={handleDomainSelect}
+              entryData={editingEntryData}
             />
           ) : selectedDomain === "Physiotherapy" ? (
             <PhysioFormTabs 

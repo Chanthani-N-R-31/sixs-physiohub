@@ -8,38 +8,47 @@ import {
   SunIcon,
   LightBulbIcon,
 } from "@heroicons/react/24/solid";
+import { getDomainStatuses, getStatusLabel, getStatusBadgeClass, DomainStatus } from "@/lib/domainStatus";
 
 interface DomainCardProps {
   onBack?: () => void;
   onSelect?: (domain: string) => void;
+  entryData?: any; // Entry data to determine statuses
 }
 
-export default function DomainCard({ onBack, onSelect }: DomainCardProps) {
+export default function DomainCard({ onBack, onSelect, entryData }: DomainCardProps) {
+  const domainStatuses = getDomainStatuses(entryData);
+  
   const domains = [
     {
       name: "Physiotherapy",
       color: "bg-green-600",
       icon: BeakerIcon,
+      status: domainStatuses.Physiotherapy,
     },
     {
       name: "Physiology",
       color: "bg-blue-600",
       icon: HeartIcon,
+      status: domainStatuses.Physiology,
     },
     {
       name: "Biomechanics",
       color: "bg-orange-500",
       icon: FireIcon,
+      status: domainStatuses.Biomechanics,
     },
     {
       name: "Nutrition",
       color: "bg-yellow-500",
       icon: SunIcon,
+      status: domainStatuses.Nutrition,
     },
     {
       name: "Psychology",
       color: "bg-purple-600",
       icon: LightBulbIcon,
+      status: domainStatuses.Psychology,
     },
   ];
 
@@ -65,8 +74,19 @@ export default function DomainCard({ onBack, onSelect }: DomainCardProps) {
           <button
             key={d.name}
             onClick={() => onSelect && onSelect(d.name)}
-            className="group bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-lg transition p-6 flex flex-col items-center justify-center cursor-pointer"
+            className="group bg-white border border-gray-100 rounded-2xl shadow-md hover:shadow-lg transition p-6 flex flex-col items-center justify-center cursor-pointer relative"
           >
+            {/* Status Badge */}
+            <div className="absolute top-3 right-3">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusBadgeClass(
+                  d.status
+                )}`}
+              >
+                {getStatusLabel(d.status)}
+              </span>
+            </div>
+
             <div
               className={`${d.color} w-16 h-16 rounded-xl flex items-center justify-center text-white shadow-md`}
             >
@@ -78,7 +98,11 @@ export default function DomainCard({ onBack, onSelect }: DomainCardProps) {
             </h3>
 
             <p className="text-sm text-gray-500 mt-1">
-              Tap to start assessment →
+              {d.status === "not_started"
+                ? "Tap to start assessment →"
+                : d.status === "in_progress"
+                ? "Continue assessment →"
+                : "View assessment →"}
             </p>
           </button>
         ))}
