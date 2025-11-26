@@ -106,14 +106,14 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId }: B
 
   const tabs = [
     { id: "metadata", label: "Metadata" },
+    { id: "strength", label: "Strength" },
+    { id: "powerTests", label: "Power Tests" },
     { id: "running", label: "Running" },
     { id: "spatiotemporal", label: "Spatiotemporal" },
     { id: "kinematic", label: "Kinematic" },
     { id: "impact", label: "Impact" },
     { id: "variability", label: "Variability" },
     { id: "loadCarriage", label: "Load Carriage" },
-    { id: "strength", label: "Strength" },
-    { id: "powerTests", label: "Power Tests" },
   ];
 
   return (
@@ -158,6 +158,18 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId }: B
             onSave={(data) => handleSave("metadata", data)}
           />
         )}
+        {activeTab === "strength" && (
+          <Strength
+            initialData={formData.strength}
+            onSave={(data) => handleSave("strength", data)}
+          />
+        )}
+        {activeTab === "powerTests" && (
+          <PowerTests
+            initialData={formData.powerTests}
+            onSave={(data) => handleSave("powerTests", data)}
+          />
+        )}
         {activeTab === "running" && (
           <Running
             initialData={formData.running}
@@ -192,18 +204,6 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId }: B
           <LoadCarriage
             initialData={formData.loadCarriage}
             onSave={(data) => handleSave("loadCarriage", data)}
-          />
-        )}
-        {activeTab === "strength" && (
-          <Strength
-            initialData={formData.strength}
-            onSave={(data) => handleSave("strength", data)}
-          />
-        )}
-        {activeTab === "powerTests" && (
-          <PowerTests
-            initialData={formData.powerTests}
-            onSave={(data) => handleSave("powerTests", data)}
           />
         )}
       </div>

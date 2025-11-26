@@ -7,47 +7,39 @@ interface StrengthProps {
   onSave?: (data: any) => void;
 }
 
+// Interfaces updated to match your specific table parameters
 interface IsokineticKnee {
   peakTorque?: number;
   power?: number;
-  reps?: number;
-  velocity?: number;
 }
 
 interface IsokineticAnkle {
   torque?: number;
   power?: number;
-  reps?: number;
-  velocity?: number;
 }
 
 interface NordicHamstring {
   peakForce?: number;
   avgForce?: number;
-  fatigueIndex?: number;
-  trials?: number;
+  fatigue?: number;
 }
 
 export default function Strength({ initialData, onSave }: StrengthProps) {
+  // --- Data Initialization ---
   const initializeIsokineticKnee = (data?: IsokineticKnee): IsokineticKnee => ({
     peakTorque: data?.peakTorque ?? undefined,
     power: data?.power ?? undefined,
-    reps: data?.reps ?? undefined,
-    velocity: data?.velocity ?? undefined,
   });
 
   const initializeIsokineticAnkle = (data?: IsokineticAnkle): IsokineticAnkle => ({
     torque: data?.torque ?? undefined,
     power: data?.power ?? undefined,
-    reps: data?.reps ?? undefined,
-    velocity: data?.velocity ?? undefined,
   });
 
   const initializeNordicHamstring = (data?: NordicHamstring): NordicHamstring => ({
     peakForce: data?.peakForce ?? undefined,
     avgForce: data?.avgForce ?? undefined,
-    fatigueIndex: data?.fatigueIndex ?? undefined,
-    trials: data?.trials ?? undefined,
+    fatigue: data?.fatigue ?? undefined,
   });
 
   const [form, setForm] = useState({
@@ -58,7 +50,6 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
   });
 
   const [isSaved, setIsSaved] = useState(false);
-  const [expandedTest, setExpandedTest] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -71,12 +62,12 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
     }
   }, [initialData]);
 
-  const updateTestField = useCallback((testKey: string, field: string, value: string) => {
+  const updateTestField = useCallback((category: string, field: string, value: string) => {
     const numValue = value === "" ? undefined : parseFloat(value);
     setForm((prev) => ({
       ...prev,
-      [testKey]: {
-        ...(prev[testKey as keyof typeof prev] as any),
+      [category]: {
+        ...(prev[category as keyof typeof prev] as any),
         [field]: numValue,
       },
     }));
@@ -91,270 +82,112 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
     }
   };
 
+  // --- Section Configuration ---
+  // Includes Protocol/Instrument details from your table
+  const sections = [
+    {
+      title: "Isokinetic Knee",
+      category: "isokineticKnee",
+      protocol: "Isokinetic dynamometer • 10 reps @60°/s",
+      rows: [
+        { key: "peakTorque", label: "Peak Torque", unit: "Nm" },
+        { key: "power", label: "Power", unit: "W" },
+      ],
+    },
+    {
+      title: "Isokinetic Ankle",
+      category: "isokineticAnkle",
+      protocol: "Isokinetic dynamometer • 10 reps @60°/s",
+      rows: [
+        { key: "torque", label: "Torque", unit: "Nm" },
+        { key: "power", label: "Power", unit: "W" },
+      ],
+    },
+    {
+      title: "Nordic Hamstring",
+      category: "nordicHamstring",
+      protocol: "Nordic bench + KINVENT • 2 Trials",
+      rows: [
+        { key: "peakForce", label: "Peak Force", unit: "N" },
+        { key: "avgForce", label: "Average Force", unit: "N" },
+        { key: "fatigue", label: "Fatigue", unit: "%" },
+      ],
+    },
+  ];
+
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Strength Tests – HumacROM</h3>
+      <div>
+        <h3 className="text-xl font-semibold text-gray-900">Strength Tests – HumacROM</h3>
+        <p className="text-gray-500 text-sm mt-1">
+          Measure maximal, explosive, and endurance strength across key joints.
+        </p>
+      </div>
 
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <div className="space-y-4">
-          {/* Isokinetic Knee */}
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setExpandedTest(expandedTest === "isokineticKnee" ? null : "isokineticKnee")}
-              className="w-full p-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between text-left"
-            >
-              <span className="font-medium text-gray-900">Isokinetic Knee — Peak torque / Power</span>
-              <span className="text-gray-600">{expandedTest === "isokineticKnee" ? "▼" : "▶"}</span>
-            </button>
+      <div className="space-y-6">
+        {sections.map((section) => (
+          <div key={section.category} className="bg-white p-5 rounded-xl border border-gray-200 shadow-md">
             
-            {expandedTest === "isokineticKnee" && (
-              <div className="p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Peak Torque</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter peak torque"
-                      value={form.isokineticKnee.peakTorque ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("isokineticKnee", "peakTorque", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Power</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter power"
-                      value={form.isokineticKnee.power ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("isokineticKnee", "power", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Reps</label>
-                    <input
-                      type="number"
-                      step="1"
-                      className="input-field"
-                      placeholder="Enter reps"
-                      value={form.isokineticKnee.reps ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*$/.test(val)) {
-                          updateTestField("isokineticKnee", "reps", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Velocity</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter velocity"
-                      value={form.isokineticKnee.velocity ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("isokineticKnee", "velocity", val);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
+            {/* Section Header with Protocol Info */}
+            <div className="mb-4 border-b border-gray-100 pb-3">
+              <div className="flex justify-between items-center">
+                <h4 className="text-lg font-semibold text-gray-800">{section.title}</h4>
+                <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                  {section.protocol}
+                </span>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Isokinetic Ankle */}
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setExpandedTest(expandedTest === "isokineticAnkle" ? null : "isokineticAnkle")}
-              className="w-full p-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between text-left"
-            >
-              <span className="font-medium text-gray-900">Isokinetic Ankle — Torque / Power</span>
-              <span className="text-gray-600">{expandedTest === "isokineticAnkle" ? "▼" : "▶"}</span>
-            </button>
-            
-            {expandedTest === "isokineticAnkle" && (
-              <div className="p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Torque</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter torque"
-                      value={form.isokineticAnkle.torque ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("isokineticAnkle", "torque", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Power</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter power"
-                      value={form.isokineticAnkle.power ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("isokineticAnkle", "power", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Reps</label>
-                    <input
-                      type="number"
-                      step="1"
-                      className="input-field"
-                      placeholder="Enter reps"
-                      value={form.isokineticAnkle.reps ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*$/.test(val)) {
-                          updateTestField("isokineticAnkle", "reps", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Velocity</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter velocity"
-                      value={form.isokineticAnkle.velocity ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("isokineticAnkle", "velocity", val);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+            {/* Input Table */}
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-gray-700 font-medium">
+                  <th className="py-2 w-1/2">Parameter</th>
+                  <th className="py-2 w-1/2">Values</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {section.rows.map((row) => {
+                  const categoryData = form[section.category as keyof typeof form] as any;
+                  const value = categoryData[row.key] ?? "";
 
-          {/* Nordic Hamstring */}
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setExpandedTest(expandedTest === "nordicHamstring" ? null : "nordicHamstring")}
-              className="w-full p-3 bg-gray-50 hover:bg-gray-100 flex items-center justify-between text-left"
-            >
-              <span className="font-medium text-gray-900">Nordic Hamstring — Force / Fatigue</span>
-              <span className="text-gray-600">{expandedTest === "nordicHamstring" ? "▼" : "▶"}</span>
-            </button>
-            
-            {expandedTest === "nordicHamstring" && (
-              <div className="p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Peak Force</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter peak force"
-                      value={form.nordicHamstring.peakForce ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("nordicHamstring", "peakForce", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Average Force</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter average force"
-                      value={form.nordicHamstring.avgForce ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("nordicHamstring", "avgForce", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Fatigue Index</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="input-field"
-                      placeholder="Enter fatigue index"
-                      value={form.nordicHamstring.fatigueIndex ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                          updateTestField("nordicHamstring", "fatigueIndex", val);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Trials</label>
-                    <input
-                      type="number"
-                      step="1"
-                      className="input-field"
-                      placeholder="Enter number of trials"
-                      value={form.nordicHamstring.trials ?? ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === "" || /^\d*$/.test(val)) {
-                          updateTestField("nordicHamstring", "trials", val);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+                  return (
+                    <tr key={`${section.category}-${row.key}`}>
+                      <td className="py-2 text-gray-900">
+                        {row.label}
+                        {row.unit && <span className="text-gray-400 text-xs ml-1">({row.unit})</span>}
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          step="0.1"
+                          className="input-field"
+                          placeholder={`Enter ${row.label.toLowerCase()}`}
+                          value={value}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === "" || /^\d*\.?\d*$/.test(val)) {
+                              updateTestField(section.category, row.key, val);
+                            }
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        </div>
+        ))}
       </div>
 
       {/* Assessment Findings */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+      <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-md">
         <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
         <textarea
           className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
           rows={4}
-          placeholder="Enter assessment findings"
+          placeholder="Enter detailed notes and findings..."
           value={form.assessmentFindings}
           onChange={(e) => {
             setForm((prev) => ({ ...prev, assessmentFindings: e.target.value }));

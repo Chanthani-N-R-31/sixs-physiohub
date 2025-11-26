@@ -9,10 +9,10 @@ interface LoadCarriageProps {
 
 export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps) {
   const rows = [
-    { key: "deltaSpeed", label: "Δ Speed (m/s)" },
-    { key: "deltaContactTime", label: "Δ Contact time (ms/%)" },
-    { key: "deltaTibialAcceleration", label: "Δ Tibial acceleration (g)" },
-    { key: "deltaTrunkSway", label: "Δ Trunk sway (°/g)" },
+    { key: "deltaSpeed", label: "Speed (m/s)" },
+    { key: "deltaContactTime", label: "Contact time (ms/%)" },
+    { key: "deltaTibialAcceleration", label: "Tibial acceleration (g)" },
+    { key: "deltaTrunkSway", label: "Trunk sway (°/g)" },
     { key: "loadEffectIndex", label: "Load Effect Index (%)" },
   ];
 
