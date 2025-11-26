@@ -16,9 +16,10 @@ interface PhysioFormTabsProps {
   onBack?: () => void;
   initialData?: any;
   entryId?: string | null;
+  onDataSaved?: (entryId: string, data: any) => void;
 }
 
-export default function PhysioFormTabs({ onBack, initialData, entryId }: PhysioFormTabsProps) {
+export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSaved }: PhysioFormTabsProps) {
   const [activeTab, setActiveTab] = useState("registration");
   const [saving, setSaving] = useState(false);
   const [patientId, setPatientId] = useState<string | null>(entryId || null);
@@ -70,6 +71,7 @@ export default function PhysioFormTabs({ onBack, initialData, entryId }: PhysioF
       const updatedData = { ...formData, [section]: data };
       setFormData(updatedData);
 
+      let finalEntryId = patientId;
       if (patientId) {
         await updateDoc(doc(db, "physioAssessments", patientId), {
           ...updatedData,
@@ -85,7 +87,13 @@ export default function PhysioFormTabs({ onBack, initialData, entryId }: PhysioF
           updatedBy: auth.currentUser.uid,
           status: "in_progress",
         });
+        finalEntryId = docRef.id;
         setPatientId(docRef.id);
+      }
+
+      // Notify parent component of the save
+      if (onDataSaved && finalEntryId) {
+        onDataSaved(finalEntryId, updatedData);
       }
     } catch (error) {
       console.error("Error saving:", error);

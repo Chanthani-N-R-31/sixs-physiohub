@@ -1,7 +1,7 @@
 // src/app/dashboard/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import OverviewPage from "./overview/page";
 import EntriesPage from "./entries/page";
 import DomainCard from "@/components/ui/DomainCard";
@@ -9,23 +9,61 @@ import ExportPage from "./export/ExportPage";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
 import { useDashboard } from "./layout";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function DashboardPage() {
   const { activeTab, setActiveTab } = useDashboard();
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editingEntryData, setEditingEntryData] = useState<any>(null);
+  const [domainEntryIds, setDomainEntryIds] = useState<Record<string, string>>({});
+  const [domainEntryData, setDomainEntryData] = useState<Record<string, any>>({});
+
+  // Reload entry data from Firebase for a specific domain
+  const reloadDomainData = useCallback(async (domain: string, entryId: string) => {
+    try {
+      let collectionName = "";
+      if (domain === "Physiotherapy") {
+        collectionName = "physioAssessments";
+      } else if (domain === "Biomechanics") {
+        collectionName = "biomechanicsAssessments";
+      } else {
+        return;
+      }
+
+      const docRef = doc(db, collectionName, entryId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setDomainEntryIds((prev) => ({ ...prev, [domain]: entryId }));
+        setDomainEntryData((prev) => ({ ...prev, [domain]: data }));
+        return data;
+      }
+    } catch (error) {
+      console.error("Error reloading domain data:", error);
+    }
+    return null;
+  }, []);
 
   const handleDomainSelect = (domain: string) => {
     setSelectedDomain(domain);
-    setEditingEntryId(null);
-    setEditingEntryData(null);
+
+    // Prefer domain-specific data if we've cached it, otherwise fall back to the last loaded entry data
+    const domainEntryId = domainEntryIds[domain] || (domain === "Physiotherapy" ? editingEntryId : null);
+    const domainData = domainEntryData[domain] || editingEntryData;
+
+    setEditingEntryId(domainEntryId || null);
+    setEditingEntryData(domainData || null);
   };
 
-  const handleBackFromForm = () => {
+  const handleBackFromForm = async () => {
+    // Reload data from Firebase before going back if we have an entryId
+    if (selectedDomain && editingEntryId) {
+      await reloadDomainData(selectedDomain, editingEntryId);
+    }
     setSelectedDomain(null);
-    setEditingEntryId(null);
-    setEditingEntryData(null);
+    // Keep editingEntryId and editingEntryData so DomainCard can show updated statuses
   };
 
   const handleBackFromDomainSelect = () => {
@@ -41,7 +79,21 @@ export default function DashboardPage() {
     // Show domain selection first so user can see statuses
     setSelectedDomain(null);
     setActiveTab("add");
+    // Since entries currently list physiotherapy assessments, seed the domain cache
+    setDomainEntryIds((prev) => ({ ...prev, Physiotherapy: id }));
+    setDomainEntryData((prev) => ({ ...prev, Physiotherapy: data }));
   };
+
+  // Handle data saved callback from form components
+  const handleDataSaved = useCallback((domain: string, entryId: string, data: any) => {
+    setEditingEntryId(entryId);
+    setEditingEntryData((prev: any) => {
+      // Merge with existing data to preserve other domains
+      return { ...prev, ...data };
+    });
+    setDomainEntryIds((prev) => ({ ...prev, [domain]: entryId }));
+    setDomainEntryData((prev) => ({ ...prev, [domain]: data }));
+  }, []);
 
   const handleViewEntry = (data: any) => {
     // For now, just show an alert with key information
@@ -73,19 +125,40 @@ export default function DashboardPage() {
             <DomainCard
               onBack={handleBackFromDomainSelect}
               onSelect={handleDomainSelect}
-              entryData={editingEntryData}
+              entryData={(() => {
+                // Merge all domain data into a flat structure
+                // domainEntryData is Record<string, any> where keys are domain names
+                // We need to flatten it so entryData has direct access to fields like registrationDetails, metadata, etc.
+                const merged: any = {};
+                
+                // First, merge data from all stored domains (most up-to-date)
+                Object.values(domainEntryData).forEach((domainData: any) => {
+                  if (domainData) {
+                    Object.assign(merged, domainData);
+                  }
+                });
+                
+                // Then merge with editingEntryData (current session data)
+                if (editingEntryData) {
+                  Object.assign(merged, editingEntryData);
+                }
+                
+                return merged;
+              })()}
             />
           ) : selectedDomain === "Physiotherapy" ? (
             <PhysioFormTabs 
               onBack={handleBackFromForm}
               initialData={editingEntryData}
               entryId={editingEntryId}
+              onDataSaved={(entryId, data) => handleDataSaved("Physiotherapy", entryId, data)}
             />
           ) : selectedDomain === "Biomechanics" ? (
             <BiomechanicsFormTabs
               onBack={handleBackFromForm}
               initialData={editingEntryData}
               entryId={editingEntryId}
+              onDataSaved={(entryId, data) => handleDataSaved("Biomechanics", entryId, data)}
             />
           ) : (
             <div>

@@ -20,9 +20,10 @@ interface BiomechanicsFormTabsProps {
   onBack?: () => void;
   initialData?: any;
   entryId?: string | null;
+  onDataSaved?: (entryId: string, data: any) => void;
 }
 
-export default function BiomechanicsFormTabs({ onBack, initialData, entryId }: BiomechanicsFormTabsProps) {
+export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onDataSaved }: BiomechanicsFormTabsProps) {
   const [activeTab, setActiveTab] = useState("metadata");
   const [saving, setSaving] = useState(false);
   const [entryIdState, setEntryIdState] = useState<string | null>(entryId || null);
@@ -96,6 +97,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId }: B
       });
 
       // 4. Save to Firestore
+      let finalEntryId = entryIdState;
       if (entryIdState) {
         // UPDATE Existing
         const docRef = doc(db, "biomechanicsAssessments", entryIdState);
@@ -112,8 +114,14 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId }: B
         };
         
         const docRef = await addDoc(collection(db, "biomechanicsAssessments"), newDocPayload);
+        finalEntryId = docRef.id;
         setEntryIdState(docRef.id);
         console.log("Created new document:", docRef.id);
+      }
+
+      // 5. Notify parent component of the save
+      if (onDataSaved && finalEntryId) {
+        onDataSaved(finalEntryId, updatedFormData);
       }
 
     } catch (error: any) {
