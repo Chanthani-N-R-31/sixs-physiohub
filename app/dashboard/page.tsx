@@ -1,15 +1,26 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import OverviewPage from "./overview/page";
 import EntriesPage from "./entries/page";
 import DomainCard from "@/components/ui/DomainCard";
 import ExportPage from "./export/ExportPage";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
+import PhysiologyForm from "@/components/forms/physiology/PhysiologyForm";
+import NutritionForm from "@/components/forms/nutrition/NutritionForm";
+import PsychologyForm from "@/components/forms/psychology/PsychologyForm";
 import { useDashboard } from "./layout";
 import { db, auth } from "@/lib/firebase"; // Ensure auth is imported
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+
+const DOMAIN_COLLECTION_MAP: Record<string, string> = {
+  Physiotherapy: "physioAssessments",
+  Physiology: "physioAssessments",
+  Nutrition: "physioAssessments",
+  Psychology: "physioAssessments",
+  Biomechanics: "biomechanicsAssessments",
+};
 
 export default function DashboardPage() {
   const { activeTab, setActiveTab } = useDashboard();
@@ -68,14 +79,10 @@ export default function DashboardPage() {
     }
   };
 
-  // Reload entry data from Firebase for a specific domain
   const reloadDomainData = useCallback(async (domain: string, entryId: string) => {
     try {
-      let collectionName = "";
-      // Logic to choose collection based on domain
-      if (domain === "Physiotherapy") collectionName = "physioAssessments";
-      else if (domain === "Biomechanics") collectionName = "biomechanicsAssessments";
-      else return null;
+      const collectionName = DOMAIN_COLLECTION_MAP[domain];
+      if (!collectionName) return null;
 
       const docRef = doc(db, collectionName, entryId);
       const docSnap = await getDoc(docRef);
@@ -88,6 +95,24 @@ export default function DashboardPage() {
     }
     return null;
   }, []);
+
+  const hydrateAllDomainData = useCallback(async (entryId: string) => {
+    const supportedDomains = Object.keys(DOMAIN_COLLECTION_MAP);
+    
+    const domainPayloads = await Promise.all(
+      supportedDomains.map(async (domain) => {
+        const data = await reloadDomainData(domain, entryId);
+        return data;
+      })
+    );
+
+    return domainPayloads.reduce((acc, data) => {
+      if (data) {
+        return { ...acc, ...data };
+      }
+      return acc;
+    }, {} as Record<string, unknown>);
+  }, [reloadDomainData]);
 
   const handleDomainSelect = async (domain: string) => {
     setSelectedDomain(domain);
@@ -124,6 +149,28 @@ export default function DashboardPage() {
     setSelectedDomain(null);
     setActiveTab("add");
   };
+
+  useEffect(() => {
+    if (!editingEntryId) return;
+
+    let isCancelled = false;
+
+    const preloadDomainData = async () => {
+      const mergedData = await hydrateAllDomainData(editingEntryId);
+      if (isCancelled || !mergedData) return;
+
+      setEditingEntryData((prev: any) => ({
+        ...(prev || {}),
+        ...mergedData,
+      }));
+    };
+
+    preloadDomainData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [editingEntryId, hydrateAllDomainData]);
 
   // Handle data saved callback from form components
   const handleDataSaved = useCallback((domain: string, entryId: string, data: any) => {
@@ -197,8 +244,38 @@ export default function DashboardPage() {
                 />
               )}
 
+              {selectedDomain === "Physiology" && (
+                <PhysiologyForm
+                  key={`physiology-${editingEntryId}`}
+                  onBack={handleBackFromForm}
+                  initialData={editingEntryData}
+                  entryId={editingEntryId}
+                  onDataSaved={(id, data) => handleDataSaved("Physiology", id, data)}
+                />
+              )}
+
+              {selectedDomain === "Nutrition" && (
+                <NutritionForm
+                  key={`nutrition-${editingEntryId}`}
+                  onBack={handleBackFromForm}
+                  initialData={editingEntryData}
+                  entryId={editingEntryId}
+                  onDataSaved={(id, data) => handleDataSaved("Nutrition", id, data)}
+                />
+              )}
+
+              {selectedDomain === "Psychology" && (
+                <PsychologyForm
+                  key={`psychology-${editingEntryId}`}
+                  onBack={handleBackFromForm}
+                  initialData={editingEntryData}
+                  entryId={editingEntryId}
+                  onDataSaved={(id, data) => handleDataSaved("Psychology", id, data)}
+                />
+              )}
+
               {/* Placeholder for other domains */}
-              {!["Physiotherapy", "Biomechanics"].includes(selectedDomain) && (
+              {!["Physiotherapy", "Biomechanics", "Physiology", "Nutrition", "Psychology"].includes(selectedDomain) && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold text-gray-900">
