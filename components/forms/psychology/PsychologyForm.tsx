@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase";
+import { calculateDomainStatus, getDomainStatuses, calculateGlobalStatus } from "@/lib/domainStatus";
 
 interface PsychologyFormProps {
   onBack?: () => void;
@@ -86,8 +87,40 @@ export default function PsychologyForm({
     setSaving(true);
     try {
       const docRef = doc(db, "physioAssessments", entryId);
+
+      let existingData: any = null;
+      try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) existingData = docSnap.data();
+      } catch (err) {
+        console.warn("Could not fetch existing document:", err);
+      }
+
+      const allDomainData = existingData
+        ? { ...existingData, psychology: formValues }
+        : { psychology: formValues };
+
+      const domainStatus = calculateDomainStatus("Psychology", allDomainData);
+
+      const existingDomainStatuses = existingData?.domainStatuses;
+      let updatedDomainStatuses: any;
+
+      if (existingDomainStatuses) {
+        updatedDomainStatuses = {
+          ...existingDomainStatuses,
+          Psychology: domainStatus,
+        };
+      } else {
+        updatedDomainStatuses = getDomainStatuses(allDomainData);
+        updatedDomainStatuses.Psychology = domainStatus;
+      }
+
+      const patientStatus = calculateGlobalStatus(updatedDomainStatuses);
+
       await updateDoc(docRef, {
         psychology: formValues,
+        domainStatuses: updatedDomainStatuses,
+        status: patientStatus,
         updatedAt: serverTimestamp(),
         updatedBy: auth.currentUser.uid,
       });
@@ -126,6 +159,7 @@ export default function PsychologyForm({
 
       <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Operational Tasks</h3>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-xs uppercase text-gray-500 border-b">
@@ -136,16 +170,22 @@ export default function PsychologyForm({
                 <th className="py-3 text-left font-medium">Enter value</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-100">
               {PARAMETER_CONFIG.map((param) => (
                 <tr key={param.id}>
                   <td className="py-4 font-medium text-gray-900">{param.label}</td>
                   <td className="py-4 text-gray-500">{param.unit || "—"}</td>
                   <td className="py-4 text-gray-500">{param.trials ?? "—"}</td>
+
                   <td className="py-4">
                     <input
                       type="text"
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-green-500 focus:ring-green-500"
+                      className="
+                        w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+                        text-gray-900 placeholder-gray-400 bg-white
+                        focus:border-green-500 focus:ring-green-500
+                      "
                       value={formValues[param.id] || ""}
                       onChange={(e) => handleChange(param.id, e.target.value)}
                       placeholder={param.placeholder}
@@ -166,6 +206,7 @@ export default function PsychologyForm({
               Cancel
             </button>
           )}
+
           <button
             onClick={handleSave}
             disabled={saving}
@@ -178,4 +219,3 @@ export default function PsychologyForm({
     </div>
   );
 }
-

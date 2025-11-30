@@ -206,7 +206,13 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
       <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Recent Entries</h3>
-          <span className="text-sm text-gray-500">Showing latest 5</span>
+          <span className="text-sm text-gray-500">
+            {loading 
+              ? "Loading..." 
+              : entries.length > 0 
+                ? `Showing ${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}` 
+                : "No entries"}
+          </span>
         </div>
 
         <div className="overflow-x-auto -mx-6 px-6">

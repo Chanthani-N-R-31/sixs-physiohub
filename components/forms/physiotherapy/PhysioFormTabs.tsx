@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, updateDoc, doc, serverTimestamp, getDoc } from "firebase/firestore";
 import { auth } from "@/lib/firebase";
+import { calculateDomainStatus, getDomainStatuses, calculateGlobalStatus } from "@/lib/domainStatus";
 
 import RegistrationDetails from "./RegistrationDetails";
 import InjuryHistory from "./InjuryHistory";
@@ -72,20 +73,64 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
       setFormData(updatedData);
 
       let finalEntryId = patientId;
+      
+      // Get existing document to merge all domain data
+      let existingData: any = null;
       if (patientId) {
+        try {
+          const docSnap = await getDoc(doc(db, "physioAssessments", patientId));
+          if (docSnap.exists()) {
+            existingData = docSnap.data();
+          }
+        } catch (err) {
+          console.warn("Could not fetch existing document:", err);
+        }
+      }
+      
+      // Merge updated Physiotherapy data with existing data (including other domains)
+      const allDomainData = existingData 
+        ? { ...existingData, ...updatedData }
+        : { ...updatedData };
+      
+      // Calculate Physiotherapy domain status
+      const domainStatus = calculateDomainStatus("Physiotherapy", allDomainData);
+      
+      // Get existing domain statuses or calculate from all data
+      const existingDomainStatuses = existingData?.domainStatuses;
+      let updatedDomainStatuses: any;
+      
+      if (existingDomainStatuses) {
+        updatedDomainStatuses = {
+          ...existingDomainStatuses,
+          Physiotherapy: domainStatus
+        };
+      } else {
+        updatedDomainStatuses = getDomainStatuses(allDomainData);
+        updatedDomainStatuses.Physiotherapy = domainStatus;
+      }
+      
+      // Calculate overall patient status
+      const patientStatus = calculateGlobalStatus(updatedDomainStatuses);
+      
+      if (patientId) {
+        // Update existing document
         await updateDoc(doc(db, "physioAssessments", patientId), {
           ...updatedData,
+          domainStatuses: updatedDomainStatuses,
+          status: patientStatus,
           updatedAt: serverTimestamp(),
           updatedBy: auth.currentUser.uid,
         });
       } else {
+        // Create new document
         const docRef = await addDoc(collection(db, "physioAssessments"), {
           ...updatedData,
+          domainStatuses: updatedDomainStatuses,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           createdBy: auth.currentUser.uid,
           updatedBy: auth.currentUser.uid,
-          status: "in_progress",
+          status: patientStatus,
         });
         finalEntryId = docRef.id;
         setPatientId(docRef.id);

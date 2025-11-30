@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase";
+import { calculateDomainStatus, getDomainStatuses, calculateGlobalStatus } from "@/lib/domainStatus";
 
 interface NutritionFormProps {
   onBack?: () => void;
@@ -62,10 +63,13 @@ export default function NutritionForm({
 
   useEffect(() => {
     const sourceData = initialData?.nutrition || initialData || {};
-    const mappedValues = PARAMETER_CONFIG.reduce<Record<string, string>>((acc, param) => {
-      acc[param.id] = sourceData?.[param.id] ?? "";
-      return acc;
-    }, {});
+    const mappedValues = PARAMETER_CONFIG.reduce<Record<string, string>>(
+      (acc, param) => {
+        acc[param.id] = sourceData?.[param.id] ?? "";
+        return acc;
+      },
+      {}
+    );
     setFormValues(mappedValues);
   }, [initialData]);
 
@@ -87,8 +91,48 @@ export default function NutritionForm({
     setSaving(true);
     try {
       const docRef = doc(db, "physioAssessments", entryId);
+      
+      // Get existing document to merge all domain data
+      let existingData: any = null;
+      try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          existingData = docSnap.data();
+        }
+      } catch (err) {
+        console.warn("Could not fetch existing document:", err);
+      }
+      
+      // Merge updated data with existing data
+      const allDomainData = existingData 
+        ? { ...existingData, nutrition: formValues }
+        : { nutrition: formValues };
+      
+      // Calculate domain status
+      const domainStatus = calculateDomainStatus("Nutrition", allDomainData);
+      
+      // Get existing domain statuses or calculate from all data
+      const existingDomainStatuses = existingData?.domainStatuses;
+      let updatedDomainStatuses: any;
+      
+      if (existingDomainStatuses) {
+        updatedDomainStatuses = {
+          ...existingDomainStatuses,
+          Nutrition: domainStatus
+        };
+      } else {
+        updatedDomainStatuses = getDomainStatuses(allDomainData);
+        updatedDomainStatuses.Nutrition = domainStatus;
+      }
+      
+      // Calculate overall patient status
+      const patientStatus = calculateGlobalStatus(updatedDomainStatuses);
+      
+      // Update Firestore with data, domain statuses, and patient status
       await updateDoc(docRef, {
         nutrition: formValues,
+        domainStatuses: updatedDomainStatuses,
+        status: patientStatus,
         updatedAt: serverTimestamp(),
         updatedBy: auth.currentUser.uid,
       });
@@ -144,7 +188,7 @@ export default function NutritionForm({
                   <td className="py-4">
                     <input
                       type="text"
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-green-500 focus:ring-green-500"
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 bg-white focus:border-green-500 focus:ring-green-500"
                       value={formValues[param.id] || ""}
                       onChange={(e) => handleChange(param.id, e.target.value)}
                       placeholder={param.placeholder}
@@ -177,4 +221,3 @@ export default function NutritionForm({
     </div>
   );
 }
-

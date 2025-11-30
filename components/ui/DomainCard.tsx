@@ -98,7 +98,7 @@ export default function DomainCard({ onBack, onSelect, entryData }: DomainCardPr
             </h3>
 
             <p className="text-sm text-gray-500 mt-1">
-              {d.status === "not_started"
+              {d.status === "pending"
                 ? "Tap to start assessment →"
                 : d.status === "in_progress"
                 ? "Continue assessment →"

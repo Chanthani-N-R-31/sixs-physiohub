@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, updateDoc, doc, serverTimestamp, getDoc, setDoc } from "firebase/firestore";
 import { auth } from "@/lib/firebase";
+import { calculateDomainStatus, getDomainStatuses, calculateGlobalStatus } from "@/lib/domainStatus";
 
 // Import your sections
 import Metadata from "@/app/dashboard/add/biomechanics/sections/Metadata";
@@ -96,16 +97,15 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
         updatedBy: auth.currentUser.uid,
       });
 
-      // 4. Save to Firestore
+      // 4. Save to Biomechanics Collection
       let finalEntryId = entryIdState;
       if (entryIdState) {
         // UPDATE Existing
         const docRef = doc(db, "biomechanicsAssessments", entryIdState);
-        // We use setDoc with merge: true because it's safer if the doc somehow doesn't exist
         await setDoc(docRef, dataToSave, { merge: true });
-        console.log("Updated document:", entryIdState);
+        console.log("Updated biomechanics document:", entryIdState);
       } else {
-        // CREATE New
+        // CREATE New (this shouldn't happen in normal flow, but handle it)
         const newDocPayload = {
           ...dataToSave,
           createdAt: serverTimestamp(),
@@ -116,16 +116,73 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
         const docRef = await addDoc(collection(db, "biomechanicsAssessments"), newDocPayload);
         finalEntryId = docRef.id;
         setEntryIdState(docRef.id);
-        console.log("Created new document:", docRef.id);
+        console.log("Created new biomechanics document:", docRef.id);
       }
 
-      // 5. Notify parent component of the save
+      // 5. Update domain statuses in main physioAssessments document
+      // The entryIdState should be the same as the main patient document ID
+      if (entryIdState) {
+        try {
+          const physioDocRef = doc(db, "physioAssessments", entryIdState);
+          
+          // Get existing physioAssessments document
+          let existingPhysioData: any = null;
+          try {
+            const physioDocSnap = await getDoc(physioDocRef);
+            if (physioDocSnap.exists()) {
+              existingPhysioData = physioDocSnap.data();
+            }
+          } catch (err) {
+            console.warn("Could not fetch physioAssessments document:", err);
+          }
+          
+          // Calculate Biomechanics domain status from biomechanics data directly
+          // Biomechanics schema expects fields at root level (metadata, running, etc.)
+          const biomechanicsData = updatedFormData;
+          const domainStatus = calculateDomainStatus("Biomechanics", biomechanicsData);
+          
+          // For calculating other domain statuses, we need the physioAssessments data
+          // Merge biomechanics fields into the physio data for complete picture
+          const allDomainData = existingPhysioData 
+            ? { ...existingPhysioData, ...updatedFormData }
+            : { ...updatedFormData };
+          
+          // Get existing domain statuses or calculate from all data
+          const existingDomainStatuses = existingPhysioData?.domainStatuses;
+          let updatedDomainStatuses: any;
+          
+          if (existingDomainStatuses) {
+            updatedDomainStatuses = {
+              ...existingDomainStatuses,
+              Biomechanics: domainStatus
+            };
+          } else {
+            updatedDomainStatuses = getDomainStatuses(allDomainData);
+            updatedDomainStatuses.Biomechanics = domainStatus;
+          }
+          
+          // Calculate overall patient status
+          const patientStatus = calculateGlobalStatus(updatedDomainStatuses);
+          
+          // Update physioAssessments document with domain statuses
+          await updateDoc(physioDocRef, {
+            domainStatuses: updatedDomainStatuses,
+            status: patientStatus,
+            updatedAt: serverTimestamp(),
+          });
+        } catch (error: any) {
+          console.warn("Could not update physioAssessments domain statuses:", error);
+          // Don't fail the save if this fails - biomechanics data is already saved
+        }
+      }
+
+      // 6. Notify parent component of the save
       if (onDataSaved && finalEntryId) {
         onDataSaved(finalEntryId, updatedFormData);
       }
 
     } catch (error: any) {
-      // 5. Detailed Error Logging
+      // Detailed Error Logging
       console.error("FIREBASE SAVE ERROR:", error);
       console.error("Error Code:", error.code);
       console.error("Error Message:", error.message);

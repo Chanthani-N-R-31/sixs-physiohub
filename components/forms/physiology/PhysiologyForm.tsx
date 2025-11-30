@@ -120,6 +120,7 @@ export default function PhysiologyForm({
             Capture IMU configuration details before running physiology trials.
           </p>
         </div>
+
         {onBack && (
           <button
             onClick={onBack}
@@ -132,6 +133,7 @@ export default function PhysiologyForm({
 
       <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">IMU Setup</h3>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-xs uppercase text-gray-500 border-b">
@@ -141,15 +143,21 @@ export default function PhysiologyForm({
                 <th className="py-3 text-left font-medium">Enter value</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-100">
               {PARAMETER_CONFIG.map((param) => (
                 <tr key={param.id}>
                   <td className="py-4 font-medium text-gray-900">{param.label}</td>
                   <td className="py-4 text-gray-500">{param.unit || "—"}</td>
+
                   <td className="py-4">
                     {param.multiline ? (
                       <textarea
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-green-500 focus:ring-green-500"
+                        className="
+                          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
+                          text-gray-900 placeholder-gray-400 bg-white
+                          focus:border-green-500 focus:ring-green-500
+                        "
                         rows={2}
                         value={formValues[param.id] || ""}
                         onChange={(e) => handleChange(param.id, e.target.value)}
@@ -158,7 +166,11 @@ export default function PhysiologyForm({
                     ) : (
                       <input
                         type="text"
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-green-500 focus:ring-green-500"
+                        className="
+                          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
+                          text-gray-900 placeholder-gray-400 bg-white
+                          focus:border-green-500 focus:ring-green-500
+                        "
                         value={formValues[param.id] || ""}
                         onChange={(e) => handleChange(param.id, e.target.value)}
                         placeholder={param.placeholder}
@@ -180,6 +192,7 @@ export default function PhysiologyForm({
               Cancel
             </button>
           )}
+
           <button
             onClick={handleSave}
             disabled={saving}
@@ -192,4 +205,3 @@ export default function PhysiologyForm({
     </div>
   );
 }
-
