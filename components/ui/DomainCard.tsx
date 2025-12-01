@@ -83,34 +83,9 @@ export default function DomainCard({
 
       {/* Domain Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-<<<<<<< Updated upstream
-        {domains.map((d) => (
-          <button
-            key={d.name}
-            onClick={() => onSelect && onSelect(d.name)}
-            className="group bg-white/10 backdrop-blur-md border border-white/30 rounded-2xl shadow-2xl hover:shadow-xl hover:bg-white/15 transition-all p-6 flex flex-col items-center justify-center cursor-pointer relative"
-          >
-            {/* Status Badge */}
-            <div className="absolute top-3 right-3">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-bold border backdrop-blur-sm ${
-                  d.status === "completed"
-                    ? "bg-green-500/80 text-white border-green-500/50"
-                    : d.status === "in_progress"
-                    ? "bg-yellow-500/80 text-white border-yellow-500/50"
-                    : "bg-white/20 text-white/80 border-white/30"
-                }`}
-              >
-                {getStatusLabel(d.status)}
-              </span>
-            </div>
-
-            <div
-              className={`${d.color} backdrop-blur-sm w-16 h-16 rounded-xl flex items-center justify-center text-white shadow-lg border border-white/30`}
-=======
         {domains.map((d) => {
           const isDisabled = d.isLocked;
-          
+
           return (
             <button
               key={d.name}
@@ -127,7 +102,6 @@ export default function DomainCard({
                   ? "border-gray-200 opacity-50 cursor-not-allowed"
                   : "border-gray-100 hover:shadow-lg cursor-pointer"
               }`}
->>>>>>> Stashed changes
             >
               {/* Lock Badge */}
               {isDisabled && (
@@ -148,21 +122,6 @@ export default function DomainCard({
                 </div>
               )}
 
-<<<<<<< Updated upstream
-            <h3 className="mt-4 text-lg font-bold text-white">
-              {d.name}
-            </h3>
-
-            <p className="text-sm text-white/70 mt-1 font-medium">
-              {d.status === "pending"
-                ? "Tap to start assessment →"
-                : d.status === "in_progress"
-                ? "Continue assessment →"
-                : "View assessment →"}
-            </p>
-          </button>
-        ))}
-=======
               {/* Status Badge */}
               <div className="absolute top-3 right-3">
                 <span
@@ -198,7 +157,6 @@ export default function DomainCard({
             </button>
           );
         })}
->>>>>>> Stashed changes
       </div>
     </div>
   );
