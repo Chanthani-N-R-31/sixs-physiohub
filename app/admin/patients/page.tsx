@@ -6,6 +6,7 @@ import { db, auth } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore";
 import { logActivity } from "@/lib/auditLogger";
 import DomainCard from "@/components/ui/DomainCard";
+import GlassCard from "@/components/ui/GlassCard";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
 import PhysiologyForm from "@/components/forms/physiology/PhysiologyForm";
@@ -277,7 +278,7 @@ export default function MasterIndividualIndex() {
         {/* Back button */}
         <button
           onClick={handleBackFromEdit}
-          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
+          className="flex items-center gap-2 text-white/80 hover:text-white font-bold mb-4 transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
           <span>Back to Individual Index</span>
@@ -349,99 +350,101 @@ export default function MasterIndividualIndex() {
 
   // Normal list view
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Master Individual Index (MII)</h2>
-        <p className="text-slate-500">Global search across all physiotherapy domains and users.</p>
+        <h2 className="text-3xl font-bold text-white">Master Individual Index (MII)</h2>
+        <p className="text-white/70 mt-1 font-medium">Global search across all physiotherapy domains and users.</p>
       </div>
 
       {/* Search & Filter Toolbar */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/70" />
           <input 
             type="text" 
             placeholder="Search by Individual Name, ID, or Army Number..." 
-            className="w-full pl-10 p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-green-500 outline-none shadow-sm"
+            className="w-full pl-10 p-3 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-3 border border-slate-300 rounded-lg bg-white text-slate-700 hover:bg-slate-50 shadow-sm">
+        <button className="flex items-center gap-2 px-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-lg text-white font-bold hover:bg-white/20 transition-all shadow-lg">
           <FunnelIcon className="w-5 h-5" />
           Filters
         </button>
       </div>
 
       {/* Data Table */}
-      <div className="bg-white shadow-sm rounded-xl border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-            <tr>
-              <th className="p-4">Individual ID</th>
-              <th className="p-4">Name</th>
-              <th className="p-4">Unit / Rank</th>
-              <th className="p-4">Physio</th>
-              <th className="p-4">Last Activity</th>
-              <th className="p-4">Status</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {loading ? (
+      <GlassCard className="overflow-hidden p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-white/10 backdrop-blur-sm border-b border-white/20">
               <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-500">Loading individuals...</td>
+                <th className="p-4 text-white/70 font-bold">Individual ID</th>
+                <th className="p-4 text-white/70 font-bold">Name</th>
+                <th className="p-4 text-white/70 font-bold">Unit / Rank</th>
+                <th className="p-4 text-white/70 font-bold">Physio</th>
+                <th className="p-4 text-white/70 font-bold">Last Activity</th>
+                <th className="p-4 text-white/70 font-bold">Status</th>
+                <th className="p-4 text-white/70 font-bold">Actions</th>
               </tr>
-            ) : filteredIndividuals.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="p-8 text-center text-slate-500">No individuals found.</td>
-              </tr>
-            ) : (
-              filteredIndividuals.map((ind) => (
-                <tr key={ind.fullId} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-4 font-mono text-green-600 font-medium">{ind.id}</td>
-                  <td className="p-4 font-medium text-slate-900">{ind.name}</td>
-                  <td className="p-4 text-slate-600">{ind.rank} / {ind.unit}</td>
-                  <td className="p-4 text-slate-600">{ind.physio}</td>
-                  <td className="p-4 text-slate-500">{ind.lastActivity}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded text-xs font-medium border ${
-                      ind.status === "Completed" 
-                        ? "bg-green-100 text-green-700 border-green-200"
-                        : ind.status === "In Progress"
-                        ? "bg-yellow-100 text-yellow-700 border-yellow-200"
-                        : "bg-gray-100 text-gray-700 border-gray-200"
-                    }`}>
-                      {ind.status}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      <button 
-                        title="Edit"
-                        onClick={() => handleEdit(ind)}
-                        className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
-                      >
-                        <PencilIcon className="w-4 h-4" />
-                      </button>
-                      <button 
-                        title="Delete"
-                        onClick={() => handleDelete(ind)}
-                        className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors"
-                      >
-                        <TrashIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+            </thead>
+            <tbody className="divide-y divide-white/20">
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-white/70">Loading individuals...</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : filteredIndividuals.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-white/70">No individuals found.</td>
+                </tr>
+              ) : (
+                filteredIndividuals.map((ind) => (
+                  <tr key={ind.fullId} className="hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-mono text-green-300 font-medium">{ind.id}</td>
+                    <td className="p-4 font-bold text-white">{ind.name}</td>
+                    <td className="p-4 text-white">{ind.rank} / {ind.unit}</td>
+                    <td className="p-4 text-white/80">{ind.physio}</td>
+                    <td className="p-4 text-white/70">{ind.lastActivity}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-bold border backdrop-blur-sm ${
+                        ind.status === "Completed" 
+                          ? "bg-green-500/80 text-white border-green-500/50"
+                          : ind.status === "In Progress"
+                          ? "bg-yellow-500/80 text-white border-yellow-500/50"
+                          : "bg-white/20 text-white/80 border-white/30"
+                      }`}>
+                        {ind.status}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        <button 
+                          title="Edit"
+                          onClick={() => handleEdit(ind)}
+                          className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                        >
+                          <PencilIcon className="w-4 h-4" />
+                        </button>
+                        <button 
+                          title="Delete"
+                          onClick={() => handleDelete(ind)}
+                          className="p-2 rounded-md text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-colors"
+                        >
+                          <TrashIcon className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </GlassCard>
       
       {/* Pagination Placeholder */}
-      <div className="flex justify-center text-sm text-slate-500">
+      <div className="flex justify-center text-sm text-white/70 font-medium">
         Showing {filteredIndividuals.length} of {individuals.length} records
       </div>
     </div>

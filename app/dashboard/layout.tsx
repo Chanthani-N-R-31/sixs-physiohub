@@ -52,13 +52,25 @@ export default function DashboardLayout({
   return (
     <DashboardContext.Provider value={{ activeTab, setActiveTab }}>
       <div
-        className={`${inter.className} flex min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 overflow-hidden`}
+        className={`${inter.className} flex min-h-screen relative overflow-hidden`}
+        style={{
+          backgroundImage: 'url(/new4.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
       >
+        {/* Overlay for better readability */}
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
+        
         {/* Sidebar */}
-        <Sidebar />
+        <div className="relative z-10">
+          <Sidebar />
+        </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative z-10">
           {/* Top Navigation Bar */}
           <Topbar />
 

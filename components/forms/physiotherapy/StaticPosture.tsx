@@ -114,7 +114,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">
+      <h3 className="text-xl font-bold text-white">
         Static Posture Assessment
       </h3>
 

@@ -216,7 +216,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-gray-900">Demographics</h3>
+        <h3 className="text-xl font-bold text-white">Demographics</h3>
         {isSaved && (
           <span className="text-green-600 text-sm flex items-center">
             ✓ Saved successfully

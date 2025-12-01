@@ -118,8 +118,8 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xl font-semibold text-gray-900">Strength Tests – HumacROM</h3>
-        <p className="text-gray-500 text-sm mt-1">
+        <h3 className="text-xl font-bold text-white">Strength Tests – HumacROM</h3>
+        <p className="text-white/70 text-sm mt-1 font-medium">
           Measure maximal, explosive, and endurance strength across key joints.
         </p>
       </div>

@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from "firebase/firestore";
+import GlassCard from "@/components/ui/GlassCard";
 
 interface Entry {
   id: string;
@@ -171,42 +172,42 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
         {/* Card 1: Total Patients (Static 50) */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Total Individuals</div>
-          <div className="mt-2 text-2xl font-bold text-gray-900">{totalPatients}</div>
-        </div>
+        <GlassCard>
+          <div className="text-xs font-bold text-white/70">Total Individuals</div>
+          <div className="mt-2 text-2xl font-bold text-white">{totalPatients}</div>
+        </GlassCard>
 
         {/* Card 2: Entries Completed */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Entries Completed</div>
-          <div className="mt-2 text-2xl font-bold text-green-600">
+        <GlassCard>
+          <div className="text-xs font-bold text-white/70">Entries Completed</div>
+          <div className="mt-2 text-2xl font-bold text-green-300">
             {loading ? "..." : completedCount}
           </div>
-        </div>
+        </GlassCard>
 
         {/* Card 3: Pending */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Pending</div>
-          <div className="mt-2 text-2xl font-bold text-orange-600">
+        <GlassCard>
+          <div className="text-xs font-bold text-white/70">Pending</div>
+          <div className="mt-2 text-2xl font-bold text-yellow-300">
             {loading ? "..." : pendingCount}
           </div>
-        </div>
+        </GlassCard>
 
         {/* Card 4: Assessments Today */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Assessments Today</div>
-          <div className="mt-2 text-2xl font-bold text-blue-600">
+        <GlassCard>
+          <div className="text-xs font-bold text-white/70">Assessments Today</div>
+          <div className="mt-2 text-2xl font-bold text-blue-300">
             {loading ? "..." : assessmentsToday}
           </div>
-        </div>
+        </GlassCard>
 
       </div>
 
       {/* Recent Entries Table */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <GlassCard>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Entries</h3>
-          <span className="text-sm text-gray-500">
+          <h3 className="text-lg font-bold text-white">Recent Entries</h3>
+          <span className="text-sm text-white/70 font-medium">
             {loading 
               ? "Loading..." 
               : entries.length > 0 
@@ -217,37 +218,40 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm min-w-[600px]">
-            <thead className="text-xs text-gray-500 text-left">
+            <thead className="text-xs text-white/70 font-bold text-left border-b border-white/20">
               <tr>
-                <th className="py-2"> ID</th>
-                <th className="py-2">Name</th>
-                <th className="py-2">Age</th>
-                <th className="py-2">Assessment Date</th>
-                <th className="py-2">Status</th>
-                <th className="py-2">Actions</th>
+                <th className="py-3">ID</th>
+                <th className="py-3">Name</th>
+                <th className="py-3">Age</th>
+                <th className="py-3">Assessment Date</th>
+                <th className="py-3">Status</th>
+                <th className="py-3">Actions</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-white/20">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-500">Loading entries...</td>
+                  <td colSpan={6} className="py-8 text-center text-white/70">Loading entries...</td>
                 </tr>
               ) : entries.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-500">No entries found.</td>
+                  <td colSpan={6} className="py-8 text-center text-white/70">No entries found.</td>
                 </tr>
               ) : (
                 entries.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-50">
-                    <td className="py-4 text-gray-900">P-{row.id}</td>
-                    <td className="py-4 text-gray-900 font-medium">{row.name}</td>
-                    <td className="py-4 text-gray-900">{row.age}</td>
-                    <td className="py-4 text-gray-900">{row.date}</td>
+                  <tr key={row.id} className="hover:bg-white/5 transition-colors">
+                    <td className="py-4 text-white font-medium">P-{row.id}</td>
+                    <td className="py-4 text-white font-bold">{row.name}</td>
+                    <td className="py-4 text-white">{row.age}</td>
+                    <td className="py-4 text-white">{row.date}</td>
                     <td className="py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        row.status === "Completed" ? "bg-green-50 text-green-700" : 
-                        row.status === "In Progress" ? "bg-yellow-50 text-yellow-700" : "bg-red-50 text-red-700"
+                      <span className={`px-2 py-1 rounded-full text-xs font-bold backdrop-blur-sm border ${
+                        row.status === "Completed" 
+                          ? "bg-green-500/80 text-white border-green-500/50" 
+                          : row.status === "In Progress" 
+                          ? "bg-yellow-500/80 text-white border-yellow-500/50" 
+                          : "bg-red-500/80 text-white border-red-500/50"
                       }`}>
                         {row.status}
                       </span>
@@ -257,21 +261,21 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                           <button 
                             title="View"
                             onClick={() => handleView(row)}
-                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                           >
                             <EyeIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Edit"
                             onClick={() => handleEdit(row)}
-                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Delete"
                             onClick={() => handleDelete(row)}
-                            className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors"
+                            className="p-2 rounded-md text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-colors"
                           >
                             <TrashIcon className="w-4 h-4" />
                           </button>
@@ -283,7 +287,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
             </tbody>
           </table>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 }

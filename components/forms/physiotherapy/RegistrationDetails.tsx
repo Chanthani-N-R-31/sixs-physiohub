@@ -502,13 +502,13 @@ export default function RegistrationDetails({
 
   const renderSectionHeader = (num: number, title: string) => (
     <div
-      className="flex items-center justify-between p-4 bg-gray-100 border border-gray-300 cursor-pointer hover:bg-gray-200 transition"
+      className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md border border-white/30 cursor-pointer hover:bg-white/15 transition"
       onClick={() => toggleSection(num)}
     >
-      <h4 className="text-lg font-bold text-gray-900">
+      <h4 className="text-lg font-bold text-white">
         {title}
       </h4>
-      <span className="text-gray-600">
+      <span className="text-white/70">
         {expandedSections.has(num) ? "▼" : "▶"}
       </span>
     </div>
@@ -726,7 +726,7 @@ export default function RegistrationDetails({
   return (
     <div className="space-y-6 w-full overflow-x-hidden">
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-900 uppercase">
+        <h3 className="text-2xl font-bold text-white uppercase">
           REGISTRATION DETAILS
         </h3>
       </div>

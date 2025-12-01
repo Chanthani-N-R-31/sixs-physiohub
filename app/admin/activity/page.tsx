@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs, where } from "firebase/firestore";
+import GlassCard from "@/components/ui/GlassCard";
 
 interface AuditLog {
   id: string;
@@ -84,70 +85,71 @@ export default function ActivityFeed() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Activity Feed</h2>
-          <p className="text-sm text-slate-500">Audit log of all system actions.</p>
+          <h2 className="text-3xl font-bold text-white">Activity Feed</h2>
+          <p className="text-white/70 mt-1 font-medium">Audit log of all system actions.</p>
         </div>
         
         <select 
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="p-2.5 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-green-500 outline-none"
+          className="p-2.5 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
         >
-          <option value="all">All Actions</option>
-          <option value="CREATED">Created</option>
-          <option value="UPDATED">Updated</option>
-          <option value="DELETED">Deleted</option>
-          <option value="RESTORED">Restored</option>
-          <option value="CORRECTED">Corrected</option>
+          <option value="all" className="text-gray-900">All Actions</option>
+          <option value="CREATED" className="text-gray-900">Created</option>
+          <option value="UPDATED" className="text-gray-900">Updated</option>
+          <option value="DELETED" className="text-gray-900">Deleted</option>
+          <option value="RESTORED" className="text-gray-900">Restored</option>
+          <option value="CORRECTED" className="text-gray-900">Corrected</option>
         </select>
       </div>
 
-      <div className="bg-white shadow-sm rounded-xl border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 uppercase text-xs">
-            <tr>
-              <th className="p-4">Timestamp</th>
-              <th className="p-4">User</th>
-              <th className="p-4">Action</th>
-              <th className="p-4">Details</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {loading ? (
+      <GlassCard className="overflow-hidden p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-white/10 backdrop-blur-sm border-b border-white/20 uppercase text-xs">
               <tr>
-                <td colSpan={4} className="p-8 text-center text-slate-500">Loading activity logs...</td>
+                <th className="p-4 text-white/70 font-bold">Timestamp</th>
+                <th className="p-4 text-white/70 font-bold">User</th>
+                <th className="p-4 text-white/70 font-bold">Action</th>
+                <th className="p-4 text-white/70 font-bold">Details</th>
               </tr>
-            ) : logs.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="p-8 text-center text-slate-500">No activity logs found.</td>
-              </tr>
-            ) : (
-              logs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-4 text-slate-500 whitespace-nowrap">{log.time}</td>
-                  <td className="p-4 font-medium text-slate-900">{log.user}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-[10px] font-bold border ${
-                      log.action === 'DELETED' ? 'bg-red-50 text-red-700 border-red-200' :
-                      log.action === 'CREATED' ? 'bg-green-50 text-green-700 border-green-200' :
-                      log.action === 'RESTORED' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                      log.action === 'CORRECTED' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                      'bg-blue-50 text-blue-700 border-blue-200'
-                    }`}>
-                      {log.action}
-                    </span>
-                  </td>
-                  <td className="p-4 text-slate-700">{log.detail}</td>
+            </thead>
+            <tbody className="divide-y divide-white/20">
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-white/70">Loading activity logs...</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : logs.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-white/70">No activity logs found.</td>
+                </tr>
+              ) : (
+                logs.map((log) => (
+                  <tr key={log.id} className="hover:bg-white/5 transition-colors">
+                    <td className="p-4 text-white/70 whitespace-nowrap">{log.time}</td>
+                    <td className="p-4 font-bold text-white">{log.user}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold border backdrop-blur-sm ${
+                        log.action === 'DELETED' ? 'bg-red-500/80 text-white border-red-500/50' :
+                        log.action === 'CREATED' ? 'bg-green-500/80 text-white border-green-500/50' :
+                        log.action === 'RESTORED' ? 'bg-purple-500/80 text-white border-purple-500/50' :
+                        log.action === 'CORRECTED' ? 'bg-orange-500/80 text-white border-orange-500/50' :
+                        'bg-blue-500/80 text-white border-blue-500/50'
+                      }`}>
+                        {log.action}
+                      </span>
+                    </td>
+                    <td className="p-4 text-white/80">{log.detail}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </GlassCard>
     </div>
   );
 }
-

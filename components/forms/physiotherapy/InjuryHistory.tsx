@@ -180,7 +180,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Injury History</h3>
+      <h3 className="text-xl font-bold text-white">Injury History</h3>
 
       {/* ===================== PREVIOUS INJURIES ====================== */}
       <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">

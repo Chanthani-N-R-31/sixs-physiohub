@@ -189,7 +189,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
 
   return (
     <div className="space-y-10">
-      <h3 className="text-xl font-semibold text-gray-900">Functional Movement Screening (FMS)</h3>
+      <h3 className="text-xl font-bold text-white">Functional Movement Screening (FMS)</h3>
 
       {/* ===================== DEEP SQUAT ====================== */}
       <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">

@@ -60,7 +60,7 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Impact & Loading Metrics</h3>
+      <h3 className="text-xl font-bold text-white">Impact & Loading Metrics</h3>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
         <table className="w-full text-sm">

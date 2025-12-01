@@ -10,22 +10,24 @@ import {
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, where } from "firebase/firestore";
-import { auth } from "@/lib/firebase";
+import GlassCard from "@/components/ui/GlassCard";
 
 // Helper Component for Stat Cards
 function StatCard({ title, value, color, icon: Icon, loading }: any) {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-start justify-between hover:shadow-md transition-shadow">
-      <div>
-        <p className="text-sm font-medium text-slate-500">{title}</p>
-        <h3 className="text-3xl font-bold text-slate-900 mt-2">
-          {loading ? "..." : value}
-        </h3>
+    <GlassCard>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-bold text-white/70">{title}</p>
+          <h3 className="text-3xl font-bold text-white mt-2">
+            {loading ? "..." : value}
+          </h3>
+        </div>
+        <div className={`p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20`}>
+          <Icon className={`w-6 h-6 text-white`} />
+        </div>
       </div>
-      <div className={`p-3 rounded-lg ${color} bg-opacity-10`}>
-        <Icon className={`w-6 h-6 ${color.replace("bg-", "text-")}`} />
-      </div>
-    </div>
+    </GlassCard>
   );
 }
 
@@ -123,23 +125,25 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Admin Overview</h1>
-          <p className="text-slate-500 mt-1">System status and key performance metrics.</p>
+          <h1 className="text-3xl font-bold text-white">Admin Overview</h1>
+          <p className="text-white/70 mt-1 font-medium">System status and key performance metrics.</p>
         </div>
-        <div className="text-sm text-slate-400">Last updated: Just now</div>
+        <div className="text-sm text-white/60 font-medium">Last updated: Just now</div>
       </div>
 
       {/* Alert Banner */}
       {recentDeletions > 0 && (
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-start gap-4">
-          <ExclamationCircleIcon className="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-sm font-bold text-orange-900">Governance Alert</h4>
-            <p className="text-orange-800 text-sm mt-1">
-              {recentDeletions} record{recentDeletions !== 1 ? 's' : ''} {recentDeletions !== 1 ? 'have' : 'has'} been deleted in the last 24 hours. Please review the Data Governance module to ensure these deletions were authorized.
-            </p>
+        <GlassCard className="bg-orange-500/20 border-orange-500/50">
+          <div className="flex items-start gap-4">
+            <ExclamationCircleIcon className="w-6 h-6 text-orange-300 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-bold text-white">Governance Alert</h4>
+              <p className="text-white/90 text-sm mt-1">
+                {recentDeletions} record{recentDeletions !== 1 ? 's' : ''} {recentDeletions !== 1 ? 'have' : 'has'} been deleted in the last 24 hours. Please review the Data Governance module to ensure these deletions were authorized.
+              </p>
+            </div>
           </div>
-        </div>
+        </GlassCard>
       )}
 
       {/* KPI Cards */}
@@ -175,13 +179,13 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent System Activity Stub */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">System Health</h3>
-        <div className="h-32 flex items-center justify-center bg-slate-50 rounded-lg border border-dashed border-slate-300 text-slate-400">
+      <GlassCard>
+        <h3 className="text-lg font-bold text-white mb-4">System Health</h3>
+        <div className="h-32 flex items-center justify-center bg-white/5 rounded-lg border border-dashed border-white/20 text-white/60">
           <ChartBarIcon className="w-6 h-6 mr-2" />
           Activity Chart Placeholder
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 }

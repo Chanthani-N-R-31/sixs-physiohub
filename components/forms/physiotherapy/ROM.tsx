@@ -154,7 +154,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Range of Motion(ROM) and Flexibility assessments</h3>
+      <h3 className="text-xl font-bold text-white">Range of Motion(ROM) and Flexibility assessments</h3>
 
       {/* ===================== CERVICAL ROM ====================== */}
       <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">

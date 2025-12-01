@@ -94,7 +94,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
 
   return (
     <div className="space-y-10">
-      <h3 className="text-xl font-semibold text-gray-900">Strength & Stability</h3>
+      <h3 className="text-xl font-bold text-white">Strength & Stability</h3>
 
       {/* ===================== CORE SECTION ====================== */}
       <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">

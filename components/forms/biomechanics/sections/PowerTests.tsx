@@ -163,8 +163,8 @@ export default function Power({ initialData, onSave }: PowerProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xl font-semibold text-gray-900">Power Tests – Controlled Environment</h3>
-        <p className="text-gray-500 text-sm mt-1">
+        <h3 className="text-xl font-bold text-white">Power Tests – Controlled Environment</h3>
+        <p className="text-white/70 text-sm mt-1 font-medium">
           Assess neuromuscular explosiveness and elastic energy utilization using vertical and horizontal jumps.
         </p>
       </div>

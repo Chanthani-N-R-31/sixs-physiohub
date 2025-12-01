@@ -217,9 +217,9 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-            <h2 className="text-2xl font-bold text-gray-900">Biomechanics Assessment</h2>
+            <h2 className="text-3xl font-bold text-white">Biomechanics Assessment</h2>
             {/* Debugging ID display */}
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-white/60 mt-1 font-medium">
                 ID: {entryIdState ? entryIdState : "New Entry (Not Saved Yet)"}
             </p>
         </div>
@@ -227,7 +227,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
         {onBack && (
           <button
             onClick={onBack}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+            className="px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-lg font-bold hover:bg-white/20 transition-all shadow-lg border border-white/30"
           >
             ← Back
           </button>
@@ -235,16 +235,16 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-white/30 mb-6">
         <div className="flex space-x-1 overflow-x-auto pb-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors ${
                 activeTab === tab.id
-                  ? "border-b-2 border-green-600 text-green-600"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  ? "border-b-2 border-green-500 text-white"
+                  : "text-white/70 hover:text-white"
               }`}
             >
               {tab.label}
@@ -254,11 +254,11 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100 relative">
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/30 relative">
         {/* Saving Overlay */}
         {saving && (
-            <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center rounded-xl">
-                <span className="bg-black text-white px-3 py-1 rounded-full text-sm">Saving...</span>
+            <div className="absolute inset-0 bg-white/20 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
+                <span className="bg-[#1a4d4d]/80 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-bold border border-[#1a4d4d]/50">Saving...</span>
             </div>
         )}
 
