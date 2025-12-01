@@ -30,13 +30,12 @@ export default function ActivityFeed() {
       let q;
 
       if (filter === "all") {
+        // For all actions we can order directly by timestamp
         q = query(collection(db, "auditLogs"), orderBy("timestamp", "desc"));
       } else {
-        q = query(
-          collection(db, "auditLogs"),
-          where("action", "==", filter),
-          orderBy("timestamp", "desc")
-        );
+        // Firestore requires a composite index for where+orderBy on different fields.
+        // To avoid forced index creation, we only filter in Firestore and sort on the client.
+        q = query(collection(db, "auditLogs"), where("action", "==", filter));
       }
 
       const querySnapshot = await getDocs(q);
@@ -73,6 +72,13 @@ export default function ActivityFeed() {
           time: timeStr,
           timestamp: data.timestamp,
         });
+      });
+
+      // If we didn't order by timestamp in the query (filtered mode), sort on client by timestamp desc
+      loadedLogs.sort((a, b) => {
+        const ta = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : 0;
+        const tb = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : 0;
+        return tb - ta;
       });
 
       setLogs(loadedLogs);

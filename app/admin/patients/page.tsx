@@ -7,6 +7,7 @@ import {
   PencilIcon,
   TrashIcon,
   ArrowLeftIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import { db, auth } from "@/lib/firebase";
 import {
@@ -17,6 +18,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
 import { logActivity } from "@/lib/auditLogger";
 import DomainCard from "@/components/ui/DomainCard";
@@ -55,6 +57,7 @@ export default function MasterIndividualIndex() {
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editingEntryData, setEditingEntryData] = useState<any>(null);
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
 
   useEffect(() => {
     loadIndividuals();
@@ -193,6 +196,19 @@ export default function MasterIndividualIndex() {
     );
   });
 
+  const handleCreateNew = () => {
+    // Start a brand new assessment flow (same as main dashboard):
+    // immediately open Physiotherapy → Registration Details first,
+    // then allow moving on to other forms/domains.
+    setIsCreatingNew(true);
+    setEditingEntryId(null);
+    setEditingEntryData({
+      registrationDetails: {},
+      status: "in_progress",
+    });
+    setSelectedDomain("Physiotherapy");
+  };
+
   const handleEdit = async (individual: Individual) => {
     try {
       let entryData = individual.fullData;
@@ -225,7 +241,23 @@ export default function MasterIndividualIndex() {
     }
     
     try {
-      // Delete from Firestore
+      // Ensure we have the latest full data before deleting
+      let entryData = individual.fullData;
+      if (!entryData) {
+        const docRef = doc(db, "physioAssessments", individual.fullId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          entryData = { id: docSnap.id, ...docSnap.data() };
+        } else {
+          alert("Entry not found. It may have already been deleted.");
+          return;
+        }
+      }
+
+      // 1) Move the document to an archive collection for potential restore
+      await setDoc(doc(db, "deletedPhysioAssessments", individual.fullId), entryData);
+
+      // 2) Delete from the main collection
       await deleteDoc(doc(db, "physioAssessments", individual.fullId));
       
       // Log the deletion activity
@@ -235,7 +267,8 @@ export default function MasterIndividualIndex() {
         userId,
         userName,
         "DELETED",
-        `Deleted individual ${individual.id} (${individual.name})`
+        // Include the underlying Firestore document ID so Governance can restore it
+        `Deleted individual ${individual.id} (${individual.name}) [docId=${individual.fullId}]`
       );
       
       // Remove from local state
@@ -275,6 +308,7 @@ export default function MasterIndividualIndex() {
     setSelectedDomain(null);
     setEditingEntryId(null);
     setEditingEntryData(null);
+    setIsCreatingNew(false);
   };
 
   const handleDataSaved = useCallback((domain: string, entryId: string, data: any) => {
@@ -284,8 +318,8 @@ export default function MasterIndividualIndex() {
     loadIndividuals();
   }, []);
 
-  // If in edit mode, show the edit interface (same as dashboard)
-  if (editingEntryId) {
+  // If in edit/create mode, show the form interface (same as dashboard)
+  if (editingEntryId || isCreatingNew) {
     return (
       <div className="space-y-6">
         {/* Back button */}
@@ -297,9 +331,13 @@ export default function MasterIndividualIndex() {
           <span>Back to Individual Index</span>
         </button>
 
+        {/* Show the DomainCard whenever no specific domain is selected.
+            This lets admins choose ANY domain (Physiotherapy, Physiology,
+            Biomechanics, Nutrition, Psychology) for both new and existing
+            entries. Registration locking is handled inside DomainCard. */}
         {selectedDomain === null ? (
           <DomainCard
-            key={editingEntryId || "edit-domain-card"}
+            key={editingEntryId || "new-domain-card"}
             onBack={handleBackFromEdit}
             onSelect={handleDomainSelect}
             entryData={editingEntryData}
@@ -308,7 +346,7 @@ export default function MasterIndividualIndex() {
           <>
             {selectedDomain === "Physiotherapy" && (
               <PhysioFormTabs 
-                key={`physio-${editingEntryId}`}
+                key={`physio-${editingEntryId || "new"}`}
                 onBack={handleBackFromForm}
                 initialData={editingEntryData}
                 entryId={editingEntryId}
@@ -374,20 +412,29 @@ export default function MasterIndividualIndex() {
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="flex gap-4">
-        <div className="relative flex-1">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by Individual Name, ID, or Army Number..."
-            className="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+        <div className="flex flex-1 gap-4">
+          <div className="relative flex-1">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by Individual Name, ID, or Army Number..."
+              className="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <button className="flex items-center gap-2 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold hover:bg-gray-600 transition-all shadow-lg">
+            <FunnelIcon className="w-5 h-5" />
+            Filters
+          </button>
         </div>
-        <button className="flex items-center gap-2 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold hover:bg-gray-600 transition-all shadow-lg">
-          <FunnelIcon className="w-5 h-5" />
-          Filters
+        <button
+          onClick={handleCreateNew}
+          className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-900 text-white rounded-lg font-bold hover:bg-blue-800 transition-all shadow-lg border border-blue-800"
+        >
+          <PlusCircleIcon className="w-5 h-5" />
+          Add New Entry
         </button>
       </div>
 

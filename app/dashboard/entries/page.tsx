@@ -3,8 +3,9 @@
 
 import { useState, useEffect } from "react";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { db } from "@/lib/firebase";
-import { collection, query, orderBy, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { collection, query, orderBy, getDocs, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { logActivity } from "@/lib/auditLogger";
 
 interface EntriesPageProps {
   onNewEntry?: () => void;
@@ -88,7 +89,38 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
     if (!confirm("Are you sure you want to delete this entry?")) return;
     
     try {
+      // Ensure we have the latest full data before deleting
+      const docRef = doc(db, "physioAssessments", id);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        alert("Entry not found. It may have already been deleted.");
+        return;
+      }
+
+      const entryData: any = { id: docSnap.id, ...docSnap.data() };
+
+      // 1) Move the document to an archive collection for potential restore
+      await setDoc(doc(db, "deletedPhysioAssessments", id), entryData);
+
+      // 2) Delete from the main collection
       await deleteDoc(doc(db, "physioAssessments", id));
+
+      // 3) Log the deletion with the underlying docId for Governance restore
+      const regDetails = entryData.registrationDetails || {};
+      const fullName =
+        regDetails.fullName ||
+        [regDetails.firstName, regDetails.initials, regDetails.lastName].filter(Boolean).join(" ").trim() ||
+        "Unknown Patient";
+
+      const userName = auth.currentUser?.email || auth.currentUser?.displayName || "Admin";
+      const userId = auth.currentUser?.uid || "unknown";
+      await logActivity(
+        userId,
+        userName,
+        "DELETED",
+        `Deleted individual P-${id.slice(0, 6)} (${fullName}) [docId=${id}]`
+      );
+
       setEntries((prev) => prev.filter((entry) => entry.id !== id));
     } catch (error) {
       console.error("Error deleting entry:", error);
