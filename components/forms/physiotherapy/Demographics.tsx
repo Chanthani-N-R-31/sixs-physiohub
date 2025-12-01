@@ -161,7 +161,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
-          className={`w-full p-2 border rounded-md text-sm bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+          className={`w-full p-2 border rounded-md text-sm input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
             error ? "border-red-500" : "border-gray-600"
           }`}
           placeholder={placeholder}
@@ -195,7 +195,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
-          className={`w-full p-2 border rounded-md text-sm bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+          className={`w-full p-2 border rounded-md text-sm select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
             error ? "border-red-500" : "border-gray-600"
           }`}
           required={required}

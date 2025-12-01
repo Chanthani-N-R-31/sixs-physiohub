@@ -16,7 +16,7 @@ const ScoreSelect = memo(({ value, onChange, options }: any) => {
           onChange(newValue);
         }
       }}
-      className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+      className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
     >
       <option value="">--</option>
       {options.map((opt: { value: string; label: string }) => (
@@ -273,7 +273,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
           <select
             value={form.clearingTestShoulder}
             onChange={(e) => update("clearingTestShoulder", e.target.value)}
-            className="w-full mt-2 p-2 border border-gray-600 rounded-md text-sm bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full mt-2 p-2 text-sm input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">--</option>
             <option value="Pain">Pain</option>
@@ -318,7 +318,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
           <select
             value={form.clearingTestTrunk}
             onChange={(e) => update("clearingTestTrunk", e.target.value)}
-            className="w-full mt-2 p-2 border border-gray-600 rounded-md text-sm bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full mt-2 p-2 text-sm input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">--</option>
             <option value="Pain">Pain</option>
@@ -367,7 +367,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
             const newValue = filterTextOnly(e.target.value);
             update("assessmentFindings", newValue);
           }}
-          className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+          className="w-full p-3 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings (text only, no numbers)"
         />

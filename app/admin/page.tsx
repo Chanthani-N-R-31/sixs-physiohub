@@ -150,38 +150,38 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* KPI Cards */}
+      {/* KPI Cards - Dark blue like dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Physios"
-          value={totalPhysios}
-          icon={UsersIcon}
-          loading={loading}
-        />
-        <StatCard
-          title="Total Individuals"
-          value={totalIndividuals}
-          icon={UsersIcon}
-          loading={loading}
-        />
-        <StatCard
-          title="Completed Assessments"
-          value={completedAssessments}
-          icon={DocumentCheckIcon}
-          loading={loading}
-        />
-        <StatCard
-          title="Deleted Records"
-          value={deletedRecords}
-          icon={TrashIcon}
-          loading={loading}
-        />
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Total Physios</div>
+          <div className="mt-2 text-3xl font-bold text-white">
+            {loading ? "..." : totalPhysios}
+          </div>
+        </div>
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Total Individuals</div>
+          <div className="mt-2 text-3xl font-bold text-white">
+            {loading ? "..." : totalIndividuals}
+          </div>
+        </div>
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Completed Assessments</div>
+          <div className="mt-2 text-3xl font-bold text-white">
+            {loading ? "..." : completedAssessments}
+          </div>
+        </div>
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Deleted Records</div>
+          <div className="mt-2 text-3xl font-bold text-white">
+            {loading ? "..." : deletedRecords}
+          </div>
+        </div>
       </div>
 
-      {/* System Health Placeholder */}
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4">System Health</h3>
-        <div className="h-32 flex items-center justify-center rounded-lg border border-dashed border-gray-600 text-white/60 bg-gray-900/40">
+      {/* System Health Placeholder - White card */}
+      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">System Health</h3>
+        <div className="h-32 flex items-center justify-center rounded-lg border border-dashed border-gray-300 text-gray-500 bg-gray-50">
           <ChartBarIcon className="w-6 h-6 mr-2" />
           Activity Chart Placeholder
         </div>

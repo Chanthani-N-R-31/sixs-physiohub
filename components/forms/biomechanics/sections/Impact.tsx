@@ -79,7 +79,7 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
                   <input
                     type="number"
                     step="0.1"
-                    className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter value"
                     value={form[row.key as keyof typeof form] as string}
                     onChange={(e) => {
@@ -100,7 +100,7 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
       <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
         <textarea
-          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+          className="w-full p-3 textarea-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings"
           value={form.assessmentFindings}

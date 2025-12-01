@@ -131,7 +131,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
                 <input
                   type="number"
                   step="0.1"
-                  className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.height ? "border-red-500" : ""}`}
+                  className={`w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.height ? "border-red-500" : ""}`}
                   placeholder="Enter height in cm"
                   value={form.height}
                   onChange={(e) => update("height", e.target.value)}
@@ -149,7 +149,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
                 <input
                   type="number"
                   step="0.1"
-                  className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.mass ? "border-red-500" : ""}`}
+                  className={`w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.mass ? "border-red-500" : ""}`}
                   placeholder="Enter mass in kg"
                   value={form.mass}
                   onChange={(e) => update("mass", e.target.value)}
@@ -165,7 +165,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               <td className="py-3 text-white font-medium">Dominant Side</td>
               <td>
                 <select
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.dominantSide}
                   onChange={(e) => update("dominantSide", e.target.value)}
                 >
@@ -181,7 +181,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               <td className="py-3 text-white font-medium">Foot Strike Habit</td>
               <td>
                 <select
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.footStrikeHabit}
                   onChange={(e) => update("footStrikeHabit", e.target.value)}
                 >
@@ -198,7 +198,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               <td className="py-3 text-white font-medium">Environment</td>
               <td>
                 <select
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.environment}
                   onChange={(e) => update("environment", e.target.value)}
                 >
@@ -230,7 +230,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
               <td className="py-3 text-white font-medium">Warm-up Standardized</td>
               <td>
                 <select
-                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.warmupStandardized}
                   onChange={(e) => update("warmupStandardized", e.target.value)}
                 >
@@ -248,7 +248,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
       <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
         <textarea
-          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+          className="w-full p-3 textarea-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings"
           value={form.assessmentFindings}

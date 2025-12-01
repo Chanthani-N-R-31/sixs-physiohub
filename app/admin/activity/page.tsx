@@ -102,7 +102,7 @@ export default function ActivityFeed() {
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="p-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2.5 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
         >
           <option value="all" className="text-gray-900">
             All Actions
@@ -125,27 +125,27 @@ export default function ActivityFeed() {
         </select>
       </div>
 
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 overflow-hidden">
+      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm text-left min-w-[700px]">
-            <thead className="border-b border-gray-700 uppercase text-xs">
+            <thead className="border-b border-gray-300 uppercase text-xs">
               <tr>
-                <th className="p-4 text-white/70 font-bold">Timestamp</th>
-                <th className="p-4 text-white/70 font-bold">User</th>
-                <th className="p-4 text-white/70 font-bold">Action</th>
-                <th className="p-4 text-white/70 font-bold">Details</th>
+                <th className="p-4 text-gray-700 font-bold">Timestamp</th>
+                <th className="p-4 text-gray-700 font-bold">User</th>
+                <th className="p-4 text-gray-700 font-bold">Action</th>
+                <th className="p-4 text-gray-700 font-bold">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-white/70">
+                  <td colSpan={4} className="p-8 text-center text-gray-500">
                     Loading activity logs...
                   </td>
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-white/70">
+                  <td colSpan={4} className="p-8 text-center text-gray-500">
                     No activity logs found.
                   </td>
                 </tr>
@@ -153,12 +153,12 @@ export default function ActivityFeed() {
                 logs.map((log) => (
                   <tr
                     key={log.id}
-                    className="hover:bg-gray-700/50 transition-colors"
+                    className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="p-4 text-white/70 whitespace-nowrap">
+                    <td className="p-4 text-gray-600 whitespace-nowrap">
                       {log.time}
                     </td>
-                    <td className="p-4 font-bold text-white">{log.user}</td>
+                    <td className="p-4 font-bold text-gray-900">{log.user}</td>
                     <td className="p-4">
                       <span
                         className={`px-2 py-1 rounded-full text-[10px] font-bold border ${
@@ -176,7 +176,7 @@ export default function ActivityFeed() {
                         {log.action}
                       </span>
                     </td>
-                    <td className="p-4 text-white/80">{log.detail}</td>
+                    <td className="p-4 text-gray-700">{log.detail}</td>
                   </tr>
                 ))
               )}

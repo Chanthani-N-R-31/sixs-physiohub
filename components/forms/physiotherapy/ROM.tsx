@@ -124,7 +124,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
             onChange(val);
           }
         }}
-        className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
           error ? "border-red-500" : ""
         }`}
         placeholder={placeholder}
@@ -142,7 +142,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
           const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
           onChange(newValue);
         }}
-        className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+        className={`w-full p-2 textarea-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
           error ? "border-red-500" : "border-gray-300"
         }`}
         placeholder={placeholder}

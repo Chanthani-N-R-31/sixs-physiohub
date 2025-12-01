@@ -552,7 +552,7 @@ export default function RegistrationDetails({
             <select
               value={fieldValue || ""}
               onChange={(e) => update(key, e.target.value, false)}
-              className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               disabled={readOnly}
             >
               <option value="">-</option>
@@ -628,7 +628,7 @@ export default function RegistrationDetails({
                   <input
                     type="file"
                     onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
-                    className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     accept="image/*,.pdf"
                   />
                 </>
@@ -650,9 +650,9 @@ export default function RegistrationDetails({
                     }));
                   }
                 }}
-                className={`w-full p-2 border rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
-                  error ? "border-red-500" : "border-gray-600"
-                } ${readOnly ? "bg-gray-600" : ""}`}
+                className={`w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+                  error ? "border-red-500" : ""
+                } ${readOnly ? "opacity-60" : ""}`}
                 rows={3}
                 placeholder={placeholder}
                 readOnly={readOnly}
@@ -669,9 +669,9 @@ export default function RegistrationDetails({
                 value={fieldValue || ""}
                 onChange={(e) => update(key, e.target.value, false, true)} // Trigger Date Logic
                 maxLength={10}
-                className={`w-full p-2 border rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  error ? "border-red-500" : "border-gray-600"
-                } ${readOnly ? "bg-gray-600" : ""}`}
+                className={`w-full p-2 input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : ""
+                } ${readOnly ? "opacity-60" : ""}`}
                 placeholder="DD/MM/YYYY"
                 readOnly={readOnly}
               />
@@ -707,9 +707,9 @@ export default function RegistrationDetails({
                   }
                 }}
                 maxLength={key === "contact" ? 10 : undefined}
-                className={`w-full p-2 border rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  error ? "border-red-500" : "border-gray-600"
-                } ${readOnly ? "bg-gray-600" : ""}`}
+                className={`w-full p-2 input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : ""
+                } ${readOnly ? "opacity-60" : ""}`}
                 placeholder={placeholder}
                 readOnly={readOnly}
               />
@@ -910,7 +910,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.primaryRifle}
                           onChange={(e) => update("primaryRifle", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>AK-47</option>
@@ -925,7 +925,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.secondaryWeapon}
                           onChange={(e) => update("secondaryWeapon", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Pistol</option>
@@ -938,7 +938,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.lmgMmg}
                           onChange={(e) => update("lmgMmg", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -950,7 +950,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sniperSystems}
                           onChange={(e) => update("sniperSystems", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -962,7 +962,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.underwaterWeapons}
                           onChange={(e) => update("underwaterWeapons", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -974,7 +974,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.cqbWeapons}
                           onChange={(e) => update("cqbWeapons", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -996,7 +996,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.rifleScore}
                           onChange={(e) => update("rifleScore", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1006,7 +1006,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.pistolScore}
                           onChange={(e) => update("pistolScore", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1016,7 +1016,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.nightFiringScore}
                           onChange={(e) => update("nightFiringScore", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1026,7 +1026,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.movingTargetScore}
                           onChange={(e) => update("movingTargetScore", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1117,7 +1117,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.typicalLoad}
                           onChange={(e) => update("typicalLoad", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter kg"
                         />
                       </div>
@@ -1127,7 +1127,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.maximumLoad}
                           onChange={(e) => update("maximumLoad", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter kg"
                         />
                       </div>
@@ -1137,7 +1137,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.longestMissionDuration}
                           onChange={(e) => update("longestMissionDuration", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter duration"
                         />
                       </div>
@@ -1147,7 +1147,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.maxContinuousMovement}
                           onChange={(e) => update("maxContinuousMovement", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter details"
                         />
                       </div>
@@ -1166,7 +1166,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.nightOpsPerMonth}
                           onChange={(e) => update("nightOpsPerMonth", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter number"
                         />
                       </div>
@@ -1175,7 +1175,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.nvdProficiency}
                           onChange={(e) => update("nvdProficiency", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Beginner</option>
@@ -1189,7 +1189,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.nightNavigationRating}
                           onChange={(e) => update("nightNavigationRating", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1410,7 +1410,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.painLocation}
                           onChange={(e) => update("painLocation", filterTextOnly(e.target.value), true)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter location (text only)"
                         />
                       </div>
@@ -1419,7 +1419,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.painIntensity}
                           onChange={(e) => update("painIntensity", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1472,7 +1472,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.avgSleepHours}
                           onChange={(e) => update("avgSleepHours", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter hours"
                         />
                       </div>
@@ -1481,7 +1481,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sleepQuality}
                           onChange={(e) => update("sleepQuality", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Poor</option>
@@ -1495,7 +1495,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sleepDisruptions}
                           onChange={(e) => update("sleepDisruptions", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>None</option>
@@ -1510,7 +1510,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sleepDeprivationExposure}
                           onChange={(e) => update("sleepDeprivationExposure", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>None</option>
@@ -1535,7 +1535,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.waterIntake}
                           onChange={(e) => update("waterIntake", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter daily intake"
                         />
                       </div>
@@ -1544,7 +1544,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.electrolyteUse}
                           onChange={(e) => update("electrolyteUse", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1557,7 +1557,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.hydrationScore}
                           onChange={(e) => update("hydrationScore", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1586,7 +1586,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.physiotherapyFrequency}
                           onChange={(e) => update("physiotherapyFrequency", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Daily</option>
@@ -1601,7 +1601,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.manualTherapy}
                           onChange={(e) => update("manualTherapy", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1614,7 +1614,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.hotColdTherapy}
                           onChange={(e) => update("hotColdTherapy", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1627,7 +1627,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.breathingDrills}
                           onChange={(e) => update("breathingDrills", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1640,7 +1640,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.supplementUse}
                           onChange={(e) => update("supplementUse", e.target.value)}
-                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1686,7 +1686,7 @@ export default function RegistrationDetails({
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder={field.placeholder}
                           />
                         </div>
@@ -1712,7 +1712,7 @@ export default function RegistrationDetails({
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder={field.placeholder}
                           />
                         </div>
@@ -1753,7 +1753,7 @@ export default function RegistrationDetails({
                           <select
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           >
                             <option value="">-</option>
                             <option>1</option>

@@ -167,11 +167,11 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+      {/* Table - White card like image */}
+      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm min-w-[800px]">
-            <thead className="text-xs text-white/70 font-bold text-left border-b border-gray-700">
+            <thead className="text-xs text-gray-700 font-bold text-left border-b border-gray-300">
               <tr>
                 <th className="py-3">ID</th>
                 <th className="py-3">Name</th>
@@ -182,25 +182,25 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-white/70">
+                  <td colSpan={6} className="py-8 text-center text-gray-500">
                     Loading entries...
                   </td>
                 </tr>
               ) : entries.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-white/70">
+                  <td colSpan={6} className="py-8 text-center text-gray-500">
                     No entries found. Create a new entry to get started.
                   </td>
                 </tr>
               ) : (
                 entries.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-700/50 transition-colors">
-                  <td className="py-4 text-white font-medium">P-{row.id.slice(0, 6)}</td>
+                <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-4 text-gray-900 font-medium">P-{row.id.slice(0, 6)}</td>
 
-                  <td className="py-4 text-white flex items-center gap-3">
+                  <td className="py-4 text-gray-900 flex items-center gap-3">
                     <div className="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold border border-blue-800">
                       {row.name
                         .split(" ")
@@ -210,12 +210,12 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                     </div>
 
                     <div>
-                      <div className="font-bold text-white">{row.name}</div>
+                      <div className="font-bold text-gray-900">{row.name}</div>
                     </div>
                   </td>
 
-                  <td className="py-4 text-white">{row.age}</td>
-                  <td className="py-4 text-white">{row.date}</td>
+                  <td className="py-4 text-gray-700">{row.age}</td>
+                  <td className="py-4 text-gray-700">{row.date}</td>
 
                   <td className="py-4">
                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
@@ -228,7 +228,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                       <button
                         title="View"
                         onClick={() => handleView(row.fullData)}
-                        className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
+                        className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                       >
                         <EyeIcon className="w-4 h-4" />
                       </button>
@@ -236,7 +236,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                       <button
                         title="Edit"
                         onClick={() => handleEdit(row.id, row.fullData)}
-                        className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
+                        className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                       >
                         <PencilIcon className="w-4 h-4" />
                       </button>
@@ -244,7 +244,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                       <button
                         title="Delete"
                         onClick={() => handleDelete(row.id)}
-                        className="p-2 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
+                        className="p-2 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>

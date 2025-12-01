@@ -63,23 +63,23 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-gray-900 border-r border-gray-700 hidden lg:flex flex-col shadow-2xl">
+    <aside className="w-64 min-h-screen bg-gray-900 border-r border-gray-800 hidden lg:flex flex-col shadow-xl">
       {/* Logo */}
       <div className="px-6 py-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+          <div className="w-11 h-11 rounded-xl bg-blue-900 flex items-center justify-center text-white font-bold text-lg shadow-lg border border-blue-800">
             PH
           </div>
           <div>
-            <div className="font-bold text-white">Admin Panel</div>
-            <div className="text-xs text-gray-300">System Management</div>
+            <div className="font-bold text-white">Data Collection</div>
+            <div className="text-xs text-gray-300">Admin Dashboard</div>
           </div>
         </div>
 
         {/* Back to Dashboard */}
         <Link
           href="/dashboard"
-          className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 hover:text-white font-bold transition-all mb-4"
+          className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-800 hover:text-white font-bold transition-all mb-4"
         >
           <ArrowLeftIcon className="w-4 h-4" />
           Back to Dashboard
@@ -95,8 +95,8 @@ export default function AdminSidebar() {
                 href={item.href}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[15px] font-bold transition-all ${
                   active
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                    ? "bg-blue-900 text-white shadow-lg"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
                 }`}
               >
                 <item.icon className="w-5 h-5" />

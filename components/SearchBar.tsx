@@ -71,14 +71,14 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
   return (
     <div className="relative w-full sm:w-96 md:w-[420px]" ref={searchRef}>
       <div className="relative">
-        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => searchQuery && setShowResults(true)}
           placeholder="Search by ID/Name"
-          className="w-full p-2.5 pl-10 pr-10 rounded-lg border border-gray-600 bg-gray-700 text-sm text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-2.5 pl-10 pr-10 rounded-lg border border-gray-300 bg-gray-100 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white"
         />
         {searchQuery && (
           <button

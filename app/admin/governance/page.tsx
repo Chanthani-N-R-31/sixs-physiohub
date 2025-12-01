@@ -244,42 +244,42 @@ export default function DataGovernance() {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-0 overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-200 p-0 overflow-hidden shadow-lg">
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left min-w-[800px]">
-                <thead className="border-b border-gray-700">
+                <thead className="border-b border-gray-300">
                   <tr>
-                    <th className="p-4 text-white/70 font-bold">
+                    <th className="p-4 text-gray-700 font-bold">
                       Individual Name
                     </th>
-                    <th className="p-4 text-white/70 font-bold">Deleted By</th>
-                    <th className="p-4 text-white/70 font-bold">Deleted On</th>
-                    <th className="p-4 text-white/70 font-bold">
+                    <th className="p-4 text-gray-700 font-bold">Deleted By</th>
+                    <th className="p-4 text-gray-700 font-bold">Deleted On</th>
+                    <th className="p-4 text-gray-700 font-bold">
                       Reason (Optional)
                     </th>
-                    <th className="p-4 text-white/70 font-bold">Actions</th>
+                    <th className="p-4 text-gray-700 font-bold">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-700">
+                <tbody className="divide-y divide-gray-200">
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="p-6 text-center text-white/70">
+                      <td colSpan={5} className="p-6 text-center text-gray-500">
                         Loading deleted records...
                       </td>
                     </tr>
                   ) : deletedRecords.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-6 text-center text-white/70">
+                      <td colSpan={5} className="p-6 text-center text-gray-500">
                         No deleted records found in the audit logs.
                       </td>
                     </tr>
                   ) : (
                     deletedRecords.map((rec) => (
-                      <tr key={rec.id} className="hover:bg-gray-700/50 transition-colors">
-                        <td className="p-4 text-white font-bold">{rec.individualName}</td>
-                        <td className="p-4 text-white/80">{rec.deletedBy}</td>
-                        <td className="p-4 text-white/70">{rec.deletedOn}</td>
-                        <td className="p-4 text-white/60 italic">
+                      <tr key={rec.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="p-4 text-gray-900 font-bold">{rec.individualName}</td>
+                        <td className="p-4 text-gray-700">{rec.deletedBy}</td>
+                        <td className="p-4 text-gray-600">{rec.deletedOn}</td>
+                        <td className="p-4 text-gray-500 italic">
                           {rec.reason && rec.reason.trim() !== "" ? rec.reason : "—"}
                         </td>
                         <td className="p-4 flex gap-2">
@@ -321,7 +321,7 @@ export default function DataGovernance() {
               <input
                 type="text"
                 placeholder="Enter Individual ID (e.g., P-1029)..."
-                className="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 p-3 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button className="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-800 font-bold transition shadow-lg border border-blue-800">
                 Fetch Record

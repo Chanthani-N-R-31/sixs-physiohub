@@ -419,7 +419,7 @@ export default function MasterIndividualIndex() {
             <input
               type="text"
               placeholder="Search by Individual Name, ID, or Army Number..."
-              className="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md"
+              className="w-full pl-10 p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 font-bold placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white shadow-md"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -438,27 +438,27 @@ export default function MasterIndividualIndex() {
         </button>
       </div>
 
-      {/* Data Table */}
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 overflow-hidden">
+      {/* Data Table - White card like dashboard */}
+      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm text-left min-w-[800px]">
-            <thead className="border-b border-gray-700">
+            <thead className="border-b border-gray-300">
               <tr>
-                <th className="p-4 text-white/70 font-bold">Individual ID</th>
-                <th className="p-4 text-white/70 font-bold">Name</th>
-                <th className="p-4 text-white/70 font-bold">Unit / Rank</th>
-                <th className="p-4 text-white/70 font-bold">Physio</th>
-                <th className="p-4 text-white/70 font-bold">Last Activity</th>
-                <th className="p-4 text-white/70 font-bold">Status</th>
-                <th className="p-4 text-white/70 font-bold">Actions</th>
+                <th className="p-4 text-gray-700 font-bold">Individual ID</th>
+                <th className="p-4 text-gray-700 font-bold">Name</th>
+                <th className="p-4 text-gray-700 font-bold">Unit / Rank</th>
+                <th className="p-4 text-gray-700 font-bold">Physio</th>
+                <th className="p-4 text-gray-700 font-bold">Last Activity</th>
+                <th className="p-4 text-gray-700 font-bold">Status</th>
+                <th className="p-4 text-gray-700 font-bold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
                   <td
                     colSpan={7}
-                    className="p-8 text-center text-white/70"
+                    className="p-8 text-center text-gray-500"
                   >
                     Loading individuals...
                   </td>
@@ -467,7 +467,7 @@ export default function MasterIndividualIndex() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="p-8 text-center text-white/70"
+                    className="p-8 text-center text-gray-500"
                   >
                     No individuals found.
                   </td>
@@ -476,17 +476,17 @@ export default function MasterIndividualIndex() {
                 filteredIndividuals.map((ind) => (
                   <tr
                     key={ind.fullId}
-                    className="hover:bg-gray-700/50 transition-colors"
+                    className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="p-4 font-mono text-blue-300 font-medium">
+                    <td className="p-4 font-mono text-blue-600 font-medium">
                       {ind.id}
                     </td>
-                    <td className="p-4 font-bold text-white">{ind.name}</td>
-                    <td className="p-4 text-white">
+                    <td className="p-4 font-bold text-gray-900">{ind.name}</td>
+                    <td className="p-4 text-gray-700">
                       {ind.rank} / {ind.unit}
                     </td>
-                    <td className="p-4 text-white/80">{ind.physio}</td>
-                    <td className="p-4 text-white/70">
+                    <td className="p-4 text-gray-600">{ind.physio}</td>
+                    <td className="p-4 text-gray-600">
                       {ind.lastActivity}
                     </td>
                     <td className="p-4">
@@ -499,14 +499,14 @@ export default function MasterIndividualIndex() {
                         <button
                           title="Edit"
                           onClick={() => handleEdit(ind)}
-                          className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
+                          className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                         >
                           <PencilIcon className="w-4 h-4" />
                         </button>
                         <button
                           title="Delete"
                           onClick={() => handleDelete(ind)}
-                          className="p-2 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
+                          className="p-2 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>
@@ -521,7 +521,7 @@ export default function MasterIndividualIndex() {
       </div>
 
       {/* Pagination Placeholder */}
-      <div className="flex justify-center text-sm text-white/70 font-medium">
+      <div className="flex justify-center text-sm text-gray-600 font-medium">
         Showing {filteredIndividuals.length} of {individuals.length} records
       </div>
     </div>

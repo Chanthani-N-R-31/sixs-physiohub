@@ -117,7 +117,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
                     u("plankTime", val, false, true);
                   }
                 }}
-                className={`w-full mt-1 p-2 border rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`w-full mt-1 p-2 border rounded-md input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   validationErrors.plankTime ? "border-red-500" : "border-gray-600"
                 }`}
                 placeholder="0-5"
@@ -187,7 +187,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
             <textarea
               value={data.coreNotes}
               onChange={(e) => u("coreNotes", e.target.value, true)}
-              className={`w-full p-3 mt-1 border rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+              className={`w-full p-3 mt-1 border rounded-md textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
                 validationErrors.coreNotes ? "border-red-500" : "border-gray-600"
               }`}
               rows={3}
@@ -210,7 +210,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
               type="text"
               value={data.staticBalance}
               onChange={(e) => u("staticBalance", e.target.value)}
-              className="w-full mt-1 p-2 border rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-gray-600"
+              className="w-full mt-1 p-2 border rounded-md input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter static balance assessment"
             />
           </div>
@@ -220,7 +220,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
               type="text"
               value={data.dynamicBalance}
               onChange={(e) => u("dynamicBalance", e.target.value)}
-              className="w-full mt-1 p-2 border rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-gray-600"
+              className="w-full mt-1 p-2 border rounded-md input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter dynamic balance assessment"
             />
           </div>
@@ -229,7 +229,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
             <textarea
               value={data.balanceNotes}
               onChange={(e) => u("balanceNotes", e.target.value, true)}
-              className={`w-full p-3 mt-1 border rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+              className={`w-full p-3 mt-1 border rounded-md textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
                 validationErrors.balanceNotes ? "border-red-500" : "border-gray-600"
               }`}
               rows={3}
@@ -251,7 +251,7 @@ export default function StrengthStability({ initialData, onSave }: StrengthStabi
             const newValue = filterTextOnly(e.target.value);
             u("assessmentFindings", newValue, true);
           }}
-          className={`w-full p-3 border rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+          className={`w-full p-3 border rounded-md textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
             validationErrors.assessmentFindings ? "border-red-500" : "border-gray-600"
           }`}
           rows={4}

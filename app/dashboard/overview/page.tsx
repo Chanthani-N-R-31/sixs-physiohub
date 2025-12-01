@@ -231,11 +231,11 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
       </div>
 
-      {/* Recent Entries Table */}
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+      {/* Recent Entries Table - White card like image */}
+      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-white">Recent Entries</h3>
-          <span className="text-sm text-white/70 font-medium">
+          <h3 className="text-lg font-bold text-gray-900">Recent Entries</h3>
+          <span className="text-sm text-gray-600 font-medium">
             {loading 
               ? "Loading..." 
               : entries.length > 0 
@@ -246,7 +246,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm min-w-[600px]">
-            <thead className="text-xs text-white/70 font-bold text-left border-b border-gray-700">
+            <thead className="text-xs text-gray-700 font-bold text-left border-b border-gray-300">
               <tr>
                 <th className="py-3">ID</th>
                 <th className="py-3">Name</th>
@@ -257,22 +257,22 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-white/70">Loading entries...</td>
+                  <td colSpan={6} className="py-8 text-center text-gray-500">Loading entries...</td>
                 </tr>
               ) : entries.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-white/70">No entries found.</td>
+                  <td colSpan={6} className="py-8 text-center text-gray-500">No entries found.</td>
                 </tr>
               ) : (
                 entries.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-700/50 transition-colors">
-                    <td className="py-4 text-white font-medium">P-{row.id}</td>
-                    <td className="py-4 text-white font-bold">{row.name}</td>
-                    <td className="py-4 text-white">{row.age}</td>
-                    <td className="py-4 text-white">{row.date}</td>
+                  <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 text-gray-900 font-medium">P-{row.id}</td>
+                    <td className="py-4 text-gray-900 font-bold">{row.name}</td>
+                    <td className="py-4 text-gray-700">{row.age}</td>
+                    <td className="py-4 text-gray-700">{row.date}</td>
                     <td className="py-4">
                       <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
                         {row.status}
@@ -283,21 +283,21 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                           <button 
                             title="View"
                             onClick={() => handleView(row)}
-                            className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
+                            className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                           >
                             <EyeIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Edit"
                             onClick={() => handleEdit(row)}
-                            className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
+                            className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Delete"
                             onClick={() => handleDelete(row)}
-                            className="p-2 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
+                            className="p-2 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                           >
                             <TrashIcon className="w-4 h-4" />
                           </button>

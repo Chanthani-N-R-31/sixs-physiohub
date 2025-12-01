@@ -35,7 +35,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 min-h-screen bg-gray-800 border-r border-gray-700 hidden lg:flex flex-col shadow-xl">
+    <aside className="w-64 min-h-screen bg-gray-900 border-r border-gray-800 hidden lg:flex flex-col shadow-xl">
       {/* Logo */}
       <div className="px-6 py-6">
         <div className="flex items-center gap-3 mb-6">
@@ -44,7 +44,7 @@ export default function Sidebar() {
           </div>
           <div>
             <div className="font-bold text-white">Data Collection</div>
-            <div className="text-xs text-white/70">Dashboard</div>
+            <div className="text-xs text-gray-300">Dashboard</div>
           </div>
         </div>
 
@@ -56,8 +56,8 @@ export default function Sidebar() {
               onClick={() => setActiveTab(item.tab as typeof activeTab)}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[15px] font-bold transition-all ${
                 activeTab === item.tab
-                  ? "bg-gray-700 text-white shadow-lg"
-                  : "text-white/80 hover:bg-gray-700/50 hover:text-white"
+                  ? "bg-blue-900 text-white shadow-lg"
+                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
               }`}
             >
               <item.icon className="w-5 h-5" />
