@@ -6,6 +6,9 @@ import {
   EyeIcon,
   PencilIcon,
   TrashIcon,
+  UserIcon,
+  CheckCircleIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import { db, auth } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
@@ -75,8 +78,11 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
         const statusRaw = data.status || "incomplete";
         const statusLabel = statusRaw === "completed" ? "Completed" : statusRaw === "in_progress" ? "In Progress" : "Incomplete";
         
+        // Format ID like P-CQW172 (first 6 chars of doc ID)
+        const shortId = docSnapshot.id.slice(0, 6);
+        
         loadedEntries.push({
-          id: docSnapshot.id.slice(0, 6),
+          id: shortId,
           fullId: docSnapshot.id, // Store full ID for operations
           name: fullName,
           age: String(regDetails.age || regDetails.yearsInService || "N/A"),
@@ -195,37 +201,64 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
   return (
     <div className="w-full overflow-x-hidden">
-      
-      {/* KPI Row - Updated to 4 Columns with Dark Blue Cards */}
+      {/* KPI Row - Updated to 4 Columns with Glassmorphism Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
         {/* Card 1: Total Patients (Static 50) */}
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Total Individuals</div>
-          <div className="mt-2 text-3xl font-bold text-white">{totalPatients}</div>
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Individuals</div>
+              <div className="mt-2 text-3xl font-bold text-white">{totalPatients}</div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <UserIcon className="w-6 h-6 text-white" />
+            </div>
+          </div>
         </div>
 
         {/* Card 2: Entries Completed */}
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Entries Completed</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : completedCount}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Entries Completed</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : completedCount}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <CheckCircleIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
         {/* Card 3: Pending */}
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Pending</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : pendingCount}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Pending</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : pendingCount}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <TrashIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
         {/* Card 4: Assessments Today */}
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Assessments Today</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : assessmentsToday}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Assessments Today</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : assessmentsToday}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <DocumentTextIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
@@ -274,7 +307,13 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                     <td className="py-4 text-gray-700">{row.age}</td>
                     <td className="py-4 text-gray-700">{row.date}</td>
                     <td className="py-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        row.status === "Completed" 
+                          ? "bg-teal-600 text-white border border-teal-500"
+                          : row.status === "In Progress"
+                          ? "bg-teal-600 text-white border border-teal-500"
+                          : "bg-gray-400 text-white border border-gray-500"
+                      }`}>
                         {row.status}
                       </span>
                     </td>

@@ -181,8 +181,8 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 text-sm font-bold whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "border-b-2 border-blue-500 text-white"
-                  : "text-white/70 hover:text-white hover:bg-gray-700/50"
+                  ? "border-b-2 border-blue-500 text-white font-bold"
+                  : "text-white font-bold hover:text-white hover:bg-gray-700/50"
               }`}
             >
               {tab.label}

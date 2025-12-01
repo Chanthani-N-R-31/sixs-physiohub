@@ -73,7 +73,7 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
       <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Values</th>
             </tr>
@@ -82,7 +82,7 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
           <tbody className="divide-y divide-gray-700">
             {metrics.map((metric) => (
               <tr key={metric.key}>
-                <td className="py-3 text-white font-medium">{metric.label}</td>
+                <td className="py-3 text-white font-bold">{metric.label}</td>
                 <td>
                   <input
                     type="number"

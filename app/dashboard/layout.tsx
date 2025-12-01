@@ -57,13 +57,27 @@ export default function DashboardLayout({
           <Sidebar />
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative z-10">
+        {/* Main Content with Background Image - Right Side Only */}
+        <div 
+          className="flex-1 flex flex-col min-h-screen overflow-hidden relative z-10"
+          style={{
+            backgroundImage: `url('/final ui.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+          }}
+        >
+          {/* Overlay for better readability */}
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
+          
           {/* Top Navigation Bar */}
-          <Topbar />
+          <div className="relative z-10">
+            <Topbar />
+          </div>
 
           {/* Page Content */}
-          <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full overflow-y-auto">
+          <main className="relative z-10 flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full overflow-y-auto">
             {children}
           </main>
         </div>

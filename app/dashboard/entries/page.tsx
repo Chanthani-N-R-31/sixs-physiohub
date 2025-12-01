@@ -201,7 +201,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                   <td className="py-4 text-gray-900 font-medium">P-{row.id.slice(0, 6)}</td>
 
                   <td className="py-4 text-gray-900 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold border border-blue-800">
+                    <div className="w-8 h-8 bg-teal-900 text-white rounded-full flex items-center justify-center font-bold border border-teal-800">
                       {row.name
                         .split(" ")
                         .map((n) => n[0])
@@ -218,7 +218,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                   <td className="py-4 text-gray-700">{row.date}</td>
 
                   <td className="py-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-600 text-white border border-teal-500">
                       {row.status}
                     </span>
                   </td>

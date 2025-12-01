@@ -61,7 +61,7 @@ export default function Running({ initialData, onSave }: RunningProps) {
       <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Values</th>
             </tr>
@@ -69,7 +69,7 @@ export default function Running({ initialData, onSave }: RunningProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Running Speed (m/s)</td>
+              <td className="py-3 text-white font-bold">Running Speed (m/s)</td>
               <td>
                 <input
                   type="number"
@@ -87,7 +87,7 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-3 text-white font-medium">Cadence (steps/min)</td>
+              <td className="py-3 text-white font-bold">Cadence (steps/min)</td>
               <td>
                 <input
                   type="number"
@@ -105,7 +105,7 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-3 text-white font-medium">Stride Length (m)</td>
+              <td className="py-3 text-white font-bold">Stride Length (m)</td>
               <td>
                 <input
                   type="number"
@@ -123,7 +123,7 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-3 text-white font-medium">Load Condition (% BW)</td>
+              <td className="py-3 text-white font-bold">Load Condition (% BW)</td>
               <td>
                 <input
                   type="number"
@@ -141,7 +141,7 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-3 text-white font-medium">Surface Type</td>
+              <td className="py-3 text-white font-bold">Surface Type</td>
               <td>
                 <select
                   className="w-full p-2 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"

@@ -501,17 +501,12 @@ export default function RegistrationDetails({
   };
 
   const renderSectionHeader = (num: number, title: string) => (
-    <div
-      className="flex items-center justify-between p-4 bg-gray-700 border border-gray-600 cursor-pointer hover:bg-gray-600 transition"
+    <h4 
+      className="text-lg font-bold text-white mb-3 cursor-pointer"
       onClick={() => toggleSection(num)}
     >
-      <h4 className="text-lg font-bold text-white">
-        {title}
-      </h4>
-      <span className="text-white/70">
-        {expandedSections.has(num) ? "▼" : "▶"}
-      </span>
-    </div>
+      {title} {expandedSections.has(num) ? "▼" : "▶"}
+    </h4>
   );
 
   // Determine if a field should be text-only
@@ -540,14 +535,12 @@ export default function RegistrationDetails({
     const shouldUseTextarea = type === "textarea" || (type === "text" && (key.includes("description") || key.includes("notes") || key.includes("Areas") || key.includes("Strengths") || key.includes("Limitations") || key.includes("Suitability")));
 
     return (
-      <tr className="border-b border-gray-700">
-        <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700">
-          <label className="text-sm font-medium text-white">
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </label>
+      <tr>
+        <td className="py-3 text-white font-bold">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
         </td>
-        <td className="w-2/3 p-3">
+        <td>
           {type === "select" ? (
             <select
               value={fieldValue || ""}
@@ -613,7 +606,7 @@ export default function RegistrationDetails({
                 <>
                   {form[key as keyof typeof form] && !(form[`${key}Preview` as keyof typeof form] as string) ? (
                     <div className="flex items-center gap-2 p-2 border border-gray-600 rounded bg-gray-700">
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm font-bold text-white">
                         {(form[key as keyof typeof form] as File)?.name || "File selected"}
                       </span>
                       <button
@@ -724,20 +717,21 @@ export default function RegistrationDetails({
   };
 
   return (
-    <div className="space-y-6 w-full overflow-x-hidden">
-      <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-white uppercase">
-          REGISTRATION DETAILS
-        </h3>
-      </div>
+    <div className="space-y-8 w-full overflow-x-hidden">
+      <h3 className="text-xl font-bold text-white">Registration Details</h3>
 
       {/* SECTION 1 — PERSONAL IDENTIFICATION */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(1, "PERSONAL IDENTIFICATION")}
         {expandedSections.has(1) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
                 {renderField("First Name", "firstName", "text", undefined, "Enter first name", false, true)}
                 {renderField("Initials", "initials", "text", undefined, "Enter initials")}
                 {renderField("Last Name", "lastName", "text", undefined, "Enter last name", false, true)}
@@ -770,27 +764,29 @@ export default function RegistrationDetails({
                 {renderField("Dominant Eye", "dominantEye", "select", ["Left", "Right"])}
                 {renderField("Service ID Scan Upload", "serviceIdScan", "file")}
                 {renderField("Medical Category Document Upload", "medicalCategoryDoc", "file")}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 2 — SERVICE HISTORY & QUALIFICATIONS */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(2, "SERVICE HISTORY & QUALIFICATIONS")}
         {expandedSections.has(2) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
                 {renderField("Total Years in Armed Forces", "totalYearsArmedForces", "text", undefined, "Enter years")}
                 {renderField("Total Years in Combat Role", "totalYearsCombatRole", "text", undefined, "Enter years")}
                 {renderField("Total Years in Special Forces", "totalYearsSpecialForces", "text", undefined, "Enter years")}
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Special Forces Courses (with Certificate Upload)</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Special Forces Courses (with Certificate Upload)</td>
+                  <td>
                     <div className="space-y-3">
                       {[
                         "Para SF Probation",
@@ -821,14 +817,14 @@ export default function RegistrationDetails({
                                 onChange={(e) => updateNested("sfCourses", course, e.target.checked)}
                                 className="w-4 h-4"
                               />
-                              <label className="text-sm font-medium text-gray-700 flex-1">{course}</label>
+                              <label className="text-sm font-bold text-white flex-1">{course}</label>
                             </div>
                             {courseData && (
                               <div className="ml-6 mt-2">
-                                <label className="text-xs text-gray-600 mb-1 block">Certificate Upload</label>
+                                <label className="text-xs font-bold text-white mb-1 block">Certificate Upload</label>
                                 {certificateFile ? (
                                   <div className="flex items-center gap-2 p-2 bg-white border border-gray-300 rounded">
-                                    <span className="text-xs text-gray-700 flex-1 truncate">
+                                    <span className="text-xs font-bold text-white flex-1 truncate">
                                       {certificateFile.name}
                                     </span>
                                     <button
@@ -875,8 +871,8 @@ export default function RegistrationDetails({
                                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                           />
                                         </svg>
-                                        <span className="text-sm font-medium text-gray-700">Choose File</span>
-                                        <span className="text-xs text-gray-500">(PDF, JPG, PNG)</span>
+                                        <span className="text-sm font-bold text-white">Choose File</span>
+                                        <span className="text-xs font-bold text-white">(PDF, JPG, PNG)</span>
                                       </div>
                                       <input
                                         type="file"
@@ -899,14 +895,12 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Weapon Mastery Qualification</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Weapon Mastery Qualification</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Primary Rifle</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Primary Rifle</label>
                         <select
                           value={form.primaryRifle}
                           onChange={(e) => update("primaryRifle", e.target.value)}
@@ -921,7 +915,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Secondary Weapon</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Secondary Weapon</label>
                         <select
                           value={form.secondaryWeapon}
                           onChange={(e) => update("secondaryWeapon", e.target.value)}
@@ -934,7 +928,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">LMG/MMG</label>
+                        <label className="text-xs font-bold text-white mb-1 block">LMG/MMG</label>
                         <select
                           value={form.lmgMmg}
                           onChange={(e) => update("lmgMmg", e.target.value)}
@@ -946,7 +940,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Sniper Systems</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Sniper Systems</label>
                         <select
                           value={form.sniperSystems}
                           onChange={(e) => update("sniperSystems", e.target.value)}
@@ -958,7 +952,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Underwater Weapons</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Underwater Weapons</label>
                         <select
                           value={form.underwaterWeapons}
                           onChange={(e) => update("underwaterWeapons", e.target.value)}
@@ -970,7 +964,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">CQB Weapons</label>
+                        <label className="text-xs font-bold text-white mb-1 block">CQB Weapons</label>
                         <select
                           value={form.cqbWeapons}
                           onChange={(e) => update("cqbWeapons", e.target.value)}
@@ -984,14 +978,12 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Annual Firing Scores</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Annual Firing Scores</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Rifle</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Rifle</label>
                         <input
                           type="text"
                           value={form.rifleScore}
@@ -1001,7 +993,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Pistol</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Pistol</label>
                         <input
                           type="text"
                           value={form.pistolScore}
@@ -1011,7 +1003,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Night Firing</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Night Firing</label>
                         <input
                           type="text"
                           value={form.nightFiringScore}
@@ -1021,7 +1013,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Moving Target</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Moving Target</label>
                         <input
                           type="text"
                           value={form.movingTargetScore}
@@ -1033,24 +1025,26 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 3 — OPERATIONAL DEPLOYMENT RECORD */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(3, "OPERATIONAL DEPLOYMENT RECORD")}
         {expandedSections.has(3) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Terrain Deployment Exposure</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Terrain Deployment Exposure</td>
+                  <td>
                     <div className="space-y-2">
                       {[
                         "High Altitude",
@@ -1068,17 +1062,15 @@ export default function RegistrationDetails({
                             onChange={(e) => updateNested("terrainExposure", terrain, e.target.checked)}
                             className="w-4 h-4"
                           />
-                          <label className="text-sm text-gray-700">{terrain}</label>
+                          <label className="text-sm font-bold text-white">{terrain}</label>
                         </div>
                       ))}
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Mission Exposure</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Mission Exposure</td>
+                  <td>
                     <div className="space-y-2">
                       {[
                         "Counter-Terror",
@@ -1099,20 +1091,18 @@ export default function RegistrationDetails({
                             onChange={(e) => updateNested("missionExposure", mission, e.target.checked)}
                             className="w-4 h-4"
                           />
-                          <label className="text-sm text-gray-700">{mission}</label>
+                          <label className="text-sm font-bold text-white">{mission}</label>
                         </div>
                       ))}
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Load Carriage</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Load Carriage</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Typical Load (kg)</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Typical Load (kg)</label>
                         <input
                           type="number"
                           value={form.typicalLoad}
@@ -1122,7 +1112,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Maximum Load (kg)</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Maximum Load (kg)</label>
                         <input
                           type="number"
                           value={form.maximumLoad}
@@ -1132,7 +1122,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Longest Mission Duration</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Longest Mission Duration</label>
                         <input
                           type="text"
                           value={form.longestMissionDuration}
@@ -1142,7 +1132,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Max Continuous Movement Under Load</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Max Continuous Movement Under Load</label>
                         <input
                           type="text"
                           value={form.maxContinuousMovement}
@@ -1154,14 +1144,12 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Night Operations</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Night Operations</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Night Ops per Month</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Night Ops per Month</label>
                         <input
                           type="number"
                           value={form.nightOpsPerMonth}
@@ -1171,7 +1159,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">NVD Proficiency</label>
+                        <label className="text-xs font-bold text-white mb-1 block">NVD Proficiency</label>
                         <select
                           value={form.nvdProficiency}
                           onChange={(e) => update("nvdProficiency", e.target.value)}
@@ -1185,7 +1173,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Night Navigation Rating</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Night Navigation Rating</label>
                         <select
                           value={form.nightNavigationRating}
                           onChange={(e) => update("nightNavigationRating", e.target.value)}
@@ -1207,35 +1195,37 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 4 — MEDICAL, INJURY & DURABILITY */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(4, "MEDICAL, INJURY & DURABILITY")}
         {expandedSections.has(4) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
                 {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"])}
                 {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details (text only, no numbers)")}
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Injury History (5-Year Log)</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Injury History (5-Year Log)</td>
+                  <td>
                     <div className="space-y-4">
                       {Array.from({ length: 5 }).map((_, idx) => {
                         const injury = (form.injuryHistory as any[])[idx] || {};
                         return (
                           <div key={idx} className="border p-3 rounded space-y-2">
-                            <h5 className="font-medium text-gray-700">Injury {idx + 1}</h5>
+                            <h5 className="font-bold text-white">Injury {idx + 1}</h5>
                             <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <label className="text-xs text-gray-600">Body Area</label>
+                                <label className="text-xs font-bold text-white">Body Area</label>
                                 <select
                                   value={injury.bodyArea || ""}
                                   onChange={(e) => {
@@ -1243,7 +1233,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], bodyArea: e.target.value };
                                     update("injuryHistory", newHistory, false);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Head</option>
@@ -1261,7 +1251,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs text-gray-600">Injury Type</label>
+                                <label className="text-xs font-bold text-white">Injury Type</label>
                                 <select
                                   value={injury.injuryType || ""}
                                   onChange={(e) => {
@@ -1269,7 +1259,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], injuryType: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Fracture</option>
@@ -1281,7 +1271,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs text-gray-600">Severity Grade</label>
+                                <label className="text-xs font-bold text-white">Severity Grade</label>
                                 <select
                                   value={injury.severity || ""}
                                   onChange={(e) => {
@@ -1289,7 +1279,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], severity: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Mild</option>
@@ -1298,7 +1288,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs text-gray-600">Occurrence Type</label>
+                                <label className="text-xs font-bold text-white">Occurrence Type</label>
                                 <select
                                   value={injury.occurrence || ""}
                                   onChange={(e) => {
@@ -1306,7 +1296,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], occurrence: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Training</option>
@@ -1316,7 +1306,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs text-gray-600">Recurrence</label>
+                                <label className="text-xs font-bold text-white">Recurrence</label>
                                 <select
                                   value={injury.recurrence || ""}
                                   onChange={(e) => {
@@ -1324,7 +1314,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], recurrence: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Yes</option>
@@ -1332,7 +1322,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div className="col-span-2">
-                                <label className="text-xs text-gray-600">Treatment Received</label>
+                                <label className="text-xs font-bold text-white">Treatment Received</label>
                                 <textarea
                                   value={injury.treatment || ""}
                                   onChange={(e) => {
@@ -1340,13 +1330,13 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], treatment: e.target.value };
                                     update("injuryHistory", newHistory, false);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm resize-vertical"
+                                  className="w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold resize-vertical"
                                   placeholder="Enter treatment details"
                                   rows={2}
                                 />
                               </div>
                               <div className="col-span-2">
-                                <label className="text-xs text-gray-600">Rehab Status</label>
+                                <label className="text-xs font-bold text-white">Rehab Status</label>
                                 <select
                                   value={injury.rehab || ""}
                                   onChange={(e) => {
@@ -1354,7 +1344,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], rehab: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Completed</option>
@@ -1369,11 +1359,9 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Chronic Conditions</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Chronic Conditions</td>
+                  <td>
                     <div className="space-y-2">
                       {[
                         "Lower Back Issues",
@@ -1392,20 +1380,18 @@ export default function RegistrationDetails({
                             onChange={(e) => updateNested("chronicConditions", condition, e.target.checked)}
                             className="w-4 h-4"
                           />
-                          <label className="text-sm text-gray-700">{condition}</label>
+                          <label className="text-sm font-bold text-white">{condition}</label>
                         </div>
                       ))}
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Pain Mapping</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Pain Mapping</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Pain Location</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Pain Location</label>
                         <input
                           type="text"
                           value={form.painLocation}
@@ -1415,7 +1401,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Pain Intensity</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Pain Intensity</label>
                         <select
                           value={form.painIntensity}
                           onChange={(e) => update("painIntensity", e.target.value)}
@@ -1435,11 +1421,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Pain Triggers</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Pain Triggers</label>
                         <textarea
                           value={form.painTriggers}
                           onChange={(e) => update("painTriggers", filterTextOnly(e.target.value), true)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
+                          className="w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold resize-vertical"
                           rows={3}
                           placeholder="Enter triggers (text only, no numbers)"
                         />
@@ -1447,27 +1433,29 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 5 — SLEEP, HYDRATION & RECOVERY */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(5, "SLEEP, HYDRATION & RECOVERY")}
         {expandedSections.has(5) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Sleep Profile</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Sleep Profile</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Average Sleep Hours</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Average Sleep Hours</label>
                         <input
                           type="number"
                           value={form.avgSleepHours}
@@ -1477,7 +1465,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Sleep Quality</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Sleep Quality</label>
                         <select
                           value={form.sleepQuality}
                           onChange={(e) => update("sleepQuality", e.target.value)}
@@ -1491,7 +1479,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Sleep Disruptions</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Sleep Disruptions</label>
                         <select
                           value={form.sleepDisruptions}
                           onChange={(e) => update("sleepDisruptions", e.target.value)}
@@ -1506,7 +1494,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Sleep Deprivation Exposure</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Sleep Deprivation Exposure</label>
                         <select
                           value={form.sleepDeprivationExposure}
                           onChange={(e) => update("sleepDeprivationExposure", e.target.value)}
@@ -1523,14 +1511,12 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Hydration</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Hydration</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Water Intake</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Water Intake</label>
                         <input
                           type="text"
                           value={form.waterIntake}
@@ -1540,7 +1526,7 @@ export default function RegistrationDetails({
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Electrolyte Use</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Electrolyte Use</label>
                         <select
                           value={form.electrolyteUse}
                           onChange={(e) => update("electrolyteUse", e.target.value)}
@@ -1553,7 +1539,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Hydration Score</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Hydration Score</label>
                         <select
                           value={form.hydrationScore}
                           onChange={(e) => update("hydrationScore", e.target.value)}
@@ -1575,14 +1561,12 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Recovery</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Recovery</td>
+                  <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Physiotherapy Frequency</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Physiotherapy Frequency</label>
                         <select
                           value={form.physiotherapyFrequency}
                           onChange={(e) => update("physiotherapyFrequency", e.target.value)}
@@ -1597,7 +1581,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Manual Therapy</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Manual Therapy</label>
                         <select
                           value={form.manualTherapy}
                           onChange={(e) => update("manualTherapy", e.target.value)}
@@ -1610,7 +1594,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Hot/Cold Therapy</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Hot/Cold Therapy</label>
                         <select
                           value={form.hotColdTherapy}
                           onChange={(e) => update("hotColdTherapy", e.target.value)}
@@ -1623,7 +1607,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Breathing Drills</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Breathing Drills</label>
                         <select
                           value={form.breathingDrills}
                           onChange={(e) => update("breathingDrills", e.target.value)}
@@ -1636,7 +1620,7 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-gray-600 mb-1 block">Supplement Use</label>
+                        <label className="text-xs font-bold text-white mb-1 block">Supplement Use</label>
                         <select
                           value={form.supplementUse}
                           onChange={(e) => update("supplementUse", e.target.value)}
@@ -1651,24 +1635,26 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 6 — TRAINING LOAD & DUTY LOAD */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(6, "TRAINING LOAD & DUTY LOAD")}
         {expandedSections.has(6) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Physical Training Load</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Physical Training Load</td>
+                  <td>
                     <div className="space-y-3">
                       {[
                         { key: "runningVolume", label: "Running Volume", placeholder: "Enter volume per week" },
@@ -1681,7 +1667,7 @@ export default function RegistrationDetails({
                         { key: "airborneTasks", label: "Airborne Tasks", placeholder: "Enter tasks per week" },
                       ].map((field) => (
                         <div key={field.key}>
-                          <label className="text-xs text-gray-600 mb-1 block">{field.label}</label>
+                          <label className="text-xs font-bold text-white mb-1 block">{field.label}</label>
                           <input
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
@@ -1694,11 +1680,9 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Duty Load</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Duty Load</td>
+                  <td>
                     <div className="space-y-3">
                       {[
                         { key: "guardDuty", label: "Guard Duty", placeholder: "Enter hours per week" },
@@ -1707,7 +1691,7 @@ export default function RegistrationDetails({
                         { key: "standToHoursAltitude", label: "Stand-To Hours at Altitude", placeholder: "Enter hours per week" },
                       ].map((field) => (
                         <div key={field.key}>
-                          <label className="text-xs text-gray-600 mb-1 block">{field.label}</label>
+                          <label className="text-xs font-bold text-white mb-1 block">{field.label}</label>
                           <input
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
@@ -1720,26 +1704,28 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 7 — SELF-ASSESSMENT */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(7, "SELF-ASSESSMENT")}
         {expandedSections.has(7) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
                 {renderField("Strength Areas", "strengthAreas", "textarea", undefined, "Enter strength areas (text only, no numbers)")}
                 {renderField("Weak Areas", "weakAreas", "textarea", undefined, "Enter weak areas (text only, no numbers)")}
-                <tr className="border-b border-gray-700">
-                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
-                    <label className="text-sm font-medium text-gray-900">Terrain Readiness (1–10)</label>
-                  </td>
-                  <td className="w-2/3 p-3">
+                <tr>
+                  <td className="py-3 text-white font-bold align-top">Terrain Readiness (1–10)</td>
+                  <td>
                     <div className="space-y-3">
                       {[
                         { key: "terrainReadinessHighAltitude", label: "High Altitude" },
@@ -1749,7 +1735,7 @@ export default function RegistrationDetails({
                         { key: "terrainReadinessUrban", label: "Urban" },
                       ].map((field) => (
                         <div key={field.key}>
-                          <label className="text-xs text-gray-600 mb-1 block">{field.label}</label>
+                          <label className="text-xs font-bold text-white mb-1 block">{field.label}</label>
                           <select
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
@@ -1773,49 +1759,54 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 {renderField("Mission Readiness Score (1–10)", "missionReadinessScore", "select", ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"])}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* SECTION 8 — COMMANDER ASSESSMENT */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         {renderSectionHeader(8, "COMMANDER ASSESSMENT")}
         {expandedSections.has(8) && (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full border-collapse min-w-[500px]">
-              <tbody>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-white font-bold border-b border-gray-700">
+                <th className="py-3">Parameter</th>
+                <th className="py-3">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
                 {renderField("Observed Strengths", "observedStrengths", "textarea", undefined, "Enter observed strengths (text only, no numbers)")}
                 {renderField("Observed Limitations", "observedLimitations", "textarea", undefined, "Enter observed limitations (text only, no numbers)")}
                 {renderField("Terrain Suitability", "terrainSuitability", "textarea", undefined, "Enter terrain suitability (text only, no numbers)")}
                 {renderField("Deployment Readiness", "deploymentReadiness", "select", ["Ready", "Conditional", "Not Ready"])}
                 {renderField("Requalification Requirement", "requalificationRequirement", "select", ["Yes", "No", "Partial"])}
                 {renderField("Recommended S&C Focus Areas", "recommendedScFocusAreas", "textarea", undefined, "Enter recommended focus areas (text only, no numbers)")}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         )}
-      </div>
+      </section>
 
       {/* Existing fields that should remain */}
-      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
-        <div className="p-4 bg-gray-100 border-b border-gray-300">
-          <h4 className="text-lg font-bold text-gray-900">ADDITIONAL DETAILS</h4>
-        </div>
-        <div className="overflow-x-auto -mx-6 px-6">
-          <table className="w-full border-collapse min-w-[500px]">
-            <tbody>
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">ADDITIONAL DETAILS</h4>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-white font-bold border-b border-gray-700">
+              <th className="py-3">Parameter</th>
+              <th className="py-3">Description</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-700">
               {renderField("Contact Number", "contact", "text", undefined, "Enter 10-digit contact number")}
               {renderField("Email ID", "email", "text", undefined, "Enter email address")}
               {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department (text only)")}
               
               {/* --- DATE FIELD HERE --- */}
               {renderField("Date of Assessment", "dateOfAssessment", "date-masked")}
-            </tbody>
-          </table>
-        </div>
-      </div>
+          </tbody>
+        </table>
+      </section>
 
       {/* Save Button */}
       <div className="flex justify-end gap-3">

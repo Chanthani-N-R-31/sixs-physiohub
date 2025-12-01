@@ -117,7 +117,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
       <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
@@ -126,7 +126,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
           <tbody className="divide-y divide-gray-700">
             {/* Height Input */}
             <tr>
-              <td className="py-3 text-white font-medium">Height (cm)</td>
+              <td className="py-3 text-white font-bold">Height (cm)</td>
               <td>
                 <input
                   type="number"
@@ -144,7 +144,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Mass Input */}
             <tr>
-              <td className="py-3 text-white font-medium">Mass (kg)</td>
+              <td className="py-3 text-white font-bold">Mass (kg)</td>
               <td>
                 <input
                   type="number"
@@ -162,7 +162,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Dominant Side */}
             <tr>
-              <td className="py-3 text-white font-medium">Dominant Side</td>
+              <td className="py-3 text-white font-bold">Dominant Side</td>
               <td>
                 <select
                   className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -178,7 +178,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Foot Strike Habit */}
             <tr>
-              <td className="py-3 text-white font-medium">Foot Strike Habit</td>
+              <td className="py-3 text-white font-bold">Foot Strike Habit</td>
               <td>
                 <select
                   className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -195,7 +195,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Environment */}
             <tr>
-              <td className="py-3 text-white font-medium">Environment</td>
+              <td className="py-3 text-white font-bold">Environment</td>
               <td>
                 <select
                   className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -213,7 +213,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Footwear Type */}
             <tr>
-              <td className="py-3 text-white font-medium">Footwear Type</td>
+              <td className="py-3 text-white font-bold">Footwear Type</td>
               <td>
                 <input
                   type="text"
@@ -227,7 +227,7 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Warm-up Standardized - FIXED */}
             <tr>
-              <td className="py-3 text-white font-medium">Warm-up Standardized</td>
+              <td className="py-3 text-white font-bold">Warm-up Standardized</td>
               <td>
                 <select
                   className="w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

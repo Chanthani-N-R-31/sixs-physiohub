@@ -119,7 +119,7 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
     <div className="space-y-8">
       <div>
         <h3 className="text-xl font-bold text-white">Strength Tests – HumacROM</h3>
-        <p className="text-white/70 text-sm mt-1 font-medium">
+        <p className="text-white font-bold text-sm mt-1 font-medium">
           Measure maximal, explosive, and endurance strength across key joints.
         </p>
       </div>
@@ -132,7 +132,7 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
             <div className="mb-4 border-b border-gray-700 pb-3">
               <div className="flex justify-between items-center">
                 <h4 className="text-lg font-bold text-white">{section.title}</h4>
-                <span className="text-xs font-medium bg-gray-700 text-white/70 px-2 py-1 rounded border border-gray-600">
+                <span className="text-xs font-medium bg-gray-700 text-white font-bold px-2 py-1 rounded border border-gray-600">
                   {section.protocol}
                 </span>
               </div>
@@ -141,7 +141,7 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
             {/* Input Table */}
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+                <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
                   <th className="py-3 w-1/2">Parameter</th>
                   <th className="py-3 w-1/2">Values</th>
                 </tr>
@@ -153,9 +153,9 @@ export default function Strength({ initialData, onSave }: StrengthProps) {
 
                   return (
                     <tr key={`${section.category}-${row.key}`}>
-                      <td className="py-3 text-white font-medium">
+                      <td className="py-3 text-white font-bold">
                         {row.label}
-                        {row.unit && <span className="text-white/50 text-xs ml-1">({row.unit})</span>}
+                        {row.unit && <span className="text-white font-bold text-xs ml-1">({row.unit})</span>}
                       </td>
                       <td>
                         <input

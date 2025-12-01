@@ -124,7 +124,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Observation</th>
             </tr>
@@ -132,7 +132,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Head Tilt</td>
+              <td className="py-3 text-white font-bold">Head Tilt</td>
               <td>
                 <SelectCell
                   value={form.headTilt}
@@ -143,7 +143,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Shoulder Alignment</td>
+              <td className="py-3 text-white font-bold">Shoulder Alignment</td>
               <td>
                 <SelectCell
                   value={form.shoulderAlignment}
@@ -160,7 +160,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Trunk Alignment</td>
+              <td className="py-3 text-white font-bold">Trunk Alignment</td>
               <td>
                 <SelectCell
                   value={form.trunkAlignment}
@@ -175,7 +175,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Pelvic Alignment</td>
+              <td className="py-3 text-white font-bold">Pelvic Alignment</td>
               <td>
                 <SelectCell
                   value={form.pelvicAlignment}
@@ -186,7 +186,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Knee Alignment</td>
+              <td className="py-3 text-white font-bold">Knee Alignment</td>
               <td>
                 <SelectCell
                   value={form.kneeAlignmentAnterior}
@@ -205,7 +205,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Observation</th>
             </tr>
@@ -213,7 +213,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Head Alignment</td>
+              <td className="py-3 text-white font-bold">Head Alignment</td>
               <td>
                 <SelectCell
                   value={form.headAlignmentLat}
@@ -224,7 +224,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Shoulder Alignment</td>
+              <td className="py-3 text-white font-bold">Shoulder Alignment</td>
               <td>
                 <SelectCell
                   value={form.shoulderAlignmentLat}
@@ -235,7 +235,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Spinal Curves</td>
+              <td className="py-3 text-white font-bold">Spinal Curves</td>
               <td>
                 <SelectCell
                   value={form.spinalCurves}
@@ -246,7 +246,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Pelvic Tilt</td>
+              <td className="py-3 text-white font-bold">Pelvic Tilt</td>
               <td>
                 <SelectCell
                   value={form.pelvicTilt}
@@ -257,7 +257,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Knee Alignment</td>
+              <td className="py-3 text-white font-bold">Knee Alignment</td>
               <td>
                 <SelectCell
                   value={form.kneeAlignmentLat}

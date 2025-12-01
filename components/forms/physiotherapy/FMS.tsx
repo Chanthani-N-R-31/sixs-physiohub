@@ -205,7 +205,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
         <h4 className="text-lg font-semibold text-white mb-3">2. Hurdle Step</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -228,7 +228,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
         <h4 className="text-lg font-semibold text-white mb-3">3. Inline Lunge</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -251,7 +251,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
         <h4 className="text-lg font-semibold text-white mb-3">4. Shoulder Mobility</h4>
         <table className="w-full text-sm mb-4">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -287,7 +287,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
         <h4 className="text-lg font-semibold text-white mb-3">5. Active Straight Leg Raise (ASLR)</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
@@ -332,7 +332,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
         <h4 className="text-lg font-semibold text-white mb-3">7. Rotary Stability</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>

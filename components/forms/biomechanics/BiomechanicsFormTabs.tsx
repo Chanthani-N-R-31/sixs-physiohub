@@ -219,7 +219,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
         <div>
             <h2 className="text-3xl font-bold text-white">Biomechanics Assessment</h2>
             {/* Debugging ID display */}
-            <p className="text-xs text-white/60 mt-1 font-medium">
+            <p className="text-xs text-white font-bold mt-1 font-medium">
                 ID: {entryIdState ? entryIdState : "New Entry (Not Saved Yet)"}
             </p>
         </div>
@@ -244,7 +244,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
               className={`px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors ${
                 activeTab === tab.id
                   ? "border-b-2 border-blue-500 text-white"
-                  : "text-white/70 hover:text-white hover:bg-gray-700/50"
+                  : "text-white font-bold hover:text-white hover:bg-gray-700/50"
               }`}
             >
               {tab.label}

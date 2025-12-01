@@ -190,7 +190,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
@@ -198,7 +198,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Diagnosis</td>
+              <td className="py-3 text-white font-bold">Diagnosis</td>
               <td>
                 <InputCell
                   value={form.previousInjuriesDiagnosis}
@@ -211,7 +211,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Side</td>
+              <td className="py-3 text-white font-bold">Side</td>
               <td>
                 <SelectCell
                   value={form.previousInjuriesSide}
@@ -222,7 +222,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Duration (How long ago)</td>
+              <td className="py-3 text-white font-bold">Duration (How long ago)</td>
               <td>
                 <InputCell
                   value={form.previousInjuriesDuration}
@@ -233,7 +233,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Method of management</td>
+              <td className="py-3 text-white font-bold">Method of management</td>
               <td>
                 <SelectCell
                   value={form.previousInjuriesMethod}
@@ -244,7 +244,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Recovery status</td>
+              <td className="py-3 text-white font-bold">Recovery status</td>
               <td>
                 <SelectCell
                   value={form.previousInjuriesRecovery}
@@ -265,7 +265,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
@@ -273,7 +273,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Chief Complaints</td>
+              <td className="py-3 text-white font-bold">Chief Complaints</td>
               <td>
                 <TextareaCell
                   value={form.chiefComplaints}
@@ -287,7 +287,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">History</td>
+              <td className="py-3 text-white font-bold">History</td>
               <td>
                 <TextareaCell
                   value={form.history}
@@ -301,7 +301,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-medium">Pain severity (0-10)</td>
+              <td className="py-3 text-white font-bold">Pain severity (0-10)</td>
               <td>
                 <div className="py-2">
                   {/* Ruler Scale */}
@@ -337,7 +337,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Image</th>
             </tr>
@@ -345,7 +345,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Clinical / Imaging-based</td>
+              <td className="py-3 text-white font-bold">Clinical / Imaging-based</td>
               <td>
                 <div className="py-2">
                   {form.diagnosisImagePreview ? (
@@ -425,7 +425,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
@@ -433,7 +433,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-medium">Treatment Type</td>
+              <td className="py-3 text-white font-bold">Treatment Type</td>
               <td>
                 <SelectCell
                   value={form.modeOfTreatment}
