@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { TrashIcon, ArrowPathIcon, PencilSquareIcon, ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
 import GlassCard from "@/components/ui/GlassCard";
-import { db } from "@/lib/firebase";
-import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { collection, query, where, getDocs, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { logActivity } from "@/lib/auditLogger";
 
 interface DeletedRecord {
   id: string;
@@ -12,6 +13,8 @@ interface DeletedRecord {
   deletedBy: string;
   deletedOn: string;
   reason?: string;
+  // Optional Firestore document ID of the original record (if available)
+  docId?: string;
 }
 
 export default function DataGovernance() {
@@ -29,6 +32,21 @@ export default function DataGovernance() {
   const loadDeletedRecords = async () => {
     try {
       setLoading(true);
+
+      // Fetch all archived (soft-deleted) records so we can hide
+      // audit entries that no longer have an archived copy.
+      const archivedSnapshot = await getDocs(collection(db, "deletedPhysioAssessments"));
+      const archivedIds = new Set<string>();
+      const archivedNames = new Set<string>();
+
+      archivedSnapshot.forEach((docSnap) => {
+        archivedIds.add(docSnap.id);
+        const data = docSnap.data() as any;
+        const fullName = data?.registrationDetails?.fullName;
+        if (fullName) {
+          archivedNames.add(fullName);
+        }
+      });
 
       // Filter by action in Firestore; sort by timestamp on the client to avoid needing a composite index
       const q = query(
@@ -56,12 +74,30 @@ export default function DataGovernance() {
         const ts = data.timestamp?.toDate ? data.timestamp.toDate() : null;
         const deletedOn = ts ? ts.toLocaleString() : "Unknown";
 
+        // Try to extract original Firestore document ID if it was logged
+        // Example detail: "Deleted individual P-XXXX (Full Name) [docId=abcdef]"
+        let originalDocId: string | undefined;
+        const docIdMatch = detail.match(/\[docId=([^\]]+)\]/i);
+        if (docIdMatch && docIdMatch[1]) {
+          originalDocId = docIdMatch[1];
+        }
+
+        // Only show this deleted record in the UI if there is still
+        // a corresponding archived document we can restore from.
+        const hasArchive =
+          (originalDocId && archivedIds.has(originalDocId)) ||
+          archivedNames.has(individualName);
+        if (!hasArchive) {
+          return;
+        }
+
         results.push({
           id: docSnap.id,
           individualName,
           deletedBy,
           deletedOn,
           reason: "", // We are not capturing a free-text reason yet
+          docId: originalDocId,
         });
       });
 
@@ -78,6 +114,82 @@ export default function DataGovernance() {
       setDeletedRecords([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRestore = async (record: DeletedRecord) => {
+    if (
+      !confirm(
+        `Are you sure you want to restore the record for "${record.individualName}"? It will be moved back into the active assessments list.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      // 1) Determine which archived document to restore
+      let targetDocId: string | undefined = record.docId;
+      let archivedRef;
+
+      if (targetDocId) {
+        archivedRef = doc(db, "deletedPhysioAssessments", targetDocId);
+      } else {
+        // Fallback for older audit entries that don't have an explicit docId logged.
+        // Try to find a matching archived record by the individual's name.
+        const fallbackQuery = query(
+          collection(db, "deletedPhysioAssessments"),
+          where("registrationDetails.fullName", "==", record.individualName)
+        );
+        const fallbackSnap = await getDocs(fallbackQuery);
+
+        if (fallbackSnap.empty) {
+          alert(
+            "Archived data for this record could not be found. It may have been deleted before the archive feature was enabled."
+          );
+          return;
+        }
+
+        const firstMatch = fallbackSnap.docs[0];
+        targetDocId = firstMatch.id;
+        archivedRef = firstMatch.ref;
+      }
+
+      // 2) Load the archived document from the deleted collection
+      const archivedSnap = await getDoc(archivedRef);
+
+      if (!archivedSnap.exists()) {
+        alert("Archived data for this record could not be found. It may have already been permanently removed.");
+        return;
+      }
+
+      const archivedData = archivedSnap.data();
+
+      // 3) Restore it into the main collection with the same document ID
+      const mainRef = doc(db, "physioAssessments", targetDocId!);
+      await setDoc(mainRef, archivedData);
+
+      // 4) Remove it from the deleted collection
+      await deleteDoc(archivedRef);
+
+      // 5) Log RESTORED activity
+      const user = auth.currentUser;
+      const userName = user?.email || user?.displayName || "Admin";
+      const userId = user?.uid || "unknown";
+
+      await logActivity(
+        userId,
+        userName,
+        "RESTORED",
+        `Restored individual ${record.individualName} [docId=${targetDocId}]`
+      );
+
+      // 6) Optimistically remove from local list
+      setDeletedRecords((prev) => prev.filter((r) => r.id !== record.id));
+
+      alert(`Record for "${record.individualName}" has been successfully restored.`);
+    } catch (err) {
+      console.error("Error restoring record:", err);
+      alert("Failed to restore this record. Please try again.");
     }
   };
 
@@ -167,7 +279,7 @@ export default function DataGovernance() {
                         <td className="p-4 flex gap-2">
                           <button
                             className="flex items-center gap-1 text-white bg-green-500/80 hover:bg-green-500/90 border border-green-500/50 backdrop-blur-sm px-3 py-1.5 rounded transition-colors text-xs font-bold"
-                            onClick={() => alert("Restore logic is not implemented yet. This is a placeholder button.")}
+                            onClick={() => handleRestore(rec)}
                           >
                             <ArrowPathIcon className="w-3.5 h-3.5" /> Restore
                           </button>

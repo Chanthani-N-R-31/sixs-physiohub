@@ -39,7 +39,7 @@ export default function AdminSidebar() {
       href: "/admin/users" 
     },
     { 
-      label: "Patients", 
+      label: "Assessments", 
       icon: UserGroupIcon, 
       href: "/admin/patients" 
     },

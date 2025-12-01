@@ -7,8 +7,9 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { db } from "@/lib/firebase";
-import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { collection, query, orderBy, limit, getDocs, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { logActivity } from "@/lib/auditLogger";
 import GlassCard from "@/components/ui/GlassCard";
 
 interface Entry {
@@ -154,7 +155,35 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
     }
     
     try {
+      // Ensure we have the latest full data before deleting
+      let entryData = entry.fullData;
+      if (!entryData) {
+        const docRef = doc(db, "physioAssessments", entry.fullId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          entryData = { id: docSnap.id, ...docSnap.data() };
+        } else {
+          alert("Entry not found. It may have already been deleted.");
+          return;
+        }
+      }
+
+      // 1) Move the document to an archive collection for potential restore
+      await setDoc(doc(db, "deletedPhysioAssessments", entry.fullId), entryData);
+
+      // 2) Delete from the main collection
       await deleteDoc(doc(db, "physioAssessments", entry.fullId));
+
+      // 3) Log the deletion with the underlying docId for Governance restore
+      const userName = auth.currentUser?.email || auth.currentUser?.displayName || "Admin";
+      const userId = auth.currentUser?.uid || "unknown";
+      await logActivity(
+        userId,
+        userName,
+        "DELETED",
+        `Deleted individual P-${entry.id} (${entry.name}) [docId=${entry.fullId}]`
+      );
+
       // Remove from local state
       setEntries((prev) => prev.filter((e) => e.fullId !== entry.fullId));
       // Reload data to update stats
