@@ -2,28 +2,26 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface SpatiotemporalProps {
+interface LoadCarriageProps {
   initialData?: any;
   onSave?: (data: any) => void;
 }
 
-export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalProps) {
-  const metrics = [
-    { key: "speed", label: "Speed (m/s)" },
-    { key: "cadence", label: "Cadence (steps/min)" },
-    { key: "contactTime", label: "Contact Time (ms)" },
-    { key: "flightTime", label: "Flight Time (ms)" },
-    { key: "dutyFactor", label: "Duty Factor (%)" },
-    { key: "asymmetryIndex", label: "Asymmetry Index (%)" },
+export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps) {
+  const rows = [
+    { key: "deltaSpeed", label: "Speed (m/s)" },
+    { key: "deltaContactTime", label: "Contact time (ms/%)" },
+    { key: "deltaTibialAcceleration", label: "Tibial acceleration (g)" },
+    { key: "deltaTrunkSway", label: "Trunk sway (°/g)" },
+    { key: "loadEffectIndex", label: "Load Effect Index (%)" },
   ];
 
   const [form, setForm] = useState({
-    speed: initialData?.speed ?? "",
-    cadence: initialData?.cadence ?? "",
-    contactTime: initialData?.contactTime ?? "",
-    flightTime: initialData?.flightTime ?? "",
-    dutyFactor: initialData?.dutyFactor ?? "",
-    asymmetryIndex: initialData?.asymmetryIndex ?? "",
+    deltaSpeed: initialData?.deltaSpeed ?? "",
+    deltaContactTime: initialData?.deltaContactTime ?? "",
+    deltaTibialAcceleration: initialData?.deltaTibialAcceleration ?? "",
+    deltaTrunkSway: initialData?.deltaTrunkSway ?? "",
+    loadEffectIndex: initialData?.loadEffectIndex ?? "",
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -32,12 +30,11 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
   useEffect(() => {
     if (initialData) {
       setForm({
-        speed: initialData.speed ?? "",
-        cadence: initialData.cadence ?? "",
-        contactTime: initialData.contactTime ?? "",
-        flightTime: initialData.flightTime ?? "",
-        dutyFactor: initialData.dutyFactor ?? "",
-        asymmetryIndex: initialData.asymmetryIndex ?? "",
+        deltaSpeed: initialData.deltaSpeed ?? "",
+        deltaContactTime: initialData.deltaContactTime ?? "",
+        deltaTibialAcceleration: initialData.deltaTibialAcceleration ?? "",
+        deltaTrunkSway: initialData.deltaTrunkSway ?? "",
+        loadEffectIndex: initialData.loadEffectIndex ?? "",
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -50,12 +47,11 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
 
   const handleSave = () => {
     const dataToSave = {
-      speed: form.speed ? parseFloat(form.speed as string) : undefined,
-      cadence: form.cadence ? parseFloat(form.cadence as string) : undefined,
-      contactTime: form.contactTime ? parseFloat(form.contactTime as string) : undefined,
-      flightTime: form.flightTime ? parseFloat(form.flightTime as string) : undefined,
-      dutyFactor: form.dutyFactor ? parseFloat(form.dutyFactor as string) : undefined,
-      asymmetryIndex: form.asymmetryIndex ? parseFloat(form.asymmetryIndex as string) : undefined,
+      deltaSpeed: form.deltaSpeed ? parseFloat(form.deltaSpeed as string) : undefined,
+      deltaContactTime: form.deltaContactTime ? parseFloat(form.deltaContactTime as string) : undefined,
+      deltaTibialAcceleration: form.deltaTibialAcceleration ? parseFloat(form.deltaTibialAcceleration as string) : undefined,
+      deltaTrunkSway: form.deltaTrunkSway ? parseFloat(form.deltaTrunkSway as string) : undefined,
+      loadEffectIndex: form.loadEffectIndex ? parseFloat(form.loadEffectIndex as string) : undefined,
       assessmentFindings: form.assessmentFindings || undefined,
     };
 
@@ -68,7 +64,7 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Spatiotemporal Metrics</h3>
+      <h3 className="text-xl font-semibold text-gray-900">Load-Carriage Effects</h3>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
         <table className="w-full text-sm">
@@ -80,20 +76,20 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
           </thead>
 
           <tbody className="divide-y">
-            {metrics.map((metric) => (
-              <tr key={metric.key}>
-                <td className="py-2 text-gray-900">{metric.label}</td>
+            {rows.map((row) => (
+              <tr key={row.key}>
+                <td className="py-2 text-gray-900">{row.label}</td>
                 <td>
                   <input
                     type="number"
                     step="0.1"
                     className="input-field"
                     placeholder="Enter value"
-                    value={form[metric.key as keyof typeof form] as string}
+                    value={form[row.key as keyof typeof form] as string}
                     onChange={(e) => {
                       const val = e.target.value;
                       if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                        update(metric.key, val);
+                        update(row.key, val);
                       }
                     }}
                   />
@@ -133,3 +129,5 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
     </div>
   );
 }
+
+

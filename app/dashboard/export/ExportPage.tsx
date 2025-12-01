@@ -5,10 +5,8 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs, getDoc, doc, query, orderBy, onSnapshot } from "firebase/firestore";
 import {
   loadAllAssessmentData,
-  formatExportData,
-  convertToCSV,
-  downloadCSV,
-  downloadExcelCSV,
+  exportPhysiotherapyToCSV,
+  downloadPhysiotherapyReport,
 } from "@/lib/exportData";
 
 interface Patient {
@@ -146,20 +144,20 @@ export default function ExportPage() {
       
       // Load data based on filters
       if (selectedPatient) {
-        // Load specific patient from all domains
         rawData = await loadAllAssessmentData(selectedPatient);
         
-        // Filter by domain if specific domain selected
-        if (domainFilter === "specific") {
-          rawData = rawData.filter(item => item._domain === specificDomain);
+        if (domainFilter === "specific" && specificDomain !== "Physiotherapy") {
+          alert("Structured export currently supports Physiotherapy domain only. Please select 'All Domains' or 'Physiotherapy'.");
+          setIsGenerating(false);
+          return;
         }
       } else {
-        // Load all patients
         rawData = await loadAllAssessmentData();
         
-        // Filter by domain if specific domain selected
-        if (domainFilter === "specific") {
-          rawData = rawData.filter(item => item._domain === specificDomain);
+        if (domainFilter === "specific" && specificDomain !== "Physiotherapy") {
+          alert("Structured export currently supports Physiotherapy domain only. Please select 'All Domains' or 'Physiotherapy'.");
+          setIsGenerating(false);
+          return;
         }
       }
 
@@ -169,30 +167,29 @@ export default function ExportPage() {
         return;
       }
 
-      // Format data for export
-      const flatData = formatExportData(rawData) as Record<string, any>[];
+      // Use the new structured export function for Physiotherapy
+      const csvString = exportPhysiotherapyToCSV(rawData, "physiotherapy_report");
       
-      // Generate CSV
-      const csvString = convertToCSV(flatData);
+      if (!csvString) {
+        alert("No physiotherapy data found to export.");
+        setIsGenerating(false);
+        return;
+      }
       
       // Determine filename
-      let filename = "assessments_export";
+      let filename = "physiotherapy_report";
       if (selectedPatient) {
         const patient = patients.find(p => p.id === selectedPatient);
-        filename = patient ? `patient_${patient.name.replace(/\s+/g, "_")}` : "patient_export";
-      }
-      if (domainFilter === "specific") {
-        filename += `_${specificDomain.toLowerCase()}`;
-      }
-      
-      // Download based on format
-      if (exportFormat === "xlsx") {
-        downloadExcelCSV(csvString, filename);
-      } else {
-        downloadCSV(csvString, filename);
+        filename = patient 
+          ? `physiotherapy_report_${patient.name.replace(/\s+/g, "_")}` 
+          : "physiotherapy_report";
       }
       
-      alert(`Export completed! ${rawData.length} record(s) exported.`);
+      // Download the clean, structured report
+      downloadPhysiotherapyReport(csvString, filename);
+      
+      const physioCount = rawData.filter(d => d._domain === 'Physiotherapy' || !d._domain).length;
+      alert(`Export completed! ${physioCount} record(s) exported.`);
       
     } catch (error) {
       console.error("Export failed:", error);

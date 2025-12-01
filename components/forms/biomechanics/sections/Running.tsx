@@ -188,3 +188,5 @@ export default function Running({ initialData, onSave }: RunningProps) {
     </div>
   );
 }
+
+
