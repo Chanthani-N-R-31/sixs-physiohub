@@ -51,19 +51,7 @@ export default function DashboardLayout({
 
   return (
     <DashboardContext.Provider value={{ activeTab, setActiveTab }}>
-      <div
-        className={`${inter.className} flex min-h-screen relative overflow-hidden`}
-        style={{
-          backgroundImage: 'url(/new4.webp)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-        }}
-      >
-        {/* Overlay for better readability */}
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
-        
+      <div className={`${inter.className} flex min-h-screen bg-gray-900 relative overflow-hidden`}>
         {/* Sidebar */}
         <div className="relative z-10">
           <Sidebar />

@@ -58,23 +58,23 @@ export default function Running({ initialData, onSave }: RunningProps) {
     <div className="space-y-8">
       <h3 className="text-xl font-bold text-white">Running / Gait Assessment</h3>
 
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+      <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
-              <th className="py-2">Parameter</th>
-              <th className="py-2">Values</th>
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+              <th className="py-3">Parameter</th>
+              <th className="py-3">Values</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-2 text-gray-900">Running Speed (m/s)</td>
+              <td className="py-3 text-white font-medium">Running Speed (m/s)</td>
               <td>
                 <input
                   type="number"
                   step="0.1"
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter running speed"
                   value={form.runningSpeed}
                   onChange={(e) => {
@@ -87,12 +87,12 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Cadence (steps/min)</td>
+              <td className="py-3 text-white font-medium">Cadence (steps/min)</td>
               <td>
                 <input
                   type="number"
                   step="0.1"
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter cadence"
                   value={form.cadence}
                   onChange={(e) => {
@@ -105,12 +105,12 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Stride Length (m)</td>
+              <td className="py-3 text-white font-medium">Stride Length (m)</td>
               <td>
                 <input
                   type="number"
                   step="0.1"
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter stride length"
                   value={form.strideLength}
                   onChange={(e) => {
@@ -123,12 +123,12 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Load Condition (% BW)</td>
+              <td className="py-3 text-white font-medium">Load Condition (% BW)</td>
               <td>
                 <input
                   type="number"
                   step="0.1"
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter load condition"
                   value={form.loadCondition}
                   onChange={(e) => {
@@ -141,17 +141,17 @@ export default function Running({ initialData, onSave }: RunningProps) {
               </td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Surface Type</td>
+              <td className="py-3 text-white font-medium">Surface Type</td>
               <td>
                 <select
-                  className="input-field"
+                  className="w-full p-2 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
                   value={form.surfaceType}
                   onChange={(e) => update("surfaceType", e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Track">Track</option>
-                  <option value="Trail">Trail</option>
-                  <option value="Sand">Sand</option>
+                  <option value="" className="text-gray-900">Select</option>
+                  <option value="Track" className="text-gray-900">Track</option>
+                  <option value="Trail" className="text-gray-900">Trail</option>
+                  <option value="Sand" className="text-gray-900">Sand</option>
                 </select>
               </td>
             </tr>
@@ -160,10 +160,10 @@ export default function Running({ initialData, onSave }: RunningProps) {
       </div>
 
       {/* Assessment Findings */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+      <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
         <textarea
-          className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
+          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings"
           value={form.assessmentFindings}
@@ -174,13 +174,13 @@ export default function Running({ initialData, onSave }: RunningProps) {
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-300 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-3 bg-blue-900 text-white rounded-lg shadow-lg hover:bg-blue-800 transition-all font-bold border border-blue-800"
         >
           Save Section
         </button>
@@ -188,5 +188,3 @@ export default function Running({ initialData, onSave }: RunningProps) {
     </div>
   );
 }
-
-

@@ -337,18 +337,18 @@ export default function DashboardPage() {
               {!["Physiotherapy", "Biomechanics", "Physiology", "Nutrition", "Psychology"].includes(selectedDomain || "") && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-white">
                       {selectedDomain} Assessment
                     </h2>
                     <button
                       onClick={handleBackFromForm}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                      className="px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-lg hover:bg-white/30 transition-all border border-white/30"
                     >
                       ← Back
                     </button>
                   </div>
-                  <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-                    <p className="text-gray-600">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/30">
+                    <p className="text-white/70">
                       {selectedDomain} form coming soon...
                     </p>
                   </div>

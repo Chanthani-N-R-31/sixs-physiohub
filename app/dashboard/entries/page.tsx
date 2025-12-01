@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs, deleteDoc, doc } from "firebase/firestore";
-import GlassCard from "@/components/ui/GlassCard";
 
 interface EntriesPageProps {
   onNewEntry?: () => void;
@@ -122,14 +121,14 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             onClick={loadEntries}
-            className="px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-lg font-bold hover:bg-white/20 transition-all shadow-lg border border-white/30 whitespace-nowrap"
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-600 transition-all shadow-lg border border-gray-600 whitespace-nowrap"
             title="Refresh entries"
           >
             ↻ Refresh
           </button>
           <button
             onClick={onNewEntry}
-            className="px-4 py-2 bg-[#1a4d4d]/80 backdrop-blur-sm text-white rounded-lg font-bold hover:bg-[#1a4d4d]/90 transition-all shadow-lg border border-[#1a4d4d]/50 whitespace-nowrap"
+            className="px-4 py-2 bg-blue-900 text-white rounded-lg font-bold hover:bg-blue-800 transition-all shadow-lg border border-blue-800 whitespace-nowrap"
           >
             + New Entry
           </button>
@@ -137,10 +136,10 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
       </div>
 
       {/* Table */}
-      <GlassCard>
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm min-w-[800px]">
-            <thead className="text-xs text-white/70 font-bold text-left border-b border-white/20">
+            <thead className="text-xs text-white/70 font-bold text-left border-b border-gray-700">
               <tr>
                 <th className="py-3">ID</th>
                 <th className="py-3">Name</th>
@@ -151,7 +150,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-white/20">
+            <tbody className="divide-y divide-gray-700">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-white/70">
@@ -166,11 +165,11 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                 </tr>
               ) : (
                 entries.map((row) => (
-                <tr key={row.id} className="hover:bg-white/5 transition-colors">
+                <tr key={row.id} className="hover:bg-gray-700/50 transition-colors">
                   <td className="py-4 text-white font-medium">P-{row.id.slice(0, 6)}</td>
 
                   <td className="py-4 text-white flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[#1a4d4d]/80 backdrop-blur-sm text-white rounded-full flex items-center justify-center font-bold border border-[#1a4d4d]/50">
+                    <div className="w-8 h-8 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold border border-blue-800">
                       {row.name
                         .split(" ")
                         .map((n) => n[0])
@@ -187,15 +186,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                   <td className="py-4 text-white">{row.date}</td>
 
                   <td className="py-4">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-bold backdrop-blur-sm border ${
-                        row.status === "Completed"
-                          ? "bg-green-500/80 text-white border-green-500/50"
-                          : row.status === "In Progress"
-                          ? "bg-yellow-500/80 text-white border-yellow-500/50"
-                          : "bg-red-500/80 text-white border-red-500/50"
-                      }`}
-                    >
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
                       {row.status}
                     </span>
                   </td>
@@ -205,7 +196,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                       <button
                         title="View"
                         onClick={() => handleView(row.fullData)}
-                        className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                        className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
                       >
                         <EyeIcon className="w-4 h-4" />
                       </button>
@@ -213,7 +204,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                       <button
                         title="Edit"
                         onClick={() => handleEdit(row.id, row.fullData)}
-                        className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                        className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
                       >
                         <PencilIcon className="w-4 h-4" />
                       </button>
@@ -221,7 +212,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
                       <button
                         title="Delete"
                         onClick={() => handleDelete(row.id)}
-                        className="p-2 rounded-md text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-colors"
+                        className="p-2 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -232,7 +223,7 @@ export default function EntriesPage({ onNewEntry, onEdit, onView }: EntriesPageP
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 }

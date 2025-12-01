@@ -1,12 +1,25 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { MagnifyingGlassIcon, FunnelIcon, PencilIcon, TrashIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  PencilIcon,
+  TrashIcon,
+  ArrowLeftIcon,
+} from "@heroicons/react/24/outline";
 import { db, auth } from "@/lib/firebase";
-import { collection, query, orderBy, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  deleteDoc,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { logActivity } from "@/lib/auditLogger";
 import DomainCard from "@/components/ui/DomainCard";
-import GlassCard from "@/components/ui/GlassCard";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
 import PhysiologyForm from "@/components/forms/physiology/PhysiologyForm";
@@ -352,33 +365,37 @@ export default function MasterIndividualIndex() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-3xl font-bold text-white">Master Individual Index (MII)</h2>
-        <p className="text-white/70 mt-1 font-medium">Global search across all physiotherapy domains and users.</p>
+        <h2 className="text-3xl font-bold text-white">
+          Master Individual Index (MII)
+        </h2>
+        <p className="text-white/70 mt-1 font-medium">
+          Global search across all physiotherapy domains and users.
+        </p>
       </div>
 
       {/* Search & Filter Toolbar */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/70" />
-          <input 
-            type="text" 
-            placeholder="Search by Individual Name, ID, or Army Number..." 
-            className="w-full pl-10 p-3 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by Individual Name, ID, or Army Number..."
+            className="w-full pl-10 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-lg text-white font-bold hover:bg-white/20 transition-all shadow-lg">
+        <button className="flex items-center gap-2 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold hover:bg-gray-600 transition-all shadow-lg">
           <FunnelIcon className="w-5 h-5" />
           Filters
         </button>
       </div>
 
       {/* Data Table */}
-      <GlassCard className="overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-white/10 backdrop-blur-sm border-b border-white/20">
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 overflow-hidden">
+        <div className="overflow-x-auto -mx-6 px-6">
+          <table className="w-full text-sm text-left min-w-[800px]">
+            <thead className="border-b border-gray-700">
               <tr>
                 <th className="p-4 text-white/70 font-bold">Individual ID</th>
                 <th className="p-4 text-white/70 font-bold">Name</th>
@@ -389,47 +406,60 @@ export default function MasterIndividualIndex() {
                 <th className="p-4 text-white/70 font-bold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/20">
+            <tbody className="divide-y divide-gray-700">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-white/70">Loading individuals...</td>
+                  <td
+                    colSpan={7}
+                    className="p-8 text-center text-white/70"
+                  >
+                    Loading individuals...
+                  </td>
                 </tr>
               ) : filteredIndividuals.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-white/70">No individuals found.</td>
+                  <td
+                    colSpan={7}
+                    className="p-8 text-center text-white/70"
+                  >
+                    No individuals found.
+                  </td>
                 </tr>
               ) : (
                 filteredIndividuals.map((ind) => (
-                  <tr key={ind.fullId} className="hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-mono text-green-300 font-medium">{ind.id}</td>
+                  <tr
+                    key={ind.fullId}
+                    className="hover:bg-gray-700/50 transition-colors"
+                  >
+                    <td className="p-4 font-mono text-blue-300 font-medium">
+                      {ind.id}
+                    </td>
                     <td className="p-4 font-bold text-white">{ind.name}</td>
-                    <td className="p-4 text-white">{ind.rank} / {ind.unit}</td>
+                    <td className="p-4 text-white">
+                      {ind.rank} / {ind.unit}
+                    </td>
                     <td className="p-4 text-white/80">{ind.physio}</td>
-                    <td className="p-4 text-white/70">{ind.lastActivity}</td>
+                    <td className="p-4 text-white/70">
+                      {ind.lastActivity}
+                    </td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-bold border backdrop-blur-sm ${
-                        ind.status === "Completed" 
-                          ? "bg-green-500/80 text-white border-green-500/50"
-                          : ind.status === "In Progress"
-                          ? "bg-yellow-500/80 text-white border-yellow-500/50"
-                          : "bg-white/20 text-white/80 border-white/30"
-                      }`}>
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
                         {ind.status}
                       </span>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <button 
+                        <button
                           title="Edit"
                           onClick={() => handleEdit(ind)}
-                          className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                          className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
                         >
                           <PencilIcon className="w-4 h-4" />
                         </button>
-                        <button 
+                        <button
                           title="Delete"
                           onClick={() => handleDelete(ind)}
-                          className="p-2 rounded-md text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-colors"
+                          className="p-2 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>
@@ -441,8 +471,8 @@ export default function MasterIndividualIndex() {
             </tbody>
           </table>
         </div>
-      </GlassCard>
-      
+      </div>
+
       {/* Pagination Placeholder */}
       <div className="flex justify-center text-sm text-white/70 font-medium">
         Showing {filteredIndividuals.length} of {individuals.length} records

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs, where } from "firebase/firestore";
-import GlassCard from "@/components/ui/GlassCard";
 
 interface AuditLog {
   id: string;
@@ -46,7 +45,7 @@ export default function ActivityFeed() {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const timestamp = data.timestamp?.toDate ? data.timestamp.toDate() : null;
-        
+
         let timeStr = "Unknown";
         if (timestamp) {
           const now = new Date();
@@ -58,11 +57,11 @@ export default function ActivityFeed() {
           if (diffMins < 1) {
             timeStr = "Just now";
           } else if (diffMins < 60) {
-            timeStr = `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
+            timeStr = `${diffMins} min${diffMins !== 1 ? "s" : ""} ago`;
           } else if (diffHours < 24) {
-            timeStr = `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            timeStr = `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
           } else {
-            timeStr = `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            timeStr = `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
           }
         }
 
@@ -89,27 +88,41 @@ export default function ActivityFeed() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-white">Activity Feed</h2>
-          <p className="text-white/70 mt-1 font-medium">Audit log of all system actions.</p>
+          <p className="text-white/70 mt-1 font-medium">
+            Audit log of all system actions.
+          </p>
         </div>
-        
-        <select 
+
+        <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="p-2.5 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
+          className="p-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all" className="text-gray-900">All Actions</option>
-          <option value="CREATED" className="text-gray-900">Created</option>
-          <option value="UPDATED" className="text-gray-900">Updated</option>
-          <option value="DELETED" className="text-gray-900">Deleted</option>
-          <option value="RESTORED" className="text-gray-900">Restored</option>
-          <option value="CORRECTED" className="text-gray-900">Corrected</option>
+          <option value="all" className="text-gray-900">
+            All Actions
+          </option>
+          <option value="CREATED" className="text-gray-900">
+            Created
+          </option>
+          <option value="UPDATED" className="text-gray-900">
+            Updated
+          </option>
+          <option value="DELETED" className="text-gray-900">
+            Deleted
+          </option>
+          <option value="RESTORED" className="text-gray-900">
+            Restored
+          </option>
+          <option value="CORRECTED" className="text-gray-900">
+            Corrected
+          </option>
         </select>
       </div>
 
-      <GlassCard className="overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-white/10 backdrop-blur-sm border-b border-white/20 uppercase text-xs">
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 overflow-hidden">
+        <div className="overflow-x-auto -mx-6 px-6">
+          <table className="w-full text-sm text-left min-w-[700px]">
+            <thead className="border-b border-gray-700 uppercase text-xs">
               <tr>
                 <th className="p-4 text-white/70 font-bold">Timestamp</th>
                 <th className="p-4 text-white/70 font-bold">User</th>
@@ -117,28 +130,43 @@ export default function ActivityFeed() {
                 <th className="p-4 text-white/70 font-bold">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/20">
+            <tbody className="divide-y divide-gray-700">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-white/70">Loading activity logs...</td>
+                  <td colSpan={4} className="p-8 text-center text-white/70">
+                    Loading activity logs...
+                  </td>
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-white/70">No activity logs found.</td>
+                  <td colSpan={4} className="p-8 text-center text-white/70">
+                    No activity logs found.
+                  </td>
                 </tr>
               ) : (
                 logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-white/5 transition-colors">
-                    <td className="p-4 text-white/70 whitespace-nowrap">{log.time}</td>
+                  <tr
+                    key={log.id}
+                    className="hover:bg-gray-700/50 transition-colors"
+                  >
+                    <td className="p-4 text-white/70 whitespace-nowrap">
+                      {log.time}
+                    </td>
                     <td className="p-4 font-bold text-white">{log.user}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold border backdrop-blur-sm ${
-                        log.action === 'DELETED' ? 'bg-red-500/80 text-white border-red-500/50' :
-                        log.action === 'CREATED' ? 'bg-green-500/80 text-white border-green-500/50' :
-                        log.action === 'RESTORED' ? 'bg-purple-500/80 text-white border-purple-500/50' :
-                        log.action === 'CORRECTED' ? 'bg-orange-500/80 text-white border-orange-500/50' :
-                        'bg-blue-500/80 text-white border-blue-500/50'
-                      }`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-[10px] font-bold border ${
+                          log.action === "DELETED"
+                            ? "bg-red-600 text-white border-red-500"
+                            : log.action === "CREATED"
+                            ? "bg-green-600 text-white border-green-500"
+                            : log.action === "RESTORED"
+                            ? "bg-purple-600 text-white border-purple-500"
+                            : log.action === "CORRECTED"
+                            ? "bg-orange-600 text-white border-orange-500"
+                            : "bg-blue-600 text-white border-blue-500"
+                        }`}
+                      >
                         {log.action}
                       </span>
                     </td>
@@ -149,7 +177,7 @@ export default function ActivityFeed() {
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 }

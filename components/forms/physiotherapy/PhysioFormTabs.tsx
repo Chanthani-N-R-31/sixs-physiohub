@@ -165,7 +165,7 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
         {onBack && (
           <button
             onClick={onBack}
-            className="px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-lg font-bold hover:bg-white/20 transition-all shadow-lg border border-white/30"
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-600 transition-all shadow-lg border border-gray-600"
           >
             ← Back
           </button>
@@ -173,7 +173,7 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-white/30 mb-6">
+          <div className="border-b border-gray-700 mb-6">
         <div className="flex space-x-1 overflow-x-auto">
           {tabs.map((tab) => (
             <button
@@ -181,8 +181,8 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 text-sm font-bold whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "border-b-2 border-green-500 text-white"
-                  : "text-white/70 hover:text-white"
+                  ? "border-b-2 border-blue-500 text-white"
+                  : "text-white/70 hover:text-white hover:bg-gray-700/50"
               }`}
             >
               {tab.label}
@@ -192,7 +192,7 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/30">
+      <div className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
         {activeTab === "registration" && (
           <RegistrationDetails
             initialData={formData.registrationDetails}

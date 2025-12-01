@@ -35,11 +35,11 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 min-h-screen bg-white/10 backdrop-blur-md border-r border-white/30 hidden lg:flex flex-col shadow-2xl">
+    <aside className="w-64 min-h-screen bg-gray-800 border-r border-gray-700 hidden lg:flex flex-col shadow-xl">
       {/* Logo */}
       <div className="px-6 py-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-[#1a4d4d]/80 backdrop-blur-sm flex items-center justify-center text-white font-bold text-lg shadow-lg border border-[#1a4d4d]/50">
+          <div className="w-11 h-11 rounded-xl bg-blue-900 flex items-center justify-center text-white font-bold text-lg shadow-lg border border-blue-800">
             PH
           </div>
           <div>
@@ -56,8 +56,8 @@ export default function Sidebar() {
               onClick={() => setActiveTab(item.tab as typeof activeTab)}
               className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[15px] font-bold transition-all ${
                 activeTab === item.tab
-                  ? "bg-[#1a4d4d]/80 backdrop-blur-sm text-white shadow-lg border border-[#1a4d4d]/50"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                  ? "bg-gray-700 text-white shadow-lg"
+                  : "text-white/80 hover:bg-gray-700/50 hover:text-white"
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -68,7 +68,7 @@ export default function Sidebar() {
       </div>
 
       {/* Bottom items */}
-      <div className="mt-auto px-6 py-6 border-t border-white/30">
+      <div className="mt-auto px-6 py-6 border-t border-gray-700">
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 text-sm text-white/80 hover:text-white font-bold transition-colors"

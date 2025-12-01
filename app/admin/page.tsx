@@ -1,33 +1,32 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  UsersIcon, 
-  DocumentCheckIcon, 
-  TrashIcon, 
+import {
+  UsersIcon,
+  DocumentCheckIcon,
+  TrashIcon,
   ExclamationCircleIcon,
-  ChartBarIcon
+  ChartBarIcon,
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, where } from "firebase/firestore";
-import GlassCard from "@/components/ui/GlassCard";
 
-// Helper Component for Stat Cards
-function StatCard({ title, value, color, icon: Icon, loading }: any) {
+// Helper Component for Stat Cards - solid dark style
+function StatCard({ title, value, icon: Icon, loading }: any) {
   return (
-    <GlassCard>
+    <div className="bg-[#1a4d4d] p-6 rounded-xl shadow-lg">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-bold text-white/70">{title}</p>
+          <p className="text-xs font-bold text-white/80">{title}</p>
           <h3 className="text-3xl font-bold text-white mt-2">
             {loading ? "..." : value}
           </h3>
         </div>
-        <div className={`p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20`}>
-          <Icon className={`w-6 h-6 text-white`} />
+        <div className="p-3 rounded-lg bg-blue-500/20 text-white">
+          <Icon className="w-6 h-6" />
         </div>
       </div>
-    </GlassCard>
+    </div>
   );
 }
 
@@ -126,66 +125,67 @@ export default function AdminDashboard() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold text-white">Admin Overview</h1>
-          <p className="text-white/70 mt-1 font-medium">System status and key performance metrics.</p>
+          <p className="text-white/70 mt-1 font-medium">
+            System status and key performance metrics.
+          </p>
         </div>
-        <div className="text-sm text-white/60 font-medium">Last updated: Just now</div>
+        <div className="text-sm text-white/60 font-medium">
+          Last updated: Just now
+        </div>
       </div>
 
       {/* Alert Banner */}
       {recentDeletions > 0 && (
-        <GlassCard className="bg-orange-500/20 border-orange-500/50">
-          <div className="flex items-start gap-4">
-            <ExclamationCircleIcon className="w-6 h-6 text-orange-300 flex-shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-sm font-bold text-white">Governance Alert</h4>
-              <p className="text-white/90 text-sm mt-1">
-                {recentDeletions} record{recentDeletions !== 1 ? 's' : ''} {recentDeletions !== 1 ? 'have' : 'has'} been deleted in the last 24 hours. Please review the Data Governance module to ensure these deletions were authorized.
-              </p>
-            </div>
+        <div className="bg-red-900/40 border border-red-600 rounded-xl p-4 flex items-start gap-4">
+          <ExclamationCircleIcon className="w-6 h-6 text-red-300 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-sm font-bold text-white">Governance Alert</h4>
+            <p className="text-white/90 text-sm mt-1">
+              {recentDeletions} record{recentDeletions !== 1 ? "s" : ""}{" "}
+              {recentDeletions !== 1 ? "have" : "has"} been deleted in the last
+              24 hours. Please review the Data Governance module to ensure these
+              deletions were authorized.
+            </p>
           </div>
-        </GlassCard>
+        </div>
       )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Total Physios" 
-          value={totalPhysios} 
-          color="bg-green-600" 
+        <StatCard
+          title="Total Physios"
+          value={totalPhysios}
           icon={UsersIcon}
           loading={loading}
         />
-        <StatCard 
-          title="Total Individuals" 
-          value={totalIndividuals} 
-          color="bg-emerald-600" 
+        <StatCard
+          title="Total Individuals"
+          value={totalIndividuals}
           icon={UsersIcon}
           loading={loading}
         />
-        <StatCard 
-          title="Completed Assessments" 
-          value={completedAssessments} 
-          color="bg-teal-600" 
+        <StatCard
+          title="Completed Assessments"
+          value={completedAssessments}
           icon={DocumentCheckIcon}
           loading={loading}
         />
-        <StatCard 
-          title="Deleted Records" 
-          value={deletedRecords} 
-          color="bg-red-500" 
+        <StatCard
+          title="Deleted Records"
+          value={deletedRecords}
           icon={TrashIcon}
           loading={loading}
         />
       </div>
 
-      {/* Recent System Activity Stub */}
-      <GlassCard>
+      {/* System Health Placeholder */}
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
         <h3 className="text-lg font-bold text-white mb-4">System Health</h3>
-        <div className="h-32 flex items-center justify-center bg-white/5 rounded-lg border border-dashed border-white/20 text-white/60">
+        <div className="h-32 flex items-center justify-center rounded-lg border border-dashed border-gray-600 text-white/60 bg-gray-900/40">
           <ChartBarIcon className="w-6 h-6 mr-2" />
           Activity Chart Placeholder
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 }

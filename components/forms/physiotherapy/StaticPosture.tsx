@@ -78,18 +78,18 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-          error ? "border-red-500" : "border-gray-300"
+        className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+          error ? "border-red-500" : ""
         }`}
       >
-        <option value="">Select</option>
-        {options.map((opt: string) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
+          <option value="" className="text-gray-900">Select</option>
+          {options.map((opt: string) => (
+            <option key={opt} value={opt} className="text-gray-900">
+              {opt}
+            </option>
+          ))}
       </select>
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
@@ -102,13 +102,13 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
           const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
           onChange(newValue);
         }}
-        className={`w-full p-2 border rounded-md text-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
-          error ? "border-red-500" : "border-gray-300"
+        className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+          error ? "border-red-500" : ""
         }`}
         placeholder={placeholder}
         rows={rows}
       />
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
@@ -119,20 +119,20 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       </h3>
 
       {/* ===================== ANTERIOR VIEW ====================== */}
-      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Anterior View</h4>
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-bold text-white mb-3">Anterior View</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
-              <th className="py-2">Parameter</th>
-              <th className="py-2">Observation</th>
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+              <th className="py-3">Parameter</th>
+              <th className="py-3">Observation</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-2 text-gray-900">Head Tilt</td>
+              <td className="py-3 text-white font-medium">Head Tilt</td>
               <td>
                 <SelectCell
                   value={form.headTilt}
@@ -143,7 +143,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Shoulder Alignment</td>
+              <td className="py-3 text-white font-medium">Shoulder Alignment</td>
               <td>
                 <SelectCell
                   value={form.shoulderAlignment}
@@ -160,7 +160,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Trunk Alignment</td>
+              <td className="py-3 text-white font-medium">Trunk Alignment</td>
               <td>
                 <SelectCell
                   value={form.trunkAlignment}
@@ -175,7 +175,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Pelvic Alignment</td>
+              <td className="py-3 text-white font-medium">Pelvic Alignment</td>
               <td>
                 <SelectCell
                   value={form.pelvicAlignment}
@@ -186,7 +186,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Knee Alignment</td>
+              <td className="py-3 text-white font-medium">Knee Alignment</td>
               <td>
                 <SelectCell
                   value={form.kneeAlignmentAnterior}
@@ -200,20 +200,20 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       </section>
 
       {/* ===================== LATERAL VIEW ====================== */}
-      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Lateral View</h4>
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-bold text-white mb-3">Lateral View</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
-              <th className="py-2">Parameter</th>
-              <th className="py-2">Observation</th>
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+              <th className="py-3">Parameter</th>
+              <th className="py-3">Observation</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-2 text-gray-900">Head Alignment</td>
+              <td className="py-3 text-white font-medium">Head Alignment</td>
               <td>
                 <SelectCell
                   value={form.headAlignmentLat}
@@ -224,7 +224,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Shoulder Alignment</td>
+              <td className="py-3 text-white font-medium">Shoulder Alignment</td>
               <td>
                 <SelectCell
                   value={form.shoulderAlignmentLat}
@@ -235,7 +235,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Spinal Curves</td>
+              <td className="py-3 text-white font-medium">Spinal Curves</td>
               <td>
                 <SelectCell
                   value={form.spinalCurves}
@@ -246,7 +246,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Pelvic Tilt</td>
+              <td className="py-3 text-white font-medium">Pelvic Tilt</td>
               <td>
                 <SelectCell
                   value={form.pelvicTilt}
@@ -257,7 +257,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-2 text-gray-900">Knee Alignment</td>
+              <td className="py-3 text-white font-medium">Knee Alignment</td>
               <td>
                 <SelectCell
                   value={form.kneeAlignmentLat}
@@ -271,8 +271,8 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       </section>
 
       {/* ===================== ASSESSMENT FINDINGS ====================== */}
-      <section className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings / Observations</h4>
+      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings / Observations</h4>
         <TextareaCell
           value={form.observations}
           onChange={(v: string) => update("observations", v, true)}

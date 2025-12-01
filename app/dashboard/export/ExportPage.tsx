@@ -145,14 +145,14 @@ export default function ExportPage() {
                 onChange={(e) => setSelectedPatient(e.target.value)}
                 disabled={loading || isGenerating}
               >
-                <option value="" className="text-gray-900">All</option>
+                <option value="" className="bg-white/20 text-gray-900">All</option>
                 {loading ? (
-                  <option disabled className="text-gray-900">Loading patients...</option>
+                  <option disabled className="bg-white/20 text-gray-900">Loading patients...</option>
                 ) : patients.length === 0 ? (
-                  <option disabled className="text-gray-900">No entries found</option>
+                  <option disabled className="bg-white/20 text-gray-900">No entries found</option>
                 ) : (
                   patients.map((p) => (
-                    <option key={p.id} value={p.id} className="text-gray-900">
+                    <option key={p.id} value={p.id} className="bg-white/20 text-gray-900">
                       {p.name} (P-{p.id.slice(0, 6)}) {p.domain ? `- ${p.domain}` : ""}
                     </option>
                   ))
@@ -207,11 +207,11 @@ export default function ExportPage() {
                   onChange={(e) => setSpecificDomain(e.target.value)}
                   disabled={isGenerating}
                 >
-                  <option className="text-gray-900">Physiotherapy</option>
-                  <option className="text-gray-900">Biomechanics</option>
-                  <option className="text-gray-900">Physiology</option>
-                  <option className="text-gray-900">Nutrition</option>
-                  <option className="text-gray-900">Psychology</option>
+                  <option className="bg-white/20 text-gray-900">Physiotherapy</option>
+                  <option className="bg-white/20 text-gray-900">Biomechanics</option>
+                  <option className="bg-white/20 text-gray-900">Physiology</option>
+                  <option className="bg-white/20 text-gray-900">Nutrition</option>
+                  <option className="bg-white/20 text-gray-900">Psychology</option>
                 </select>
               )}
             </div>

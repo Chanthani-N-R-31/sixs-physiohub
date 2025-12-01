@@ -502,7 +502,7 @@ export default function RegistrationDetails({
 
   const renderSectionHeader = (num: number, title: string) => (
     <div
-      className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-md border border-white/30 cursor-pointer hover:bg-white/15 transition"
+      className="flex items-center justify-between p-4 bg-gray-700 border border-gray-600 cursor-pointer hover:bg-gray-600 transition"
       onClick={() => toggleSection(num)}
     >
       <h4 className="text-lg font-bold text-white">
@@ -540,9 +540,9 @@ export default function RegistrationDetails({
     const shouldUseTextarea = type === "textarea" || (type === "text" && (key.includes("description") || key.includes("notes") || key.includes("Areas") || key.includes("Strengths") || key.includes("Limitations") || key.includes("Suitability")));
 
     return (
-      <tr className="border-b border-gray-300">
-        <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50">
-          <label className="text-sm font-medium text-gray-900">
+      <tr className="border-b border-gray-700">
+        <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700">
+          <label className="text-sm font-medium text-white">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -552,7 +552,7 @@ export default function RegistrationDetails({
             <select
               value={fieldValue || ""}
               onChange={(e) => update(key, e.target.value, false)}
-              className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               disabled={readOnly}
             >
               <option value="">-</option>
@@ -570,7 +570,7 @@ export default function RegistrationDetails({
                     <img
                       src={form[`${key}Preview` as keyof typeof form] as string}
                       alt={`${label} preview`}
-                      className="max-w-full h-auto max-h-48 rounded-lg border border-gray-300"
+                      className="max-w-full h-auto max-h-48 rounded-lg border border-gray-600"
                     />
                     <button
                       type="button"
@@ -612,7 +612,7 @@ export default function RegistrationDetails({
               ) : (
                 <>
                   {form[key as keyof typeof form] && !(form[`${key}Preview` as keyof typeof form] as string) ? (
-                    <div className="flex items-center gap-2 p-2 border border-gray-300 rounded bg-gray-50">
+                    <div className="flex items-center gap-2 p-2 border border-gray-600 rounded bg-gray-700">
                       <span className="text-sm text-gray-700">
                         {(form[key as keyof typeof form] as File)?.name || "File selected"}
                       </span>
@@ -628,7 +628,7 @@ export default function RegistrationDetails({
                   <input
                     type="file"
                     onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
-                    className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     accept="image/*,.pdf"
                   />
                 </>
@@ -650,15 +650,15 @@ export default function RegistrationDetails({
                     }));
                   }
                 }}
-                className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical ${
-                  error ? "border-red-500" : "border-gray-300"
-                } ${readOnly ? "bg-gray-100" : ""}`}
+                className={`w-full p-2 border rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+                  error ? "border-red-500" : "border-gray-600"
+                } ${readOnly ? "bg-gray-600" : ""}`}
                 rows={3}
                 placeholder={placeholder}
                 readOnly={readOnly}
               />
               {error && (
-                <p className="text-red-500 text-xs mt-1">{error}</p>
+                <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>
               )}
             </>
           ) : type === "date-masked" ? (
@@ -669,14 +669,14 @@ export default function RegistrationDetails({
                 value={fieldValue || ""}
                 onChange={(e) => update(key, e.target.value, false, true)} // Trigger Date Logic
                 maxLength={10}
-                className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                  error ? "border-red-500" : "border-gray-300"
-                } ${readOnly ? "bg-gray-100" : ""}`}
+                className={`w-full p-2 border rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : "border-gray-600"
+                } ${readOnly ? "bg-gray-600" : ""}`}
                 placeholder="DD/MM/YYYY"
                 readOnly={readOnly}
               />
               {error && (
-                <p className="text-red-500 text-xs mt-1">{error}</p>
+                <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>
               )}
             </>
           ) : (
@@ -707,14 +707,14 @@ export default function RegistrationDetails({
                   }
                 }}
                 maxLength={key === "contact" ? 10 : undefined}
-                className={`w-full p-2 border rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                  error ? "border-red-500" : "border-gray-300"
-                } ${readOnly ? "bg-gray-100" : ""}`}
+                className={`w-full p-2 border rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : "border-gray-600"
+                } ${readOnly ? "bg-gray-600" : ""}`}
                 placeholder={placeholder}
                 readOnly={readOnly}
               />
               {error && (
-                <p className="text-red-500 text-xs mt-1">{error}</p>
+                <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>
               )}
             </>
           )}
@@ -732,7 +732,7 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 1 — PERSONAL IDENTIFICATION */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(1, "PERSONAL IDENTIFICATION")}
         {expandedSections.has(1) && (
           <div className="overflow-x-auto -mx-6 px-6">
@@ -777,7 +777,7 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 2 — SERVICE HISTORY & QUALIFICATIONS */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(2, "SERVICE HISTORY & QUALIFICATIONS")}
         {expandedSections.has(2) && (
           <div className="overflow-x-auto -mx-6 px-6">
@@ -786,8 +786,8 @@ export default function RegistrationDetails({
                 {renderField("Total Years in Armed Forces", "totalYearsArmedForces", "text", undefined, "Enter years")}
                 {renderField("Total Years in Combat Role", "totalYearsCombatRole", "text", undefined, "Enter years")}
                 {renderField("Total Years in Special Forces", "totalYearsSpecialForces", "text", undefined, "Enter years")}
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Special Forces Courses (with Certificate Upload)</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -813,7 +813,7 @@ export default function RegistrationDetails({
                         const courseData = (form.sfCourses as any)?.[course];
                         const certificateFile = (form.sfCourses as any)?.[course + "_cert"];
                         return (
-                          <div key={course} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                          <div key={course} className="border border-gray-600 rounded-lg p-3 bg-gray-700">
                             <div className="flex items-center gap-2 mb-2">
                               <input
                                 type="checkbox"
@@ -899,8 +899,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Weapon Mastery Qualification</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -910,7 +910,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.primaryRifle}
                           onChange={(e) => update("primaryRifle", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>AK-47</option>
@@ -925,7 +925,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.secondaryWeapon}
                           onChange={(e) => update("secondaryWeapon", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Pistol</option>
@@ -938,7 +938,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.lmgMmg}
                           onChange={(e) => update("lmgMmg", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -950,7 +950,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sniperSystems}
                           onChange={(e) => update("sniperSystems", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -962,7 +962,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.underwaterWeapons}
                           onChange={(e) => update("underwaterWeapons", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -974,7 +974,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.cqbWeapons}
                           onChange={(e) => update("cqbWeapons", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -984,8 +984,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Annual Firing Scores</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -996,7 +996,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.rifleScore}
                           onChange={(e) => update("rifleScore", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1006,7 +1006,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.pistolScore}
                           onChange={(e) => update("pistolScore", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1016,7 +1016,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.nightFiringScore}
                           onChange={(e) => update("nightFiringScore", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1026,7 +1026,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.movingTargetScore}
                           onChange={(e) => update("movingTargetScore", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1040,14 +1040,14 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 3 — OPERATIONAL DEPLOYMENT RECORD */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(3, "OPERATIONAL DEPLOYMENT RECORD")}
         {expandedSections.has(3) && (
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Terrain Deployment Exposure</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1074,8 +1074,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Mission Exposure</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1105,8 +1105,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Load Carriage</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1117,7 +1117,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.typicalLoad}
                           onChange={(e) => update("typicalLoad", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter kg"
                         />
                       </div>
@@ -1127,7 +1127,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.maximumLoad}
                           onChange={(e) => update("maximumLoad", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter kg"
                         />
                       </div>
@@ -1137,7 +1137,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.longestMissionDuration}
                           onChange={(e) => update("longestMissionDuration", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter duration"
                         />
                       </div>
@@ -1147,15 +1147,15 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.maxContinuousMovement}
                           onChange={(e) => update("maxContinuousMovement", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter details"
                         />
                       </div>
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Night Operations</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1166,7 +1166,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.nightOpsPerMonth}
                           onChange={(e) => update("nightOpsPerMonth", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter number"
                         />
                       </div>
@@ -1175,7 +1175,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.nvdProficiency}
                           onChange={(e) => update("nvdProficiency", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Beginner</option>
@@ -1189,7 +1189,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.nightNavigationRating}
                           onChange={(e) => update("nightNavigationRating", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1214,7 +1214,7 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 4 — MEDICAL, INJURY & DURABILITY */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(4, "MEDICAL, INJURY & DURABILITY")}
         {expandedSections.has(4) && (
           <div className="overflow-x-auto -mx-6 px-6">
@@ -1222,8 +1222,8 @@ export default function RegistrationDetails({
               <tbody>
                 {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"])}
                 {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details (text only, no numbers)")}
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Injury History (5-Year Log)</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1369,8 +1369,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Chronic Conditions</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1398,8 +1398,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Pain Mapping</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1410,7 +1410,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.painLocation}
                           onChange={(e) => update("painLocation", filterTextOnly(e.target.value), true)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter location (text only)"
                         />
                       </div>
@@ -1419,7 +1419,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.painIntensity}
                           onChange={(e) => update("painIntensity", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1454,14 +1454,14 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 5 — SLEEP, HYDRATION & RECOVERY */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(5, "SLEEP, HYDRATION & RECOVERY")}
         {expandedSections.has(5) && (
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Sleep Profile</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1472,7 +1472,7 @@ export default function RegistrationDetails({
                           type="number"
                           value={form.avgSleepHours}
                           onChange={(e) => update("avgSleepHours", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter hours"
                         />
                       </div>
@@ -1481,7 +1481,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sleepQuality}
                           onChange={(e) => update("sleepQuality", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Poor</option>
@@ -1495,7 +1495,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sleepDisruptions}
                           onChange={(e) => update("sleepDisruptions", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>None</option>
@@ -1510,7 +1510,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.sleepDeprivationExposure}
                           onChange={(e) => update("sleepDeprivationExposure", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>None</option>
@@ -1523,8 +1523,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Hydration</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1535,7 +1535,7 @@ export default function RegistrationDetails({
                           type="text"
                           value={form.waterIntake}
                           onChange={(e) => update("waterIntake", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter daily intake"
                         />
                       </div>
@@ -1544,7 +1544,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.electrolyteUse}
                           onChange={(e) => update("electrolyteUse", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1557,7 +1557,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.hydrationScore}
                           onChange={(e) => update("hydrationScore", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1575,8 +1575,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Recovery</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1586,7 +1586,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.physiotherapyFrequency}
                           onChange={(e) => update("physiotherapyFrequency", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Daily</option>
@@ -1601,7 +1601,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.manualTherapy}
                           onChange={(e) => update("manualTherapy", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1614,7 +1614,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.hotColdTherapy}
                           onChange={(e) => update("hotColdTherapy", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1627,7 +1627,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.breathingDrills}
                           onChange={(e) => update("breathingDrills", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1640,7 +1640,7 @@ export default function RegistrationDetails({
                         <select
                           value={form.supplementUse}
                           onChange={(e) => update("supplementUse", e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1658,14 +1658,14 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 6 — TRAINING LOAD & DUTY LOAD */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(6, "TRAINING LOAD & DUTY LOAD")}
         {expandedSections.has(6) && (
           <div className="overflow-x-auto -mx-6 px-6">
             <table className="w-full border-collapse min-w-[500px]">
               <tbody>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Physical Training Load</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1686,7 +1686,7 @@ export default function RegistrationDetails({
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder={field.placeholder}
                           />
                         </div>
@@ -1694,8 +1694,8 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Duty Load</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1712,7 +1712,7 @@ export default function RegistrationDetails({
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder={field.placeholder}
                           />
                         </div>
@@ -1727,7 +1727,7 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 7 — SELF-ASSESSMENT */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(7, "SELF-ASSESSMENT")}
         {expandedSections.has(7) && (
           <div className="overflow-x-auto -mx-6 px-6">
@@ -1735,8 +1735,8 @@ export default function RegistrationDetails({
               <tbody>
                 {renderField("Strength Areas", "strengthAreas", "textarea", undefined, "Enter strength areas (text only, no numbers)")}
                 {renderField("Weak Areas", "weakAreas", "textarea", undefined, "Enter weak areas (text only, no numbers)")}
-                <tr className="border-b border-gray-300">
-                  <td className="w-1/3 p-3 border-r border-gray-300 bg-gray-50 align-top">
+                <tr className="border-b border-gray-700">
+                  <td className="w-1/3 p-3 border-r border-gray-700 bg-gray-700 align-top">
                     <label className="text-sm font-medium text-gray-900">Terrain Readiness (1–10)</label>
                   </td>
                   <td className="w-2/3 p-3">
@@ -1753,7 +1753,7 @@ export default function RegistrationDetails({
                           <select
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           >
                             <option value="">-</option>
                             <option>1</option>
@@ -1780,7 +1780,7 @@ export default function RegistrationDetails({
       </div>
 
       {/* SECTION 8 — COMMANDER ASSESSMENT */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         {renderSectionHeader(8, "COMMANDER ASSESSMENT")}
         {expandedSections.has(8) && (
           <div className="overflow-x-auto -mx-6 px-6">
@@ -1799,7 +1799,7 @@ export default function RegistrationDetails({
       </div>
 
       {/* Existing fields that should remain */}
-      <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800">
         <div className="p-4 bg-gray-100 border-b border-gray-300">
           <h4 className="text-lg font-bold text-gray-900">ADDITIONAL DETAILS</h4>
         </div>

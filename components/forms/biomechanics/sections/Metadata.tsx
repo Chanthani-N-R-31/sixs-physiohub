@@ -114,110 +114,110 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
     <div className="space-y-8">
       <h3 className="text-xl font-bold text-white">Participant & Session Metadata</h3>
 
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
+      <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
-              <th className="py-2">Parameter</th>
-              <th className="py-2">Description</th>
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+              <th className="py-3">Parameter</th>
+              <th className="py-3">Description</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-gray-700">
             {/* Height Input */}
             <tr>
-              <td className="py-2 text-gray-900">Height (cm)</td>
+              <td className="py-3 text-white font-medium">Height (cm)</td>
               <td>
                 <input
                   type="number"
                   step="0.1"
-                  className={`input-field ${validationErrors.height ? "border-red-500" : ""}`}
+                  className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.height ? "border-red-500" : ""}`}
                   placeholder="Enter height in cm"
                   value={form.height}
                   onChange={(e) => update("height", e.target.value)}
                 />
                 {validationErrors.height && (
-                  <p className="text-red-500 text-xs mt-1">{validationErrors.height}</p>
+                  <p className="text-red-300 text-xs mt-1 font-medium">{validationErrors.height}</p>
                 )}
               </td>
             </tr>
 
             {/* Mass Input */}
             <tr>
-              <td className="py-2 text-gray-900">Mass (kg)</td>
+              <td className="py-3 text-white font-medium">Mass (kg)</td>
               <td>
                 <input
                   type="number"
                   step="0.1"
-                  className={`input-field ${validationErrors.mass ? "border-red-500" : ""}`}
+                  className={`w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.mass ? "border-red-500" : ""}`}
                   placeholder="Enter mass in kg"
                   value={form.mass}
                   onChange={(e) => update("mass", e.target.value)}
                 />
                 {validationErrors.mass && (
-                  <p className="text-red-500 text-xs mt-1">{validationErrors.mass}</p>
+                  <p className="text-red-300 text-xs mt-1 font-medium">{validationErrors.mass}</p>
                 )}
               </td>
             </tr>
 
             {/* Dominant Side */}
             <tr>
-              <td className="py-2 text-gray-900">Dominant Side</td>
+              <td className="py-3 text-white font-medium">Dominant Side</td>
               <td>
                 <select
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.dominantSide}
                   onChange={(e) => update("dominantSide", e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Right">Right</option>
-                  <option value="Left">Left</option>
+                  <option value="" className="text-gray-900">Select</option>
+                  <option value="Right" className="text-gray-900">Right</option>
+                  <option value="Left" className="text-gray-900">Left</option>
                 </select>
               </td>
             </tr>
 
             {/* Foot Strike Habit */}
             <tr>
-              <td className="py-2 text-gray-900">Foot Strike Habit</td>
+              <td className="py-3 text-white font-medium">Foot Strike Habit</td>
               <td>
                 <select
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.footStrikeHabit}
                   onChange={(e) => update("footStrikeHabit", e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Rearfoot">Rearfoot</option>
-                  <option value="Midfoot">Midfoot</option>
-                  <option value="Forefoot">Forefoot</option>
+                  <option value="" className="text-gray-900">Select</option>
+                  <option value="Rearfoot" className="text-gray-900">Rearfoot</option>
+                  <option value="Midfoot" className="text-gray-900">Midfoot</option>
+                  <option value="Forefoot" className="text-gray-900">Forefoot</option>
                 </select>
               </td>
             </tr>
 
             {/* Environment */}
             <tr>
-              <td className="py-2 text-gray-900">Environment</td>
+              <td className="py-3 text-white font-medium">Environment</td>
               <td>
                 <select
-                  className="input-field"
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.environment}
                   onChange={(e) => update("environment", e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Lab">Lab</option>
-                  <option value="Track">Track</option>
-                  <option value="Trail">Trail</option>
-                  <option value="Urban">Urban</option>
+                  <option value="" className="text-gray-900">Select</option>
+                  <option value="Lab" className="text-gray-900">Lab</option>
+                  <option value="Track" className="text-gray-900">Track</option>
+                  <option value="Trail" className="text-gray-900">Trail</option>
+                  <option value="Urban" className="text-gray-900">Urban</option>
                 </select>
               </td>
             </tr>
 
             {/* Footwear Type */}
             <tr>
-              <td className="py-2 text-gray-900">Footwear Type</td>
+              <td className="py-3 text-white font-medium">Footwear Type</td>
               <td>
                 <input
                   type="text"
-                  className="input-field"
+                  className="w-full p-2 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
                   placeholder="Enter footwear type"
                   value={form.footwearType}
                   onChange={(e) => update("footwearType", e.target.value)}
@@ -227,17 +227,16 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
 
             {/* Warm-up Standardized - FIXED */}
             <tr>
-              <td className="py-2 text-gray-900">Warm-up Standardized</td>
+              <td className="py-3 text-white font-medium">Warm-up Standardized</td>
               <td>
                 <select
-                  className="input-field"
-                  /* FIX 4: Bind directly to the string value in state */
+                  className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={form.warmupStandardized}
                   onChange={(e) => update("warmupStandardized", e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
+                  <option value="" className="text-gray-900">Select</option>
+                  <option value="Yes" className="text-gray-900">Yes</option>
+                  <option value="No" className="text-gray-900">No</option>
                 </select>
               </td>
             </tr>
@@ -246,10 +245,10 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
       </div>
 
       {/* Assessment Findings */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+      <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
         <textarea
-          className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
+          className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings"
           value={form.assessmentFindings}
@@ -260,13 +259,13 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-300 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-3 bg-blue-900 text-white rounded-lg shadow-lg hover:bg-blue-800 transition-all font-bold border border-blue-800"
         >
           Save Section
         </button>
@@ -274,5 +273,3 @@ export default function Metadata({ initialData, onSave }: MetadataProps) {
     </div>
   );
 }
-
-

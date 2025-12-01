@@ -16,7 +16,7 @@ const ScoreSelect = memo(({ value, onChange, options }: any) => {
           onChange(newValue);
         }
       }}
-      className="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
+      className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
     >
       <option value="">--</option>
       {options.map((opt: { value: string; label: string }) => (
@@ -192,8 +192,8 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       <h3 className="text-xl font-bold text-white">Functional Movement Screening (FMS)</h3>
 
       {/* ===================== DEEP SQUAT ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">1. Deep Squat</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">1. Deep Squat</h4>
         <DeepSquatScore
           value={form.deepSquat}
           onChange={(v: any) => update("deepSquat", v)}
@@ -201,22 +201,22 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== HURDLE STEP ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">2. Hurdle Step</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">2. Hurdle Step</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             <tr>
-              <td className="py-2 text-gray-900">Left</td>
+              <td className="py-2 text-white">Left</td>
               <td><HurdleStepScore value={form.hurdleL} onChange={(v: any) => update("hurdleL", v)} /></td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Right</td>
+              <td className="py-2 text-white">Right</td>
               <td><HurdleStepScore value={form.hurdleR} onChange={(v: any) => update("hurdleR", v)} /></td>
             </tr>
           </tbody>
@@ -224,22 +224,22 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== INLINE LUNGE ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">3. Inline Lunge</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">3. Inline Lunge</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             <tr>
-              <td className="py-2 text-gray-900">Left</td>
+              <td className="py-2 text-white">Left</td>
               <td><InlineLungeScore value={form.lungeL} onChange={(v: any) => update("lungeL", v)} /></td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Right</td>
+              <td className="py-2 text-white">Right</td>
               <td><InlineLungeScore value={form.lungeR} onChange={(v: any) => update("lungeR", v)} /></td>
             </tr>
           </tbody>
@@ -247,33 +247,33 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== SHOULDER MOBILITY ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">4. Shoulder Mobility</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">4. Shoulder Mobility</h4>
         <table className="w-full text-sm mb-4">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             <tr>
-              <td className="py-2 text-gray-900">Left</td>
+              <td className="py-2 text-white">Left</td>
               <td><ShoulderMobilityScore value={form.shoulderMobL} onChange={(v: any) => update("shoulderMobL", v)} /></td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Right</td>
+              <td className="py-2 text-white">Right</td>
               <td><ShoulderMobilityScore value={form.shoulderMobR} onChange={(v: any) => update("shoulderMobR", v)} /></td>
             </tr>
           </tbody>
         </table>
 
         <div>
-          <label className="text-sm font-medium text-gray-900">Clearing Test (Pain?)</label>
+          <label className="text-sm font-medium text-white">Clearing Test (Pain?)</label>
           <select
             value={form.clearingTestShoulder}
             onChange={(e) => update("clearingTestShoulder", e.target.value)}
-            className="w-full mt-2 p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full mt-2 p-2 border border-gray-600 rounded-md text-sm bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">--</option>
             <option value="Pain">Pain</option>
@@ -283,22 +283,22 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== ASLR ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">5. Active Straight Leg Raise (ASLR)</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">5. Active Straight Leg Raise (ASLR)</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             <tr>
-              <td className="py-2 text-gray-900">Left</td>
+              <td className="py-2 text-white">Left</td>
               <td><ASLRScore value={form.aslrL} onChange={(v: any) => update("aslrL", v)} /></td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Right</td>
+              <td className="py-2 text-white">Right</td>
               <td><ASLRScore value={form.aslrR} onChange={(v: any) => update("aslrR", v)} /></td>
             </tr>
           </tbody>
@@ -306,19 +306,19 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== TRUNK STABILITY ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">6. Trunk Stability Push-Up</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">6. Trunk Stability Push-Up</h4>
         <TrunkStabilityScore
           value={form.trunkStability}
           onChange={(v: any) => update("trunkStability", v)}
         />
 
         <div className="mt-4">
-          <label className="text-sm font-medium text-gray-900">Clearing Test (Spinal Extension Pain?)</label>
+          <label className="text-sm font-medium text-white">Clearing Test (Spinal Extension Pain?)</label>
           <select
             value={form.clearingTestTrunk}
             onChange={(e) => update("clearingTestTrunk", e.target.value)}
-            className="w-full mt-2 p-2 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full mt-2 p-2 border border-gray-600 rounded-md text-sm bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">--</option>
             <option value="Pain">Pain</option>
@@ -328,22 +328,22 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== ROTARY STABILITY ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">7. Rotary Stability</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">7. Rotary Stability</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-700 font-medium">
+            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
               <th className="py-2">Side</th>
               <th className="py-2">Score</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             <tr>
-              <td className="py-2 text-gray-900">Left</td>
+              <td className="py-2 text-white">Left</td>
               <td><RotaryStabilityScore value={form.rotaryL} onChange={(v: any) => update("rotaryL", v)} /></td>
             </tr>
             <tr>
-              <td className="py-2 text-gray-900">Right</td>
+              <td className="py-2 text-white">Right</td>
               <td><RotaryStabilityScore value={form.rotaryR} onChange={(v: any) => update("rotaryR", v)} /></td>
             </tr>
           </tbody>
@@ -351,23 +351,23 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       </section>
 
       {/* ===================== TOTAL SCORE ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <div className="text-lg font-semibold text-gray-800">
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <div className="text-lg font-semibold text-white">
           Total FMS Score:
-          <span className="text-green-700 ml-2">{totalScore}</span>
+          <span className="text-blue-400 ml-2">{totalScore}</span>
         </div>
       </section>
 
       {/* ===================== ASSESSMENT FINDINGS ====================== */}
-      <section className="p-4 bg-white rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+      <section className="p-4 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+        <h4 className="text-lg font-semibold text-white mb-3">Assessment Findings</h4>
         <textarea
           value={form.assessmentFindings}
           onChange={(e) => {
             const newValue = filterTextOnly(e.target.value);
             update("assessmentFindings", newValue);
           }}
-          className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
+          className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings (text only, no numbers)"
         />
@@ -376,7 +376,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-300 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
@@ -388,7 +388,7 @@ export default function FMS({ initialData, onSave }: FMSProps) {
               setTimeout(() => setIsSaved(false), 3000);
             }
           }}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-2 bg-blue-900 text-white rounded-lg shadow-lg hover:bg-blue-800 font-bold border border-blue-800"
         >
           Save Section
         </button>

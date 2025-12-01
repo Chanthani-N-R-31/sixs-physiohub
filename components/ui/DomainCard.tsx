@@ -30,35 +30,35 @@ export default function DomainCard({
   const domains = [
     {
       name: "Physiotherapy",
-      color: "bg-[#1a4d4d]/80",
+      color: "bg-blue-900",
       icon: BeakerIcon,
       status: domainStatuses.Physiotherapy,
       isLocked: false, // Always unlocked as it's the first step
     },
     {
       name: "Physiology",
-      color: "bg-blue-600/80",
+      color: "bg-blue-700",
       icon: HeartIcon,
       status: domainStatuses.Physiology,
       isLocked: !isRegistrationSaved,
     },
     {
       name: "Biomechanics",
-      color: "bg-orange-500/80",
+      color: "bg-blue-800",
       icon: FireIcon,
       status: domainStatuses.Biomechanics,
       isLocked: !isRegistrationSaved,
     },
     {
       name: "Nutrition",
-      color: "bg-yellow-500/80",
+      color: "bg-blue-800",
       icon: SunIcon,
       status: domainStatuses.Nutrition,
       isLocked: !isRegistrationSaved,
     },
     {
       name: "Psychology",
-      color: "bg-purple-600/80",
+      color: "bg-blue-700",
       icon: LightBulbIcon,
       status: domainStatuses.Psychology,
       isLocked: !isRegistrationSaved,
@@ -74,7 +74,7 @@ export default function DomainCard({
         {onBack && (
           <button
             onClick={onBack}
-            className="px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-lg font-bold hover:bg-white/20 transition-all shadow-lg border border-white/30 whitespace-nowrap"
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-600 transition-all shadow-lg border border-gray-600 whitespace-nowrap"
           >
             ← Back
           </button>
@@ -97,10 +97,10 @@ export default function DomainCard({
                 }
               }}
               disabled={isDisabled}
-              className={`group bg-white border rounded-2xl shadow-md transition p-6 flex flex-col items-center justify-center relative ${
+              className={`group bg-gray-800 border rounded-xl shadow-lg transition p-6 flex flex-col items-center justify-center relative ${
                 isDisabled
-                  ? "border-gray-200 opacity-50 cursor-not-allowed"
-                  : "border-gray-100 hover:shadow-lg cursor-pointer"
+                  ? "border-gray-700 opacity-50 cursor-not-allowed"
+                  : "border-gray-700 hover:bg-gray-700 hover:shadow-xl cursor-pointer"
               }`}
             >
               {/* Lock Badge */}
@@ -141,11 +141,11 @@ export default function DomainCard({
                 <d.icon className="w-8 h-8" />
               </div>
 
-              <h3 className={`mt-4 text-lg font-semibold ${isDisabled ? "text-gray-400" : "text-gray-900"}`}>
+              <h3 className={`mt-4 text-lg font-semibold ${isDisabled ? "text-gray-400" : "text-white"}`}>
                 {d.name}
               </h3>
 
-              <p className={`text-sm mt-1 ${isDisabled ? "text-gray-400" : "text-gray-500"}`}>
+              <p className={`text-sm mt-1 ${isDisabled ? "text-gray-400" : "text-white/70"}`}>
                 {isDisabled
                   ? "Complete Registration first →"
                   : d.status === "pending"

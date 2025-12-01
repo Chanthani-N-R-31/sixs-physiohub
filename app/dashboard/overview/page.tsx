@@ -9,7 +9,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from "firebase/firestore";
-import GlassCard from "@/components/ui/GlassCard";
 
 interface Entry {
   id: string;
@@ -168,43 +167,43 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
   return (
     <div className="w-full overflow-x-hidden">
       
-      {/* KPI Row - Updated to 4 Columns */}
+      {/* KPI Row - Updated to 4 Columns with Dark Blue Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
         {/* Card 1: Total Patients (Static 50) */}
-        <GlassCard>
-          <div className="text-xs font-bold text-white/70">Total Individuals</div>
-          <div className="mt-2 text-2xl font-bold text-white">{totalPatients}</div>
-        </GlassCard>
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Total Individuals</div>
+          <div className="mt-2 text-3xl font-bold text-white">{totalPatients}</div>
+        </div>
 
         {/* Card 2: Entries Completed */}
-        <GlassCard>
-          <div className="text-xs font-bold text-white/70">Entries Completed</div>
-          <div className="mt-2 text-2xl font-bold text-green-300">
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Entries Completed</div>
+          <div className="mt-2 text-3xl font-bold text-white">
             {loading ? "..." : completedCount}
           </div>
-        </GlassCard>
+        </div>
 
         {/* Card 3: Pending */}
-        <GlassCard>
-          <div className="text-xs font-bold text-white/70">Pending</div>
-          <div className="mt-2 text-2xl font-bold text-yellow-300">
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Pending</div>
+          <div className="mt-2 text-3xl font-bold text-white">
             {loading ? "..." : pendingCount}
           </div>
-        </GlassCard>
+        </div>
 
         {/* Card 4: Assessments Today */}
-        <GlassCard>
-          <div className="text-xs font-bold text-white/70">Assessments Today</div>
-          <div className="mt-2 text-2xl font-bold text-blue-300">
+        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
+          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Assessments Today</div>
+          <div className="mt-2 text-3xl font-bold text-white">
             {loading ? "..." : assessmentsToday}
           </div>
-        </GlassCard>
+        </div>
 
       </div>
 
       {/* Recent Entries Table */}
-      <GlassCard>
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-white">Recent Entries</h3>
           <span className="text-sm text-white/70 font-medium">
@@ -218,7 +217,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm min-w-[600px]">
-            <thead className="text-xs text-white/70 font-bold text-left border-b border-white/20">
+            <thead className="text-xs text-white/70 font-bold text-left border-b border-gray-700">
               <tr>
                 <th className="py-3">ID</th>
                 <th className="py-3">Name</th>
@@ -229,7 +228,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-white/20">
+            <tbody className="divide-y divide-gray-700">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-white/70">Loading entries...</td>
@@ -240,19 +239,13 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                 </tr>
               ) : (
                 entries.map((row) => (
-                  <tr key={row.id} className="hover:bg-white/5 transition-colors">
+                  <tr key={row.id} className="hover:bg-gray-700/50 transition-colors">
                     <td className="py-4 text-white font-medium">P-{row.id}</td>
                     <td className="py-4 text-white font-bold">{row.name}</td>
                     <td className="py-4 text-white">{row.age}</td>
                     <td className="py-4 text-white">{row.date}</td>
                     <td className="py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-bold backdrop-blur-sm border ${
-                        row.status === "Completed" 
-                          ? "bg-green-500/80 text-white border-green-500/50" 
-                          : row.status === "In Progress" 
-                          ? "bg-yellow-500/80 text-white border-yellow-500/50" 
-                          : "bg-red-500/80 text-white border-red-500/50"
-                      }`}>
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
                         {row.status}
                       </span>
                     </td>
@@ -261,21 +254,21 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                           <button 
                             title="View"
                             onClick={() => handleView(row)}
-                            className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                            className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
                           >
                             <EyeIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Edit"
                             onClick={() => handleEdit(row)}
-                            className="p-2 rounded-md text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                            className="p-2 rounded-md text-white/80 hover:bg-gray-700 hover:text-white transition-colors"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Delete"
                             onClick={() => handleDelete(row)}
-                            className="p-2 rounded-md text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-colors"
+                            className="p-2 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
                           >
                             <TrashIcon className="w-4 h-4" />
                           </button>
@@ -287,7 +280,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 }
