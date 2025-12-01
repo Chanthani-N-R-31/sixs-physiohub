@@ -2,26 +2,26 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface LoadCarriageProps {
+interface VariabilityProps {
   initialData?: any;
   onSave?: (data: any) => void;
 }
 
-export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps) {
+export default function Variability({ initialData, onSave }: VariabilityProps) {
   const rows = [
-    { key: "deltaSpeed", label: "Speed (m/s)" },
-    { key: "deltaContactTime", label: "Contact time (ms/%)" },
-    { key: "deltaTibialAcceleration", label: "Tibial acceleration (g)" },
-    { key: "deltaTrunkSway", label: "Trunk sway (°/g)" },
-    { key: "loadEffectIndex", label: "Load Effect Index (%)" },
+    { key: "cadenceDrift", label: "Cadence drift (%)" },
+    { key: "contactTimeChange", label: "Contact time change (ms/%)" },
+    { key: "stepVariability", label: "Step variability (CV%)" },
+    { key: "dynamicStability", label: "Dynamic stability (LDS)" },
+    { key: "fatigueSymmetryChange", label: "Symmetry change with fatigue (%)" },
   ];
 
   const [form, setForm] = useState({
-    deltaSpeed: initialData?.deltaSpeed ?? "",
-    deltaContactTime: initialData?.deltaContactTime ?? "",
-    deltaTibialAcceleration: initialData?.deltaTibialAcceleration ?? "",
-    deltaTrunkSway: initialData?.deltaTrunkSway ?? "",
-    loadEffectIndex: initialData?.loadEffectIndex ?? "",
+    cadenceDrift: initialData?.cadenceDrift ?? "",
+    contactTimeChange: initialData?.contactTimeChange ?? "",
+    stepVariability: initialData?.stepVariability ?? "",
+    dynamicStability: initialData?.dynamicStability ?? "",
+    fatigueSymmetryChange: initialData?.fatigueSymmetryChange ?? "",
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -30,11 +30,11 @@ export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps)
   useEffect(() => {
     if (initialData) {
       setForm({
-        deltaSpeed: initialData.deltaSpeed ?? "",
-        deltaContactTime: initialData.deltaContactTime ?? "",
-        deltaTibialAcceleration: initialData.deltaTibialAcceleration ?? "",
-        deltaTrunkSway: initialData.deltaTrunkSway ?? "",
-        loadEffectIndex: initialData.loadEffectIndex ?? "",
+        cadenceDrift: initialData.cadenceDrift ?? "",
+        contactTimeChange: initialData.contactTimeChange ?? "",
+        stepVariability: initialData.stepVariability ?? "",
+        dynamicStability: initialData.dynamicStability ?? "",
+        fatigueSymmetryChange: initialData.fatigueSymmetryChange ?? "",
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -47,11 +47,11 @@ export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps)
 
   const handleSave = () => {
     const dataToSave = {
-      deltaSpeed: form.deltaSpeed ? parseFloat(form.deltaSpeed as string) : undefined,
-      deltaContactTime: form.deltaContactTime ? parseFloat(form.deltaContactTime as string) : undefined,
-      deltaTibialAcceleration: form.deltaTibialAcceleration ? parseFloat(form.deltaTibialAcceleration as string) : undefined,
-      deltaTrunkSway: form.deltaTrunkSway ? parseFloat(form.deltaTrunkSway as string) : undefined,
-      loadEffectIndex: form.loadEffectIndex ? parseFloat(form.loadEffectIndex as string) : undefined,
+      cadenceDrift: form.cadenceDrift ? parseFloat(form.cadenceDrift as string) : undefined,
+      contactTimeChange: form.contactTimeChange ? parseFloat(form.contactTimeChange as string) : undefined,
+      stepVariability: form.stepVariability ? parseFloat(form.stepVariability as string) : undefined,
+      dynamicStability: form.dynamicStability ? parseFloat(form.dynamicStability as string) : undefined,
+      fatigueSymmetryChange: form.fatigueSymmetryChange ? parseFloat(form.fatigueSymmetryChange as string) : undefined,
       assessmentFindings: form.assessmentFindings || undefined,
     };
 
@@ -64,7 +64,7 @@ export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps)
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Load-Carriage Effects</h3>
+      <h3 className="text-xl font-semibold text-gray-900">Variability, Fatigue & Stability</h3>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
         <table className="w-full text-sm">
@@ -129,3 +129,5 @@ export default function LoadCarriage({ initialData, onSave }: LoadCarriageProps)
     </div>
   );
 }
+
+

@@ -2,32 +2,28 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface KinematicProps {
+interface SpatiotemporalProps {
   initialData?: any;
   onSave?: (data: any) => void;
 }
 
-export default function Kinematic({ initialData, onSave }: KinematicProps) {
-  const rows = [
-    { key: "footPitchAngleIC", label: "Foot pitch angle at IC (°)" },
-    { key: "peakFootAngularVelocity", label: "Peak foot angular velocity (°/s)" },
-    { key: "tibialRotationROM", label: "Tibial rotation ROM (°)" },
-    { key: "trunkInclination", label: "Trunk inclination (°)" },
-    { key: "pelvicObliquity", label: "Pelvic obliquity (°)" },
-    { key: "trunkSway", label: "Trunk sway (°/g)" },
-    { key: "kneeFlexionMidstance", label: "Knee flexion at midstance (°)" },
-    { key: "plantarflexionPushOff", label: "Plantarflexion at push-off (°)" },
+export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalProps) {
+  const metrics = [
+    { key: "speed", label: "Speed (m/s)" },
+    { key: "cadence", label: "Cadence (steps/min)" },
+    { key: "contactTime", label: "Contact Time (ms)" },
+    { key: "flightTime", label: "Flight Time (ms)" },
+    { key: "dutyFactor", label: "Duty Factor (%)" },
+    { key: "asymmetryIndex", label: "Asymmetry Index (%)" },
   ];
 
   const [form, setForm] = useState({
-    footPitchAngleIC: initialData?.footPitchAngleIC ?? "",
-    peakFootAngularVelocity: initialData?.peakFootAngularVelocity ?? "",
-    tibialRotationROM: initialData?.tibialRotationROM ?? "",
-    trunkInclination: initialData?.trunkInclination ?? "",
-    pelvicObliquity: initialData?.pelvicObliquity ?? "",
-    trunkSway: initialData?.trunkSway ?? "",
-    kneeFlexionMidstance: initialData?.kneeFlexionMidstance ?? "",
-    plantarflexionPushOff: initialData?.plantarflexionPushOff ?? "",
+    speed: initialData?.speed ?? "",
+    cadence: initialData?.cadence ?? "",
+    contactTime: initialData?.contactTime ?? "",
+    flightTime: initialData?.flightTime ?? "",
+    dutyFactor: initialData?.dutyFactor ?? "",
+    asymmetryIndex: initialData?.asymmetryIndex ?? "",
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -36,14 +32,12 @@ export default function Kinematic({ initialData, onSave }: KinematicProps) {
   useEffect(() => {
     if (initialData) {
       setForm({
-        footPitchAngleIC: initialData.footPitchAngleIC ?? "",
-        peakFootAngularVelocity: initialData.peakFootAngularVelocity ?? "",
-        tibialRotationROM: initialData.tibialRotationROM ?? "",
-        trunkInclination: initialData.trunkInclination ?? "",
-        pelvicObliquity: initialData.pelvicObliquity ?? "",
-        trunkSway: initialData.trunkSway ?? "",
-        kneeFlexionMidstance: initialData.kneeFlexionMidstance ?? "",
-        plantarflexionPushOff: initialData.plantarflexionPushOff ?? "",
+        speed: initialData.speed ?? "",
+        cadence: initialData.cadence ?? "",
+        contactTime: initialData.contactTime ?? "",
+        flightTime: initialData.flightTime ?? "",
+        dutyFactor: initialData.dutyFactor ?? "",
+        asymmetryIndex: initialData.asymmetryIndex ?? "",
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -56,14 +50,12 @@ export default function Kinematic({ initialData, onSave }: KinematicProps) {
 
   const handleSave = () => {
     const dataToSave = {
-      footPitchAngleIC: form.footPitchAngleIC ? parseFloat(form.footPitchAngleIC as string) : undefined,
-      peakFootAngularVelocity: form.peakFootAngularVelocity ? parseFloat(form.peakFootAngularVelocity as string) : undefined,
-      tibialRotationROM: form.tibialRotationROM ? parseFloat(form.tibialRotationROM as string) : undefined,
-      trunkInclination: form.trunkInclination ? parseFloat(form.trunkInclination as string) : undefined,
-      pelvicObliquity: form.pelvicObliquity ? parseFloat(form.pelvicObliquity as string) : undefined,
-      trunkSway: form.trunkSway ? parseFloat(form.trunkSway as string) : undefined,
-      kneeFlexionMidstance: form.kneeFlexionMidstance ? parseFloat(form.kneeFlexionMidstance as string) : undefined,
-      plantarflexionPushOff: form.plantarflexionPushOff ? parseFloat(form.plantarflexionPushOff as string) : undefined,
+      speed: form.speed ? parseFloat(form.speed as string) : undefined,
+      cadence: form.cadence ? parseFloat(form.cadence as string) : undefined,
+      contactTime: form.contactTime ? parseFloat(form.contactTime as string) : undefined,
+      flightTime: form.flightTime ? parseFloat(form.flightTime as string) : undefined,
+      dutyFactor: form.dutyFactor ? parseFloat(form.dutyFactor as string) : undefined,
+      asymmetryIndex: form.asymmetryIndex ? parseFloat(form.asymmetryIndex as string) : undefined,
       assessmentFindings: form.assessmentFindings || undefined,
     };
 
@@ -76,7 +68,7 @@ export default function Kinematic({ initialData, onSave }: KinematicProps) {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Kinematic Metrics</h3>
+      <h3 className="text-xl font-semibold text-gray-900">Spatiotemporal Metrics</h3>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
         <table className="w-full text-sm">
@@ -88,20 +80,20 @@ export default function Kinematic({ initialData, onSave }: KinematicProps) {
           </thead>
 
           <tbody className="divide-y">
-            {rows.map((row) => (
-              <tr key={row.key}>
-                <td className="py-2 text-gray-900">{row.label}</td>
+            {metrics.map((metric) => (
+              <tr key={metric.key}>
+                <td className="py-2 text-gray-900">{metric.label}</td>
                 <td>
                   <input
                     type="number"
                     step="0.1"
                     className="input-field"
                     placeholder="Enter value"
-                    value={form[row.key as keyof typeof form] as string}
+                    value={form[metric.key as keyof typeof form] as string}
                     onChange={(e) => {
                       const val = e.target.value;
                       if (val === "" || /^\d*\.?\d*$/.test(val)) {
-                        update(row.key, val);
+                        update(metric.key, val);
                       }
                     }}
                   />
@@ -141,3 +133,5 @@ export default function Kinematic({ initialData, onSave }: KinematicProps) {
     </div>
   );
 }
+
+

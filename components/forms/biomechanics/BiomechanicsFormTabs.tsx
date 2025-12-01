@@ -7,15 +7,15 @@ import { auth } from "@/lib/firebase";
 import { calculateDomainStatus, getDomainStatuses, calculateGlobalStatus } from "@/lib/domainStatus";
 
 // Import your sections
-import Metadata from "@/app/dashboard/add/biomechanics/sections/Metadata";
-import Running from "@/app/dashboard/add/biomechanics/sections/Running";
-import Spatiotemporal from "@/app/dashboard/add/biomechanics/sections/Spatiotemporal";
-import Kinematic from "@/app/dashboard/add/biomechanics/sections/Kinematic";
-import Impact from "@/app/dashboard/add/biomechanics/sections/Impact";
-import Variability from "@/app/dashboard/add/biomechanics/sections/Variability";
-import LoadCarriage from "@/app/dashboard/add/biomechanics/sections/LoadCarriage";
-import Strength from "@/app/dashboard/add/biomechanics/sections/Strength";
-import PowerTests from "@/app/dashboard/add/biomechanics/sections/PowerTests";
+import Metadata from "./sections/Metadata";
+import Running from "./sections/Running";
+import Spatiotemporal from "./sections/Spatiotemporal";
+import Kinematic from "./sections/Kinematic";
+import Impact from "./sections/Impact";
+import Variability from "./sections/Variability";
+import LoadCarriage from "./sections/LoadCarriage";
+import Strength from "./sections/Strength";
+import PowerTests from "./sections/PowerTests";
 
 interface BiomechanicsFormTabsProps {
   onBack?: () => void;

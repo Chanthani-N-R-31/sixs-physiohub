@@ -2,24 +2,32 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface ImpactProps {
+interface KinematicProps {
   initialData?: any;
   onSave?: (data: any) => void;
 }
 
-export default function Impact({ initialData, onSave }: ImpactProps) {
+export default function Kinematic({ initialData, onSave }: KinematicProps) {
   const rows = [
-    { key: "peakTibialAcceleration", label: "Peak tibial acceleration (g)" },
-    { key: "tibialShockLoadingRate", label: "Tibial shock loading rate (g/s)" },
-    { key: "verticalTrunkAcceleration", label: "Vertical trunk acceleration (g)" },
-    { key: "verticalStiffness", label: "Vertical stiffness (N/m)" },
+    { key: "footPitchAngleIC", label: "Foot pitch angle at IC (°)" },
+    { key: "peakFootAngularVelocity", label: "Peak foot angular velocity (°/s)" },
+    { key: "tibialRotationROM", label: "Tibial rotation ROM (°)" },
+    { key: "trunkInclination", label: "Trunk inclination (°)" },
+    { key: "pelvicObliquity", label: "Pelvic obliquity (°)" },
+    { key: "trunkSway", label: "Trunk sway (°/g)" },
+    { key: "kneeFlexionMidstance", label: "Knee flexion at midstance (°)" },
+    { key: "plantarflexionPushOff", label: "Plantarflexion at push-off (°)" },
   ];
 
   const [form, setForm] = useState({
-    peakTibialAcceleration: initialData?.peakTibialAcceleration ?? "",
-    tibialShockLoadingRate: initialData?.tibialShockLoadingRate ?? "",
-    verticalTrunkAcceleration: initialData?.verticalTrunkAcceleration ?? "",
-    verticalStiffness: initialData?.verticalStiffness ?? "",
+    footPitchAngleIC: initialData?.footPitchAngleIC ?? "",
+    peakFootAngularVelocity: initialData?.peakFootAngularVelocity ?? "",
+    tibialRotationROM: initialData?.tibialRotationROM ?? "",
+    trunkInclination: initialData?.trunkInclination ?? "",
+    pelvicObliquity: initialData?.pelvicObliquity ?? "",
+    trunkSway: initialData?.trunkSway ?? "",
+    kneeFlexionMidstance: initialData?.kneeFlexionMidstance ?? "",
+    plantarflexionPushOff: initialData?.plantarflexionPushOff ?? "",
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -28,10 +36,14 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
   useEffect(() => {
     if (initialData) {
       setForm({
-        peakTibialAcceleration: initialData.peakTibialAcceleration ?? "",
-        tibialShockLoadingRate: initialData.tibialShockLoadingRate ?? "",
-        verticalTrunkAcceleration: initialData.verticalTrunkAcceleration ?? "",
-        verticalStiffness: initialData.verticalStiffness ?? "",
+        footPitchAngleIC: initialData.footPitchAngleIC ?? "",
+        peakFootAngularVelocity: initialData.peakFootAngularVelocity ?? "",
+        tibialRotationROM: initialData.tibialRotationROM ?? "",
+        trunkInclination: initialData.trunkInclination ?? "",
+        pelvicObliquity: initialData.pelvicObliquity ?? "",
+        trunkSway: initialData.trunkSway ?? "",
+        kneeFlexionMidstance: initialData.kneeFlexionMidstance ?? "",
+        plantarflexionPushOff: initialData.plantarflexionPushOff ?? "",
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -44,10 +56,14 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
 
   const handleSave = () => {
     const dataToSave = {
-      peakTibialAcceleration: form.peakTibialAcceleration ? parseFloat(form.peakTibialAcceleration as string) : undefined,
-      tibialShockLoadingRate: form.tibialShockLoadingRate ? parseFloat(form.tibialShockLoadingRate as string) : undefined,
-      verticalTrunkAcceleration: form.verticalTrunkAcceleration ? parseFloat(form.verticalTrunkAcceleration as string) : undefined,
-      verticalStiffness: form.verticalStiffness ? parseFloat(form.verticalStiffness as string) : undefined,
+      footPitchAngleIC: form.footPitchAngleIC ? parseFloat(form.footPitchAngleIC as string) : undefined,
+      peakFootAngularVelocity: form.peakFootAngularVelocity ? parseFloat(form.peakFootAngularVelocity as string) : undefined,
+      tibialRotationROM: form.tibialRotationROM ? parseFloat(form.tibialRotationROM as string) : undefined,
+      trunkInclination: form.trunkInclination ? parseFloat(form.trunkInclination as string) : undefined,
+      pelvicObliquity: form.pelvicObliquity ? parseFloat(form.pelvicObliquity as string) : undefined,
+      trunkSway: form.trunkSway ? parseFloat(form.trunkSway as string) : undefined,
+      kneeFlexionMidstance: form.kneeFlexionMidstance ? parseFloat(form.kneeFlexionMidstance as string) : undefined,
+      plantarflexionPushOff: form.plantarflexionPushOff ? parseFloat(form.plantarflexionPushOff as string) : undefined,
       assessmentFindings: form.assessmentFindings || undefined,
     };
 
@@ -60,7 +76,7 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Impact & Loading Metrics</h3>
+      <h3 className="text-xl font-semibold text-gray-900">Kinematic Metrics</h3>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
         <table className="w-full text-sm">
@@ -125,3 +141,5 @@ export default function Impact({ initialData, onSave }: ImpactProps) {
     </div>
   );
 }
+
+

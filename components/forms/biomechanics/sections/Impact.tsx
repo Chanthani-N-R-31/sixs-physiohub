@@ -2,26 +2,24 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface VariabilityProps {
+interface ImpactProps {
   initialData?: any;
   onSave?: (data: any) => void;
 }
 
-export default function Variability({ initialData, onSave }: VariabilityProps) {
+export default function Impact({ initialData, onSave }: ImpactProps) {
   const rows = [
-    { key: "cadenceDrift", label: "Cadence drift (%)" },
-    { key: "contactTimeChange", label: "Contact time change (ms/%)" },
-    { key: "stepVariability", label: "Step variability (CV%)" },
-    { key: "dynamicStability", label: "Dynamic stability (LDS)" },
-    { key: "fatigueSymmetryChange", label: "Symmetry change with fatigue (%)" },
+    { key: "peakTibialAcceleration", label: "Peak tibial acceleration (g)" },
+    { key: "tibialShockLoadingRate", label: "Tibial shock loading rate (g/s)" },
+    { key: "verticalTrunkAcceleration", label: "Vertical trunk acceleration (g)" },
+    { key: "verticalStiffness", label: "Vertical stiffness (N/m)" },
   ];
 
   const [form, setForm] = useState({
-    cadenceDrift: initialData?.cadenceDrift ?? "",
-    contactTimeChange: initialData?.contactTimeChange ?? "",
-    stepVariability: initialData?.stepVariability ?? "",
-    dynamicStability: initialData?.dynamicStability ?? "",
-    fatigueSymmetryChange: initialData?.fatigueSymmetryChange ?? "",
+    peakTibialAcceleration: initialData?.peakTibialAcceleration ?? "",
+    tibialShockLoadingRate: initialData?.tibialShockLoadingRate ?? "",
+    verticalTrunkAcceleration: initialData?.verticalTrunkAcceleration ?? "",
+    verticalStiffness: initialData?.verticalStiffness ?? "",
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -30,11 +28,10 @@ export default function Variability({ initialData, onSave }: VariabilityProps) {
   useEffect(() => {
     if (initialData) {
       setForm({
-        cadenceDrift: initialData.cadenceDrift ?? "",
-        contactTimeChange: initialData.contactTimeChange ?? "",
-        stepVariability: initialData.stepVariability ?? "",
-        dynamicStability: initialData.dynamicStability ?? "",
-        fatigueSymmetryChange: initialData.fatigueSymmetryChange ?? "",
+        peakTibialAcceleration: initialData.peakTibialAcceleration ?? "",
+        tibialShockLoadingRate: initialData.tibialShockLoadingRate ?? "",
+        verticalTrunkAcceleration: initialData.verticalTrunkAcceleration ?? "",
+        verticalStiffness: initialData.verticalStiffness ?? "",
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -47,11 +44,10 @@ export default function Variability({ initialData, onSave }: VariabilityProps) {
 
   const handleSave = () => {
     const dataToSave = {
-      cadenceDrift: form.cadenceDrift ? parseFloat(form.cadenceDrift as string) : undefined,
-      contactTimeChange: form.contactTimeChange ? parseFloat(form.contactTimeChange as string) : undefined,
-      stepVariability: form.stepVariability ? parseFloat(form.stepVariability as string) : undefined,
-      dynamicStability: form.dynamicStability ? parseFloat(form.dynamicStability as string) : undefined,
-      fatigueSymmetryChange: form.fatigueSymmetryChange ? parseFloat(form.fatigueSymmetryChange as string) : undefined,
+      peakTibialAcceleration: form.peakTibialAcceleration ? parseFloat(form.peakTibialAcceleration as string) : undefined,
+      tibialShockLoadingRate: form.tibialShockLoadingRate ? parseFloat(form.tibialShockLoadingRate as string) : undefined,
+      verticalTrunkAcceleration: form.verticalTrunkAcceleration ? parseFloat(form.verticalTrunkAcceleration as string) : undefined,
+      verticalStiffness: form.verticalStiffness ? parseFloat(form.verticalStiffness as string) : undefined,
       assessmentFindings: form.assessmentFindings || undefined,
     };
 
@@ -64,7 +60,7 @@ export default function Variability({ initialData, onSave }: VariabilityProps) {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-semibold text-gray-900">Variability, Fatigue & Stability</h3>
+      <h3 className="text-xl font-semibold text-gray-900">Impact & Loading Metrics</h3>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-md">
         <table className="w-full text-sm">
@@ -129,3 +125,5 @@ export default function Variability({ initialData, onSave }: VariabilityProps) {
     </div>
   );
 }
+
+

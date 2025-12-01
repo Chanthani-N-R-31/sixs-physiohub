@@ -2,62 +2,50 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-interface PowerProps {
+interface StrengthProps {
   initialData?: any;
   onSave?: (data: any) => void;
 }
 
-// Interfaces based on the specific Power Test parameters
-interface CMJ {
-  height?: number;
-  peakForce?: number;
-  rsi?: number;
-}
-
-interface SingleLegCMJ {
-  height?: number;
-  force?: number;
-  asymmetry?: number;
-}
-
-interface SquatJump {
-  height?: number;
-  peakForce?: number;
+// Interfaces updated to match your specific table parameters
+interface IsokineticKnee {
+  peakTorque?: number;
   power?: number;
 }
 
-interface SingleLegSJ {
-  height?: number;
-  force?: number;
-  asymmetry?: number;
+interface IsokineticAnkle {
+  torque?: number;
+  power?: number;
 }
 
-interface DropJump {
-  height?: number;
-  contactTime?: number;
-  rsi?: number;
+interface NordicHamstring {
+  peakForce?: number;
+  avgForce?: number;
+  fatigue?: number;
 }
 
-interface BroadJump {
-  distance?: number;
-}
-
-export default function Power({ initialData, onSave }: PowerProps) {
+export default function Strength({ initialData, onSave }: StrengthProps) {
   // --- Data Initialization ---
-  // Helper to ensure all fields exist even if initialData is partial
-  const init = (data: any, keys: string[]) => {
-    const obj: any = {};
-    keys.forEach(key => obj[key] = data?.[key] ?? undefined);
-    return obj;
-  };
+  const initializeIsokineticKnee = (data?: IsokineticKnee): IsokineticKnee => ({
+    peakTorque: data?.peakTorque ?? undefined,
+    power: data?.power ?? undefined,
+  });
+
+  const initializeIsokineticAnkle = (data?: IsokineticAnkle): IsokineticAnkle => ({
+    torque: data?.torque ?? undefined,
+    power: data?.power ?? undefined,
+  });
+
+  const initializeNordicHamstring = (data?: NordicHamstring): NordicHamstring => ({
+    peakForce: data?.peakForce ?? undefined,
+    avgForce: data?.avgForce ?? undefined,
+    fatigue: data?.fatigue ?? undefined,
+  });
 
   const [form, setForm] = useState({
-    cmj: init(initialData?.cmj, ["height", "peakForce", "rsi"]),
-    slCmj: init(initialData?.slCmj, ["height", "force", "asymmetry"]),
-    squatJump: init(initialData?.squatJump, ["height", "peakForce", "power"]),
-    slSj: init(initialData?.slSj, ["height", "force", "asymmetry"]),
-    dropJump: init(initialData?.dropJump, ["height", "contactTime", "rsi"]),
-    broadJump: init(initialData?.broadJump, ["distance"]),
+    isokineticKnee: initializeIsokineticKnee(initialData?.isokineticKnee),
+    isokineticAnkle: initializeIsokineticAnkle(initialData?.isokineticAnkle),
+    nordicHamstring: initializeNordicHamstring(initialData?.nordicHamstring),
     assessmentFindings: initialData?.assessmentFindings || "",
   });
 
@@ -66,12 +54,9 @@ export default function Power({ initialData, onSave }: PowerProps) {
   useEffect(() => {
     if (initialData) {
       setForm({
-        cmj: init(initialData.cmj, ["height", "peakForce", "rsi"]),
-        slCmj: init(initialData.slCmj, ["height", "force", "asymmetry"]),
-        squatJump: init(initialData.squatJump, ["height", "peakForce", "power"]),
-        slSj: init(initialData.slSj, ["height", "force", "asymmetry"]),
-        dropJump: init(initialData.dropJump, ["height", "contactTime", "rsi"]),
-        broadJump: init(initialData.broadJump, ["distance"]),
+        isokineticKnee: initializeIsokineticKnee(initialData.isokineticKnee),
+        isokineticAnkle: initializeIsokineticAnkle(initialData.isokineticAnkle),
+        nordicHamstring: initializeNordicHamstring(initialData.nordicHamstring),
         assessmentFindings: initialData.assessmentFindings || "",
       });
     }
@@ -98,64 +83,34 @@ export default function Power({ initialData, onSave }: PowerProps) {
   };
 
   // --- Section Configuration ---
-  // Defines the structure, titles, and protocol info for each test
+  // Includes Protocol/Instrument details from your table
   const sections = [
     {
-      title: "CMJ (Countermovement Jump)",
-      category: "cmj",
-      protocol: "Force plate / IMU • 3 Trials",
+      title: "Isokinetic Knee",
+      category: "isokineticKnee",
+      protocol: "Isokinetic dynamometer • 10 reps @60°/s",
       rows: [
-        { key: "height", label: "Jump Height", unit: "cm" },
-        { key: "peakForce", label: "Peak Force", unit: "N" },
-        { key: "rsi", label: "RSI", unit: "index" },
-      ],
-    },
-    {
-      title: "Single-leg CMJ",
-      category: "slCmj",
-      protocol: "Force plate / IMU • 2 Trials",
-      rows: [
-        { key: "height", label: "Height", unit: "cm" },
-        { key: "force", label: "Force", unit: "N" },
-        { key: "asymmetry", label: "Asymmetry", unit: "%" },
-      ],
-    },
-    {
-      title: "Squat Jump",
-      category: "squatJump",
-      protocol: "Force plate / IMU • 3 Trials",
-      rows: [
-        { key: "height", label: "Height", unit: "cm" },
-        { key: "peakForce", label: "Peak Force", unit: "N" },
+        { key: "peakTorque", label: "Peak Torque", unit: "Nm" },
         { key: "power", label: "Power", unit: "W" },
       ],
     },
     {
-      title: "Single-leg SJ",
-      category: "slSj",
-      protocol: "Force plate / IMU • 2 Trials",
+      title: "Isokinetic Ankle",
+      category: "isokineticAnkle",
+      protocol: "Isokinetic dynamometer • 10 reps @60°/s",
       rows: [
-        { key: "height", label: "Height", unit: "cm" },
-        { key: "force", label: "Force", unit: "N" },
-        { key: "asymmetry", label: "Asymmetry", unit: "%" },
+        { key: "torque", label: "Torque", unit: "Nm" },
+        { key: "power", label: "Power", unit: "W" },
       ],
     },
     {
-      title: "Drop Jump",
-      category: "dropJump",
-      protocol: "Force plate / IMU • 2 Trials",
+      title: "Nordic Hamstring",
+      category: "nordicHamstring",
+      protocol: "Nordic bench + KINVENT • 2 Trials",
       rows: [
-        { key: "height", label: "Height", unit: "cm" },
-        { key: "contactTime", label: "Contact Time", unit: "ms" },
-        { key: "rsi", label: "RSI", unit: "index" },
-      ],
-    },
-    {
-      title: "Standing Broad Jump",
-      category: "broadJump",
-      protocol: "Tape measure • 2 Trials",
-      rows: [
-        { key: "distance", label: "Distance", unit: "cm" },
+        { key: "peakForce", label: "Peak Force", unit: "N" },
+        { key: "avgForce", label: "Average Force", unit: "N" },
+        { key: "fatigue", label: "Fatigue", unit: "%" },
       ],
     },
   ];
@@ -163,9 +118,9 @@ export default function Power({ initialData, onSave }: PowerProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xl font-semibold text-gray-900">Power Tests – Controlled Environment</h3>
+        <h3 className="text-xl font-semibold text-gray-900">Strength Tests – HumacROM</h3>
         <p className="text-gray-500 text-sm mt-1">
-          Assess neuromuscular explosiveness and elastic energy utilization using vertical and horizontal jumps.
+          Measure maximal, explosive, and endurance strength across key joints.
         </p>
       </div>
 
@@ -258,3 +213,5 @@ export default function Power({ initialData, onSave }: PowerProps) {
     </div>
   );
 }
+
+
