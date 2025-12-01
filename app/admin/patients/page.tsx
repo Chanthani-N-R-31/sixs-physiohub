@@ -1,0 +1,450 @@
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
+import { MagnifyingGlassIcon, FunnelIcon, PencilIcon, TrashIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { db, auth } from "@/lib/firebase";
+import { collection, query, orderBy, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore";
+import { logActivity } from "@/lib/auditLogger";
+import DomainCard from "@/components/ui/DomainCard";
+import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
+import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
+import PhysiologyForm from "@/components/forms/physiology/PhysiologyForm";
+import NutritionForm from "@/components/forms/nutrition/NutritionForm";
+import PsychologyForm from "@/components/forms/psychology/PsychologyForm";
+
+const DOMAIN_COLLECTION_MAP: Record<string, string> = {
+  Physiotherapy: "physioAssessments",
+  Physiology: "physioAssessments",
+  Nutrition: "physioAssessments",
+  Psychology: "physioAssessments",
+  Biomechanics: "biomechanicsAssessments",
+};
+
+interface Individual {
+  id: string;
+  fullId: string;
+  name: string;
+  unit: string;
+  rank: string;
+  physio: string;
+  lastActivity: string;
+  status: string;
+  fullData?: any;
+}
+
+export default function MasterIndividualIndex() {
+  const [individuals, setIndividuals] = useState<Individual[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Edit mode state (same as dashboard)
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [editingEntryData, setEditingEntryData] = useState<any>(null);
+  const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadIndividuals();
+  }, []);
+
+  useEffect(() => {
+    if (!editingEntryId) return;
+
+    let isCancelled = false;
+
+    const preloadDomainData = async () => {
+      const mergedData = await hydrateAllDomainData(editingEntryId);
+      if (isCancelled || !mergedData) return;
+
+      setEditingEntryData((prev: any) => ({
+        ...(prev || {}),
+        ...mergedData,
+      }));
+    };
+
+    preloadDomainData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [editingEntryId]);
+
+  const reloadDomainData = useCallback(async (domain: string, entryId: string) => {
+    try {
+      const collectionName = DOMAIN_COLLECTION_MAP[domain];
+      if (!collectionName) return null;
+
+      const docRef = doc(db, collectionName, entryId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+    } catch (error) {
+      console.error("Error reloading domain data:", error);
+    }
+    return null;
+  }, []);
+
+  const hydrateAllDomainData = useCallback(async (entryId: string) => {
+    const supportedDomains = Object.keys(DOMAIN_COLLECTION_MAP);
+    
+    const domainPayloads = await Promise.all(
+      supportedDomains.map(async (domain) => {
+        const data = await reloadDomainData(domain, entryId);
+        return data;
+      })
+    );
+
+    return domainPayloads.reduce((acc, data) => {
+      if (data) {
+        return { ...acc, ...data };
+      }
+      return acc;
+    }, {} as Record<string, unknown>);
+  }, [reloadDomainData]);
+
+  const loadIndividuals = async () => {
+    try {
+      setLoading(true);
+      const q = query(collection(db, "physioAssessments"), orderBy("updatedAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      
+      const loadedIndividuals: Individual[] = [];
+      querySnapshot.forEach((docSnapshot) => {
+        const data = docSnapshot.data();
+        const regDetails = data.registrationDetails || {};
+        
+        // Get full name
+        let fullName = regDetails.fullName || "";
+        if (!fullName) {
+          const parts = [
+            regDetails.firstName,
+            regDetails.initials,
+            regDetails.lastName
+          ].filter(Boolean);
+          fullName = parts.join(" ").trim() || "Unknown Individual";
+        }
+
+        // Get unit/rank
+        const unit = regDetails.unit || regDetails.unitName || "N/A";
+        const rank = regDetails.rank || regDetails.rankName || "N/A";
+
+        // Get physio name (from createdBy or assignedPhysio)
+        const physio = regDetails.assignedPhysio || data.createdBy || "N/A";
+
+        // Get last activity date
+        let lastActivity = regDetails.dateOfAssessment || "";
+        if (!lastActivity && data.updatedAt) {
+          const timestamp = data.updatedAt.toDate ? data.updatedAt.toDate() : null;
+          if (timestamp) {
+            lastActivity = timestamp.toLocaleDateString();
+          }
+        }
+        if (!lastActivity) lastActivity = "N/A";
+
+        // Status
+        const statusRaw = data.status || "incomplete";
+        const status = statusRaw === "completed" ? "Completed" : 
+                      statusRaw === "in_progress" ? "In Progress" : "Incomplete";
+
+        loadedIndividuals.push({
+          id: `P-${docSnapshot.id.slice(0, 6)}`,
+          fullId: docSnapshot.id,
+          name: fullName,
+          unit: unit,
+          rank: rank,
+          physio: physio,
+          lastActivity: lastActivity,
+          status: status,
+          fullData: { id: docSnapshot.id, ...data },
+        });
+      });
+      
+      setIndividuals(loadedIndividuals);
+    } catch (error) {
+      console.error("Error loading individuals:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredIndividuals = individuals.filter((ind) => {
+    if (!searchTerm) return true;
+    const search = searchTerm.toLowerCase();
+    return (
+      ind.name.toLowerCase().includes(search) ||
+      ind.id.toLowerCase().includes(search) ||
+      ind.unit.toLowerCase().includes(search) ||
+      ind.rank.toLowerCase().includes(search)
+    );
+  });
+
+  const handleEdit = async (individual: Individual) => {
+    try {
+      let entryData = individual.fullData;
+      
+      // Fetch full data if not available
+      if (!entryData) {
+        const docRef = doc(db, "physioAssessments", individual.fullId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          entryData = { id: docSnap.id, ...docSnap.data() };
+        } else {
+          alert("Entry not found. Please try again.");
+          return;
+        }
+      }
+
+      // Set edit mode (same as dashboard)
+      setEditingEntryId(individual.fullId);
+      setEditingEntryData(entryData);
+      setSelectedDomain(null);
+    } catch (error) {
+      console.error("Error loading entry for edit:", error);
+      alert("Error loading entry for editing. Please try again.");
+    }
+  };
+
+  const handleDelete = async (individual: Individual) => {
+    if (!confirm(`Are you sure you want to delete the entry for ${individual.name}?`)) {
+      return;
+    }
+    
+    try {
+      // Delete from Firestore
+      await deleteDoc(doc(db, "physioAssessments", individual.fullId));
+      
+      // Log the deletion activity
+      const userName = auth.currentUser?.email || auth.currentUser?.displayName || "Admin";
+      const userId = auth.currentUser?.uid || "unknown";
+      await logActivity(
+        userId,
+        userName,
+        "DELETED",
+        `Deleted individual ${individual.id} (${individual.name})`
+      );
+      
+      // Remove from local state
+      setIndividuals((prev) => prev.filter((ind) => ind.fullId !== individual.fullId));
+      
+      // Reload to refresh the list
+      await loadIndividuals();
+      
+      // Show success message
+      alert(`Entry for ${individual.name} has been deleted successfully.`);
+    } catch (error) {
+      console.error("Error deleting entry:", error);
+      alert("Error deleting entry. Please try again.");
+    }
+  };
+
+  const handleDomainSelect = async (domain: string) => {
+    setSelectedDomain(domain);
+    
+    // If we have an ID, try to fetch latest data for this specific domain
+    if (editingEntryId) {
+      const freshData = await reloadDomainData(domain, editingEntryId);
+      if (freshData) {
+        // Merge fresh data with what we have
+        setEditingEntryData((prev: any) => ({...prev, ...freshData}));
+      }
+    }
+  };
+
+  const handleBackFromForm = async () => {
+    // When coming back from a specific form to the Domain Card view
+    setSelectedDomain(null);
+  };
+
+  const handleBackFromEdit = () => {
+    // When leaving edit mode completely
+    setSelectedDomain(null);
+    setEditingEntryId(null);
+    setEditingEntryData(null);
+  };
+
+  const handleDataSaved = useCallback((domain: string, entryId: string, data: any) => {
+    setEditingEntryId(entryId); // Ensure ID is synced
+    setEditingEntryData((prev: any) => ({ ...prev, ...data }));
+    // Reload individuals list to reflect changes
+    loadIndividuals();
+  }, []);
+
+  // If in edit mode, show the edit interface (same as dashboard)
+  if (editingEntryId) {
+    return (
+      <div className="space-y-6">
+        {/* Back button */}
+        <button
+          onClick={handleBackFromEdit}
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
+        >
+          <ArrowLeftIcon className="w-5 h-5" />
+          <span>Back to Individual Index</span>
+        </button>
+
+        {selectedDomain === null ? (
+          <DomainCard
+            key={editingEntryId || "edit-domain-card"}
+            onBack={handleBackFromEdit}
+            onSelect={handleDomainSelect}
+            entryData={editingEntryData}
+          />
+        ) : (
+          <>
+            {selectedDomain === "Physiotherapy" && (
+              <PhysioFormTabs 
+                key={`physio-${editingEntryId}`}
+                onBack={handleBackFromForm}
+                initialData={editingEntryData}
+                entryId={editingEntryId}
+                onDataSaved={(id, data) => handleDataSaved("Physiotherapy", id, data)}
+              />
+            )}
+
+            {selectedDomain === "Biomechanics" && (
+              <BiomechanicsFormTabs
+                key={`biomech-${editingEntryId}`}
+                onBack={handleBackFromForm}
+                initialData={editingEntryData}
+                entryId={editingEntryId}
+                onDataSaved={(id, data) => handleDataSaved("Biomechanics", id, data)}
+              />
+            )}
+
+            {selectedDomain === "Physiology" && (
+              <PhysiologyForm
+                key={`physiology-${editingEntryId}`}
+                onBack={handleBackFromForm}
+                initialData={editingEntryData}
+                entryId={editingEntryId}
+                onDataSaved={(id, data) => handleDataSaved("Physiology", id, data)}
+              />
+            )}
+
+            {selectedDomain === "Nutrition" && (
+              <NutritionForm
+                key={`nutrition-${editingEntryId}`}
+                onBack={handleBackFromForm}
+                initialData={editingEntryData}
+                entryId={editingEntryId}
+                onDataSaved={(id, data) => handleDataSaved("Nutrition", id, data)}
+              />
+            )}
+
+            {selectedDomain === "Psychology" && (
+              <PsychologyForm
+                key={`psychology-${editingEntryId}`}
+                onBack={handleBackFromForm}
+                initialData={editingEntryData}
+                entryId={editingEntryId}
+                onDataSaved={(id, data) => handleDataSaved("Psychology", id, data)}
+              />
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  // Normal list view
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-slate-900">Master Individual Index (MII)</h2>
+        <p className="text-slate-500">Global search across all physiotherapy domains and users.</p>
+      </div>
+
+      {/* Search & Filter Toolbar */}
+      <div className="flex gap-4">
+        <div className="relative flex-1">
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder="Search by Individual Name, ID, or Army Number..." 
+            className="w-full pl-10 p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-green-500 outline-none shadow-sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <button className="flex items-center gap-2 px-4 py-3 border border-slate-300 rounded-lg bg-white text-slate-700 hover:bg-slate-50 shadow-sm">
+          <FunnelIcon className="w-5 h-5" />
+          Filters
+        </button>
+      </div>
+
+      {/* Data Table */}
+      <div className="bg-white shadow-sm rounded-xl border border-slate-200 overflow-hidden">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+            <tr>
+              <th className="p-4">Individual ID</th>
+              <th className="p-4">Name</th>
+              <th className="p-4">Unit / Rank</th>
+              <th className="p-4">Physio</th>
+              <th className="p-4">Last Activity</th>
+              <th className="p-4">Status</th>
+              <th className="p-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {loading ? (
+              <tr>
+                <td colSpan={7} className="p-8 text-center text-slate-500">Loading individuals...</td>
+              </tr>
+            ) : filteredIndividuals.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="p-8 text-center text-slate-500">No individuals found.</td>
+              </tr>
+            ) : (
+              filteredIndividuals.map((ind) => (
+                <tr key={ind.fullId} className="hover:bg-slate-50 transition-colors">
+                  <td className="p-4 font-mono text-green-600 font-medium">{ind.id}</td>
+                  <td className="p-4 font-medium text-slate-900">{ind.name}</td>
+                  <td className="p-4 text-slate-600">{ind.rank} / {ind.unit}</td>
+                  <td className="p-4 text-slate-600">{ind.physio}</td>
+                  <td className="p-4 text-slate-500">{ind.lastActivity}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded text-xs font-medium border ${
+                      ind.status === "Completed" 
+                        ? "bg-green-100 text-green-700 border-green-200"
+                        : ind.status === "In Progress"
+                        ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                        : "bg-gray-100 text-gray-700 border-gray-200"
+                    }`}>
+                      {ind.status}
+                    </span>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <button 
+                        title="Edit"
+                        onClick={() => handleEdit(ind)}
+                        className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                      >
+                        <PencilIcon className="w-4 h-4" />
+                      </button>
+                      <button 
+                        title="Delete"
+                        onClick={() => handleDelete(ind)}
+                        className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      
+      {/* Pagination Placeholder */}
+      <div className="flex justify-center text-sm text-slate-500">
+        Showing {filteredIndividuals.length} of {individuals.length} records
+      </div>
+    </div>
+  );
+}
+

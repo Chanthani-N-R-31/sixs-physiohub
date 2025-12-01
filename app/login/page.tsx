@@ -20,7 +20,19 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
+      
+      // Check if user is an admin (by email pattern)
+      // You can customize this logic based on your admin email pattern
+      const isAdmin = email.toLowerCase().includes("admin") || 
+                      email.toLowerCase().endsWith("@admin.com") ||
+                      email.toLowerCase().endsWith("@sixs.com");
+      
+      // Redirect admin users to admin dashboard, others to regular dashboard
+      if (isAdmin) {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: unknown) {
       const error = err as { message?: string; code?: string };
       setErrorMsg(error.message || "Login failed. Please check your credentials and try again.");

@@ -1,7 +1,8 @@
 // src/app/dashboard/layout.tsx
 "use client";
 
-import { useState, createContext, useContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
+import { usePathname } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 import { Inter } from "next/font/google";
@@ -33,6 +34,20 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Check if we're on an admin route - if so, skip dashboard layout (admin has its own)
+  const isAdminRoute = mounted && pathname?.startsWith("/admin");
+
+  // If on admin route, just render children (admin layout will handle its own UI)
+  if (isAdminRoute) {
+    return <>{children}</>;
+  }
 
   return (
     <DashboardContext.Provider value={{ activeTab, setActiveTab }}>
