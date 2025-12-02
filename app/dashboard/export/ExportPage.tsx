@@ -7,6 +7,8 @@ import {
   loadAllAssessmentData,
   exportPhysiotherapyToCSV,
   downloadPhysiotherapyReport,
+  exportHierarchicalCSV,
+  downloadHierarchicalReport,
 } from "@/lib/exportData";
 import GlassCard from "@/components/ui/GlassCard";
 
@@ -92,29 +94,44 @@ export default function ExportPage() {
         return;
       }
 
-      // Use the new structured export function for Physiotherapy
-      const csvString = exportPhysiotherapyToCSV(rawData, "physiotherapy_report");
+      // Filter data for the selected domain
+      let filteredData = rawData;
+      if (domainFilter === "specific") {
+        filteredData = rawData.filter(d => d._domain === specificDomain || (!d._domain && specificDomain === "Physiotherapy"));
+      } else {
+        // For "all domains", use Physiotherapy as default for hierarchical export
+        filteredData = rawData.filter(d => d._domain === 'Physiotherapy' || !d._domain);
+      }
+
+      if (filteredData.length === 0) {
+        alert("No data found to export for the selected domain.");
+        setIsGenerating(false);
+        return;
+      }
+
+      // Use the hierarchical export function
+      const domainName = domainFilter === "specific" ? specificDomain : "Physiotherapy";
+      const csvString = exportHierarchicalCSV(filteredData, domainName);
       
       if (!csvString) {
-        alert("No physiotherapy data found to export.");
+        alert("No data found to export.");
         setIsGenerating(false);
         return;
       }
       
       // Determine filename
-      let filename = "physiotherapy_report";
+      let filename = `${domainName.toLowerCase()}_hierarchical_report`;
       if (selectedPatient) {
         const patient = patients.find(p => p.id === selectedPatient);
         filename = patient 
-          ? `physiotherapy_report_${patient.name.replace(/\s+/g, "_")}` 
-          : "physiotherapy_report";
+          ? `${domainName.toLowerCase()}_hierarchical_${patient.name.replace(/\s+/g, "_")}` 
+          : `${domainName.toLowerCase()}_hierarchical_report`;
       }
       
-      // Download the clean, structured report
-      downloadPhysiotherapyReport(csvString, filename);
+      // Download the hierarchical report
+      downloadHierarchicalReport(csvString, filename);
       
-      const physioCount = rawData.filter(d => d._domain === 'Physiotherapy' || !d._domain).length;
-      alert(`Export completed! ${physioCount} record(s) exported.`);
+      alert(`Export completed! ${filteredData.length} record(s) exported in hierarchical format.`);
       
     } catch (error) {
       console.error("Export failed:", error);

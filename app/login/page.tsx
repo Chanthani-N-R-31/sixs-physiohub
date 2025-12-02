@@ -45,7 +45,7 @@ export default function LoginPage() {
     <div 
       className="min-h-screen flex justify-center items-center p-8 relative"
       style={{
-        backgroundImage: `url('/final ui.jpg')`,
+        backgroundImage: `url('/maybeUI.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -55,8 +55,8 @@ export default function LoginPage() {
       {/* Overlay for better readability */}
       <div className="absolute inset-0 bg-black/10" />
       
-      {/* Login Form Container with Glass Effect */}
-      <div className="w-full max-w-md bg-white/20 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/40 relative z-10">
+      {/* Login Form Container with Enhanced Glass Effect */}
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/30 relative z-10 ring-1 ring-white/20">
           {/* Title */}
           <h2 className="text-3xl font-bold text-white mb-6">Login</h2>
 

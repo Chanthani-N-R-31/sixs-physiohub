@@ -600,3 +600,325 @@ export function downloadPhysiotherapyReport(
   URL.revokeObjectURL(url);
 }
 
+// ============================================================
+// HIERARCHICAL CSV EXPORT FUNCTION
+// ============================================================
+
+/**
+ * Creates an empty CSV row (just an empty string for CSV)
+ * Excel will handle empty rows properly
+ */
+function createEmptyRow(): string {
+  return '';
+}
+
+/**
+ * Creates a CSV row with values at specific column positions
+ */
+function createRowWithValues(values: (string | number)[], positions: number[]): string {
+  const maxPos = Math.max(...positions);
+  const row: string[] = Array(maxPos + 1).fill('');
+  
+  values.forEach((value, index) => {
+    const pos = positions[index];
+    if (pos >= 0) {
+      row[pos] = formatCSVValue(value);
+    }
+  });
+  
+  return row.join(',');
+}
+
+/**
+ * Section configuration for hierarchical export
+ */
+interface SectionConfig {
+  name: string;
+  fields: string[];
+  fieldLabels: Record<string, string>;
+}
+
+/**
+ * Defines sections and their fields for Physiotherapy domain
+ */
+function getPhysiotherapySections(): SectionConfig[] {
+  return [
+    {
+      name: "Personal Identification",
+      fields: ['firstName', 'lastName', 'fullName', 'serviceBranch', 'serviceNumber', 'rank', 'dob', 'age', 'gender', 'bloodGroup', 'dominantHand', 'dominantLeg', 'dominantEye'],
+      fieldLabels: {
+        'firstName': 'First Name',
+        'lastName': 'Last Name',
+        'fullName': 'Full Name',
+        'serviceBranch': 'Service Branch',
+        'serviceNumber': 'Service Number',
+        'rank': 'Rank',
+        'dob': 'Date of Birth',
+        'age': 'Age',
+        'gender': 'Gender',
+        'bloodGroup': 'Blood Group',
+        'dominantHand': 'Dominant Hand',
+        'dominantLeg': 'Dominant Leg',
+        'dominantEye': 'Dominant Eye',
+      }
+    },
+    {
+      name: "Service History",
+      fields: ['totalYearsArmedForces', 'totalYearsCombatRole', 'totalYearsSpecialForces', 'primaryRifle', 'secondaryWeapon', 'rifleScore', 'pistolScore'],
+      fieldLabels: {
+        'totalYearsArmedForces': 'Total Years Armed Forces',
+        'totalYearsCombatRole': 'Total Years Combat Role',
+        'totalYearsSpecialForces': 'Total Years Special Forces',
+        'primaryRifle': 'Primary Rifle',
+        'secondaryWeapon': 'Secondary Weapon',
+        'rifleScore': 'Rifle Score',
+        'pistolScore': 'Pistol Score',
+      }
+    },
+    {
+      name: "Injury History",
+      fields: ['chiefComplaints', 'history', 'painSeverity', 'diagnosis', 'modeOfTreatment'],
+      fieldLabels: {
+        'chiefComplaints': 'Chief Complaints',
+        'history': 'History',
+        'painSeverity': 'Pain Severity',
+        'diagnosis': 'Diagnosis',
+        'modeOfTreatment': 'Mode of Treatment',
+      }
+    },
+    {
+      name: "Range of Motion - Cervical",
+      fields: ['cervFlex', 'cervExt', 'cervLatFlexL', 'cervLatFlexR', 'cervRotL', 'cervRotR'],
+      fieldLabels: {
+        'cervFlex': 'Cervical Flexion',
+        'cervExt': 'Cervical Extension',
+        'cervLatFlexL': 'Cervical Lateral Flexion Left',
+        'cervLatFlexR': 'Cervical Lateral Flexion Right',
+        'cervRotL': 'Cervical Rotation Left',
+        'cervRotR': 'Cervical Rotation Right',
+      }
+    },
+    {
+      name: "Range of Motion - Thoracic",
+      fields: ['thorFlex', 'thorExt', 'thorLatFlexL', 'thorLatFlexR', 'thorRotL', 'thorRotR'],
+      fieldLabels: {
+        'thorFlex': 'Thoracic Flexion',
+        'thorExt': 'Thoracic Extension',
+        'thorLatFlexL': 'Thoracic Lateral Flexion Left',
+        'thorLatFlexR': 'Thoracic Lateral Flexion Right',
+        'thorRotL': 'Thoracic Rotation Left',
+        'thorRotR': 'Thoracic Rotation Right',
+      }
+    },
+    {
+      name: "Range of Motion - Shoulder",
+      fields: ['shFlexL', 'shFlexR', 'shAbdL', 'shAbdR', 'shERL', 'shERR', 'shIRL', 'shIRR'],
+      fieldLabels: {
+        'shFlexL': 'Shoulder Flexion Left',
+        'shFlexR': 'Shoulder Flexion Right',
+        'shAbdL': 'Shoulder Abduction Left',
+        'shAbdR': 'Shoulder Abduction Right',
+        'shERL': 'Shoulder External Rotation Left',
+        'shERR': 'Shoulder External Rotation Right',
+        'shIRL': 'Shoulder Internal Rotation Left',
+        'shIRR': 'Shoulder Internal Rotation Right',
+      }
+    },
+    {
+      name: "Range of Motion - Hip",
+      fields: ['hipFlexL', 'hipFlexR', 'hipAbdL', 'hipAbdR', 'hipERL', 'hipERR', 'hipIRL', 'hipIRR'],
+      fieldLabels: {
+        'hipFlexL': 'Hip Flexion Left',
+        'hipFlexR': 'Hip Flexion Right',
+        'hipAbdL': 'Hip Abduction Left',
+        'hipAbdR': 'Hip Abduction Right',
+        'hipERL': 'Hip External Rotation Left',
+        'hipERR': 'Hip External Rotation Right',
+        'hipIRL': 'Hip Internal Rotation Left',
+        'hipIRR': 'Hip Internal Rotation Right',
+      }
+    },
+    {
+      name: "Range of Motion - Knee",
+      fields: ['kneeFlexL', 'kneeFlexR', 'kneeExtL', 'kneeExtR'],
+      fieldLabels: {
+        'kneeFlexL': 'Knee Flexion Left',
+        'kneeFlexR': 'Knee Flexion Right',
+        'kneeExtL': 'Knee Extension Left',
+        'kneeExtR': 'Knee Extension Right',
+      }
+    },
+    {
+      name: "Range of Motion - Ankle",
+      fields: ['ankleDFL', 'ankleDFR', 'anklePFL', 'anklePFR'],
+      fieldLabels: {
+        'ankleDFL': 'Ankle Dorsiflexion Left',
+        'ankleDFR': 'Ankle Dorsiflexion Right',
+        'anklePFL': 'Ankle Plantarflexion Left',
+        'anklePFR': 'Ankle Plantarflexion Right',
+      }
+    },
+    {
+      name: "Static Posture",
+      fields: ['headTilt', 'shoulderAlignment', 'trunkAlignment', 'pelvicAlignment', 'kneeAlignmentAnterior', 'headAlignmentLat', 'shoulderAlignmentLat', 'spinalCurves', 'pelvicTilt', 'kneeAlignmentLat'],
+      fieldLabels: {
+        'headTilt': 'Head Tilt',
+        'shoulderAlignment': 'Shoulder Alignment',
+        'trunkAlignment': 'Trunk Alignment',
+        'pelvicAlignment': 'Pelvic Alignment',
+        'kneeAlignmentAnterior': 'Knee Alignment (Anterior)',
+        'headAlignmentLat': 'Head Alignment (Lateral)',
+        'shoulderAlignmentLat': 'Shoulder Alignment (Lateral)',
+        'spinalCurves': 'Spinal Curves',
+        'pelvicTilt': 'Pelvic Tilt',
+        'kneeAlignmentLat': 'Knee Alignment (Lateral)',
+      }
+    },
+    {
+      name: "Functional Movement Screen (FMS)",
+      fields: ['deepSquat', 'hurdleL', 'hurdleR', 'lungeL', 'lungeR', 'shoulderMobL', 'shoulderMobR', 'aslrL', 'aslrR', 'trunkStability', 'rotaryL', 'rotaryR'],
+      fieldLabels: {
+        'deepSquat': 'Deep Squat',
+        'hurdleL': 'Hurdle Left',
+        'hurdleR': 'Hurdle Right',
+        'lungeL': 'Lunge Left',
+        'lungeR': 'Lunge Right',
+        'shoulderMobL': 'Shoulder Mobility Left',
+        'shoulderMobR': 'Shoulder Mobility Right',
+        'aslrL': 'Active Straight Leg Raise Left',
+        'aslrR': 'Active Straight Leg Raise Right',
+        'trunkStability': 'Trunk Stability',
+        'rotaryL': 'Rotary Stability Left',
+        'rotaryR': 'Rotary Stability Right',
+      }
+    },
+    {
+      name: "Strength & Stability",
+      fields: ['plankTime', 'sidePlankL', 'sidePlankR', 'staticBalance', 'dynamicBalance'],
+      fieldLabels: {
+        'plankTime': 'Plank Time (seconds)',
+        'sidePlankL': 'Side Plank Left (seconds)',
+        'sidePlankR': 'Side Plank Right (seconds)',
+        'staticBalance': 'Static Balance',
+        'dynamicBalance': 'Dynamic Balance',
+      }
+    },
+  ];
+}
+
+/**
+ * Exports data in hierarchical CSV format
+ * Format:
+ * - Row 1: ID, Name, Age, DOB, Domain Name (columns A-E)
+ * - Row 2: Empty
+ * - For each section:
+ *   - Section name in column F (6th column, index 5)
+ *   - Empty row
+ *   - Column headers starting at column I (9th column, index 8)
+ *   - Data rows
+ */
+export function exportHierarchicalCSV(
+  data: any[],
+  domainName: string = "Physiotherapy"
+): string {
+  if (!data || data.length === 0) {
+    return "";
+  }
+
+  const rows: string[] = [];
+  const sections = getPhysiotherapySections();
+
+  // Process each person/entry
+  data.forEach((entry, entryIndex) => {
+    // Only process entries matching the domain
+    if (entry._domain && entry._domain !== domainName && entry._domain !== 'Physiotherapy') {
+      return;
+    }
+
+    // Extract person info
+    const regDetails = entry.registrationDetails || {};
+    const entryId = entry._entryId || entry.id || `ENTRY_${entryIndex + 1}`;
+    const name = sanitizeValue(regDetails.fullName || regDetails.firstName + ' ' + regDetails.lastName || 'Unknown');
+    const age = sanitizeValue(regDetails.age);
+    const dob = formatDateToDDMMYYYY(regDetails.dob);
+
+    // Extract all data
+    const extractedData = extractPhysiotherapyData(entry);
+
+    // Main Person Row: ID, Name, Age, DOB, Domain Name (columns A-E, indices 0-4)
+    const mainRow = createRowWithValues(
+      [entryId, name, age, dob, domainName],
+      [0, 1, 2, 3, 4]
+    );
+    rows.push(mainRow);
+
+    // Empty row after main person row
+    rows.push(createEmptyRow());
+
+    // Process each section
+    sections.forEach((section, sectionIndex) => {
+      // Check if section has any data
+      const sectionData = section.fields
+        .map(field => ({ field, value: extractedData[field] }))
+        .filter(item => item.value && item.value !== '-');
+
+      if (sectionData.length === 0) {
+        return; // Skip empty sections
+      }
+
+      // Section name in column F (6th column, index 5)
+      const sectionRow = createRowWithValues(
+        [section.name],
+        [5]
+      );
+      rows.push(sectionRow);
+
+      // Empty row after section name
+      rows.push(createEmptyRow());
+
+      // Column headers starting at column I (9th column, index 8)
+      const headerValues = section.fields.map(field => section.fieldLabels[field] || getHeaderName(field));
+      const headerPositions = section.fields.map((_, idx) => 8 + idx);
+      const headerRow = createRowWithValues(headerValues, headerPositions);
+      rows.push(headerRow);
+
+      // Data row with values
+      const dataValues = section.fields.map(field => extractedData[field] || '-');
+      const dataRow = createRowWithValues(dataValues, headerPositions);
+      rows.push(dataRow);
+
+      // Empty row after section (except for last section)
+      if (sectionIndex < sections.length - 1) {
+        rows.push(createEmptyRow());
+      }
+    });
+
+    // Empty rows between different people (except for last person)
+    if (entryIndex < data.length - 1) {
+      rows.push(createEmptyRow());
+      rows.push(createEmptyRow());
+    }
+  });
+
+  return rows.join('\n');
+}
+
+/**
+ * Downloads hierarchical CSV report
+ */
+export function downloadHierarchicalReport(
+  csvString: string,
+  filename: string = "hierarchical_report"
+) {
+  const BOM = "\uFEFF"; // UTF-8 BOM for Excel
+  const blob = new Blob([BOM + csvString], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", `${filename}_${new Date().toISOString().split("T")[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+

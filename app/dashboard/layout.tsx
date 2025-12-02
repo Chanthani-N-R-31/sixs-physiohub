@@ -51,15 +51,15 @@ export default function DashboardLayout({
 
   return (
     <DashboardContext.Provider value={{ activeTab, setActiveTab }}>
-      <div className={`${inter.className} flex min-h-screen bg-gray-900 relative overflow-hidden`}>
-        {/* Sidebar */}
-        <div className="relative z-10">
+      <div className={`${inter.className} flex min-h-screen bg-gray-900 relative`}>
+        {/* Sidebar - Fixed */}
+        <div className="fixed left-0 top-0 h-screen z-10">
           <Sidebar />
         </div>
 
         {/* Main Content with Background Image - Right Side Only */}
         <div 
-          className="flex-1 flex flex-col min-h-screen overflow-hidden relative z-10"
+          className="flex-1 flex flex-col min-h-screen lg:ml-64 relative z-10"
           style={{
             backgroundImage: `url('/final ui.jpg')`,
             backgroundSize: 'cover',
@@ -76,7 +76,7 @@ export default function DashboardLayout({
             <Topbar />
           </div>
 
-          {/* Page Content */}
+          {/* Page Content - Scrollable */}
           <main className="relative z-10 flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full overflow-y-auto">
             {children}
           </main>

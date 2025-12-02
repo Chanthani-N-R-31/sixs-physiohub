@@ -14,7 +14,7 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div
-      className={`${inter.className} flex min-h-screen relative overflow-hidden bg-gray-900`}
+      className={`${inter.className} flex min-h-screen relative bg-gray-900`}
       style={{
         backgroundImage: "url('/final ui.jpg')",
         backgroundSize: "cover",
@@ -26,17 +26,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Overlay for better readability */}
       <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
 
-      {/* Sidebar */}
-      <div className="relative z-10">
+      {/* Sidebar - Fixed */}
+      <div className="fixed left-0 top-0 h-screen z-10">
         <AdminSidebar />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative z-10">
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-64 relative z-10">
         {/* Top Navigation Bar - Same as Dashboard */}
         <Topbar />
 
-        {/* Page Content */}
+        {/* Page Content - Scrollable */}
         <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full overflow-y-auto">
           {children}
         </main>
