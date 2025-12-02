@@ -124,7 +124,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
             onChange(val);
           }
         }}
-        className={`w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
           error ? "border-red-500" : ""
         }`}
         placeholder={placeholder}
@@ -142,7 +142,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
           const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
           onChange(newValue);
         }}
-        className={`w-full p-2 textarea-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+        className={`w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
           error ? "border-red-500" : "border-gray-300"
         }`}
         placeholder={placeholder}
@@ -154,15 +154,15 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-bold text-white">Range of Motion(ROM) and Flexibility assessments</h3>
+      <h3 className="text-3xl font-bold text-white text-center">Range of Motion(ROM) and Flexibility assessments</h3>
 
       {/* ===================== CERVICAL ROM ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Cervical Spine</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Cervical Spine</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Movement</th>
               <th className="py-3">Left</th>
               <th className="py-3">Right</th>
@@ -171,24 +171,24 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-bold">Side Flexion</td>
+              <td className="py-3 text-black font-bold">Side Flexion</td>
               <td><InputCell value={rom.cervLatFlexL} onChange={(v: any) => u("cervLatFlexL", v)} /></td>
               <td><InputCell value={rom.cervLatFlexR} onChange={(v: any) => u("cervLatFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Rotation</td>
+              <td className="py-3 text-black font-bold">Rotation</td>
               <td><InputCell value={rom.cervRotL} onChange={(v: any) => u("cervRotL", v)} /></td>
               <td><InputCell value={rom.cervRotR} onChange={(v: any) => u("cervRotR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Flexion</td>
+              <td className="py-3 text-black font-bold">Flexion</td>
               <td colSpan={2}><InputCell value={rom.cervFlex} onChange={(v: any) => u("cervFlex", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Extension</td>
+              <td className="py-3 text-black font-bold">Extension</td>
               <td colSpan={2}><InputCell value={rom.cervExt} onChange={(v: any) => u("cervExt", v)} /></td>
             </tr>
           </tbody>
@@ -196,12 +196,12 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== THORACIC/LUMBAR ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Thoracic / Lumbar Spine</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Thoracic / Lumbar Spine</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Movement</th>
               <th className="py-3">Left</th>
               <th className="py-3">Right</th>
@@ -210,24 +210,24 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-bold">Side Flexion</td>
+              <td className="py-3 text-black font-bold">Side Flexion</td>
               <td><InputCell value={rom.thorLatFlexL} onChange={(v: any) => u("thorLatFlexL", v)} /></td>
               <td><InputCell value={rom.thorLatFlexR} onChange={(v: any) => u("thorLatFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Rotation</td>
+              <td className="py-3 text-black font-bold">Rotation</td>
               <td><InputCell value={rom.thorRotL} onChange={(v: any) => u("thorRotL", v)} /></td>
               <td><InputCell value={rom.thorRotR} onChange={(v: any) => u("thorRotR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Flexion</td>
+              <td className="py-3 text-black font-bold">Flexion</td>
               <td colSpan={2}><InputCell value={rom.thorFlex} onChange={(v: any) => u("thorFlex", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Extension</td>
+              <td className="py-3 text-black font-bold">Extension</td>
               <td colSpan={2}><InputCell value={rom.thorExt} onChange={(v: any) => u("thorExt", v)} /></td>
             </tr>
           </tbody>
@@ -235,12 +235,12 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== SHOULDER ROM ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Shoulder</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Shoulder</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Movement</th>
               <th className="py-3">Left</th>
               <th className="py-3">Right</th>
@@ -249,13 +249,13 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-bold">Flexion</td>
+              <td className="py-3 text-black font-bold">Flexion</td>
               <td><InputCell value={rom.shFlexL} onChange={(v: any) => u("shFlexL", v)} /></td>
               <td><InputCell value={rom.shFlexR} onChange={(v: any) => u("shFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Apley's Test (cm)</td>
+              <td className="py-3 text-black font-bold">Apley's Test (cm)</td>
               <td><InputCell value={rom.shIRL} onChange={(v: any) => u("shIRL", v)} /></td>
               <td><InputCell value={rom.shIRR} onChange={(v: any) => u("shIRR", v)} /></td>
             </tr>
@@ -264,12 +264,12 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== HIP ROM ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Hip</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Hip</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th>Movement</th>
               <th>Left</th>
               <th>Right</th>
@@ -278,25 +278,25 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-bold">Flexion</td>
+              <td className="py-3 text-black font-bold">Flexion</td>
               <td><InputCell value={rom.hipFlexL} onChange={(v: any) => u("hipFlexL", v)} /></td>
               <td><InputCell value={rom.hipFlexR} onChange={(v: any) => u("hipFlexR", v)} /></td>
             </tr>
 
             <tr>  
-              <td className="py-3 text-white font-bold">Extension</td>
+              <td className="py-3 text-black font-bold">Extension</td>
               <td><InputCell value={rom.hipAbdL} onChange={(v: any) => u("hipAbdL", v)} /></td>
               <td><InputCell value={rom.hipAbdR} onChange={(v: any) => u("hipAbdR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">External Rotation</td>
+              <td className="py-3 text-black font-bold">External Rotation</td>
               <td><InputCell value={rom.hipERL} onChange={(v: any) => u("hipERL", v)} /></td>
               <td><InputCell value={rom.hipERR} onChange={(v: any) => u("hipERR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Internal Rotation</td>
+              <td className="py-3 text-black font-bold">Internal Rotation</td>
               <td><InputCell value={rom.hipIRL} onChange={(v: any) => u("hipIRL", v)} /></td>
               <td><InputCell value={rom.hipIRR} onChange={(v: any) => u("hipIRR", v)} /></td>
             </tr>
@@ -305,12 +305,12 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== KNEE ROM ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Knee</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Knee</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th>Movement</th>
               <th>Left</th>
               <th>Right</th>
@@ -319,13 +319,13 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-bold">Flexion</td>
+              <td className="py-3 text-black font-bold">Flexion</td>
               <td><InputCell value={rom.kneeFlexL} onChange={(v: any) => u("kneeFlexL", v)} /></td>
               <td><InputCell value={rom.kneeFlexR} onChange={(v: any) => u("kneeFlexR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Extension</td>
+              <td className="py-3 text-black font-bold">Extension</td>
               <td><InputCell value={rom.kneeExtL} onChange={(v: any) => u("kneeExtL", v)} /></td>
               <td><InputCell value={rom.kneeExtR} onChange={(v: any) => u("kneeExtR", v)} /></td>
             </tr>
@@ -334,12 +334,12 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== ANKLE ROM ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Ankle</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Ankle</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th>Movement</th>
               <th>Left</th>
               <th>Right</th>
@@ -348,13 +348,13 @@ export default function ROM({ initialData, onSave }: ROMProps) {
 
           <tbody className="divide-y divide-gray-700">
             <tr>
-              <td className="py-3 text-white font-bold">Dorsiflexion (Knee to Wall test)</td>
+              <td className="py-3 text-black font-bold">Dorsiflexion (Knee to Wall test)</td>
               <td><InputCell value={rom.ankleDFL} onChange={(v: any) => u("ankleDFL", v)} /></td>
               <td><InputCell value={rom.ankleDFR} onChange={(v: any) => u("ankleDFR", v)} /></td>
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Plantarflexion</td>
+              <td className="py-3 text-black font-bold">Plantarflexion</td>
               <td><InputCell value={rom.anklePFL} onChange={(v: any) => u("anklePFL", v)} /></td>
               <td><InputCell value={rom.anklePFR} onChange={(v: any) => u("anklePFR", v)} /></td>
             </tr>
@@ -363,8 +363,8 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== FLEXIBILITY ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Flexibility</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Flexibility</h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -400,8 +400,8 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       </section>
 
       {/* ===================== ASSESSMENT FINDINGS ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Assessment Findings</h4>
         <TextareaCell
           value={rom.assessmentFindings}
           onChange={(v: string) => u("assessmentFindings", v, true)}
@@ -415,7 +415,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-500 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
@@ -427,7 +427,7 @@ export default function ROM({ initialData, onSave }: ROMProps) {
               setTimeout(() => setIsSaved(false), 3000);
             }
           }}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-2 bg-gray-300 text-black font-bold rounded-lg shadow hover:bg-gray-400"
         >
           Save Section
         </button>

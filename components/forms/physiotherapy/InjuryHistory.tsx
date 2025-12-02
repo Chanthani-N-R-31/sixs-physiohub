@@ -129,12 +129,12 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
           const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
           onChange(newValue);
         }}
-        className={`w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
           error ? "border-red-500" : ""
         }`}
         placeholder={placeholder}
       />
-      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+      {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
@@ -144,7 +144,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full p-2 select-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
           error ? "border-red-500" : ""
         }`}
       >
@@ -155,7 +155,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </option>
           ))}
       </select>
-      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+      {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
@@ -168,37 +168,37 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
           const newValue = isTextOnly ? filterTextOnly(e.target.value) : e.target.value;
           onChange(newValue);
         }}
-        className={`w-full p-2 textarea-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+        className={`w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
           error ? "border-red-500" : ""
         }`}
         placeholder={placeholder}
         rows={rows}
       />
-      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+      {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-bold text-white">Injury History</h3>
+      <h3 className="text-3xl font-bold text-white text-center">Injury History</h3>
 
       {/* ===================== PREVIOUS INJURIES ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">
           Previous Injuries (If applicable)
         </h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-3 text-white font-bold">Diagnosis</td>
+              <td className="py-3 text-black font-bold">Diagnosis</td>
               <td>
                 <InputCell
                   value={form.previousInjuriesDiagnosis}
@@ -211,7 +211,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Side</td>
+              <td className="py-3 text-black font-bold">Side</td>
               <td>
                 <SelectCell
                   value={form.previousInjuriesSide}
@@ -222,7 +222,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Duration (How long ago)</td>
+              <td className="py-3 text-black font-bold">Duration (How long ago)</td>
               <td>
                 <InputCell
                   value={form.previousInjuriesDuration}
@@ -233,7 +233,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Method of management</td>
+              <td className="py-3 text-black font-bold">Method of management</td>
               <td>
                 <SelectCell
                   value={form.previousInjuriesMethod}
@@ -244,7 +244,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Recovery status</td>
+              <td className="py-3 text-black font-bold">Recovery status</td>
               <td>
                 <SelectCell
                   value={form.previousInjuriesRecovery}
@@ -258,22 +258,22 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
       </section>
 
       {/* ===================== CURRENT INJURIES / SYMPTOMS ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">
           Current Injuries / Symptoms (If Applicable)
         </h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-3 text-white font-bold">Chief Complaints</td>
+              <td className="py-3 text-black font-bold">Chief Complaints</td>
               <td>
                 <TextareaCell
                   value={form.chiefComplaints}
@@ -287,7 +287,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">History</td>
+              <td className="py-3 text-black font-bold">History</td>
               <td>
                 <TextareaCell
                   value={form.history}
@@ -301,7 +301,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Pain severity (0-10)</td>
+              <td className="py-3 text-black font-bold">Pain severity (0-10)</td>
               <td>
                 <div className="py-2">
                   {/* Ruler Scale */}
@@ -321,7 +321,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
                       </button>
                     ))}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-black mt-1">
                     Selected: {form.painSeverity || "None"} / 10
                   </div>
                 </div>
@@ -332,20 +332,20 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
       </section>
 
       {/* ===================== DIAGNOSIS ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Diagnosis</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Diagnosis</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Image</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-3 text-white font-bold">Clinical / Imaging-based</td>
+              <td className="py-3 text-black font-bold">Clinical / Imaging-based</td>
               <td>
                 <div className="py-2">
                   {form.diagnosisImagePreview ? (
@@ -354,7 +354,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
                         <img
                           src={form.diagnosisImagePreview}
                           alt="Diagnosis preview"
-                          className="max-w-full h-auto max-h-64 rounded-lg border border-gray-300"
+                          className="max-w-full h-auto max-h-64 rounded-lg border border-gray-400"
                         />
                         <button
                           type="button"
@@ -377,12 +377,12 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
                           </svg>
                         </button>
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-black">
                         {form.diagnosisImage?.name}
                       </div>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-400 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50 transition-colors">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <svg
                           className="w-10 h-10 mb-3 text-gray-400"
@@ -397,10 +397,10 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                           />
                         </svg>
-                        <p className="mb-2 text-sm text-gray-500">
+                        <p className="mb-2 text-sm text-black">
                           <span className="font-semibold">Click to upload</span> or drag and drop
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-black">
                           PNG, JPG, GIF up to 5MB
                         </p>
                       </div>
@@ -420,20 +420,20 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
       </section>
 
       {/* ===================== MODE OF TREATMENT ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Mode of Treatment</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Mode of Treatment</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-3 text-white font-bold">Treatment Type</td>
+              <td className="py-3 text-black font-bold">Treatment Type</td>
               <td>
                 <SelectCell
                   value={form.modeOfTreatment}
@@ -447,8 +447,8 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
       </section>
 
       {/* ===================== ASSESSMENT FINDINGS ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Assessment Findings</h4>
         <TextareaCell
           value={form.assessmentFindings}
           onChange={(v: string) => update("assessmentFindings", v, true)}
@@ -462,7 +462,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-500 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
@@ -474,7 +474,7 @@ export default function InjuryHistory({ initialData, onSave }: InjuryHistoryProp
               setTimeout(() => setIsSaved(false), 3000);
             }
           }}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-2 bg-gray-300 text-black font-bold rounded-lg shadow hover:bg-gray-400"
         >
           Save Section
         </button>

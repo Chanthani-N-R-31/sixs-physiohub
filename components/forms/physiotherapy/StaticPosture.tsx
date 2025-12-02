@@ -78,18 +78,18 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
           error ? "border-red-500" : ""
         }`}
       >
-          <option value="" className="text-gray-900">Select</option>
+          <option value="">Select</option>
           {options.map((opt: string) => (
-            <option key={opt} value={opt} className="text-gray-900">
+            <option key={opt} value={opt}>
               {opt}
             </option>
           ))}
       </select>
-      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+      {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
@@ -108,31 +108,31 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
         placeholder={placeholder}
         rows={rows}
       />
-      {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+      {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
     </div>
   ), []);
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-bold text-white">
+      <h3 className="text-3xl font-bold text-white text-center">
         Static Posture Assessment
       </h3>
 
       {/* ===================== ANTERIOR VIEW ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Anterior View</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Anterior View</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Observation</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-3 text-white font-bold">Head Tilt</td>
+              <td className="py-3 text-black font-bold">Head Tilt</td>
               <td>
                 <SelectCell
                   value={form.headTilt}
@@ -143,7 +143,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Shoulder Alignment</td>
+              <td className="py-3 text-black font-bold">Shoulder Alignment</td>
               <td>
                 <SelectCell
                   value={form.shoulderAlignment}
@@ -160,7 +160,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Trunk Alignment</td>
+              <td className="py-3 text-black font-bold">Trunk Alignment</td>
               <td>
                 <SelectCell
                   value={form.trunkAlignment}
@@ -175,7 +175,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Pelvic Alignment</td>
+              <td className="py-3 text-black font-bold">Pelvic Alignment</td>
               <td>
                 <SelectCell
                   value={form.pelvicAlignment}
@@ -186,7 +186,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Knee Alignment</td>
+              <td className="py-3 text-black font-bold">Knee Alignment</td>
               <td>
                 <SelectCell
                   value={form.kneeAlignmentAnterior}
@@ -200,20 +200,20 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       </section>
 
       {/* ===================== LATERAL VIEW ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Lateral View</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Lateral View</h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Observation</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-3 text-white font-bold">Head Alignment</td>
+              <td className="py-3 text-black font-bold">Head Alignment</td>
               <td>
                 <SelectCell
                   value={form.headAlignmentLat}
@@ -224,7 +224,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Shoulder Alignment</td>
+              <td className="py-3 text-black font-bold">Shoulder Alignment</td>
               <td>
                 <SelectCell
                   value={form.shoulderAlignmentLat}
@@ -235,7 +235,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Spinal Curves</td>
+              <td className="py-3 text-black font-bold">Spinal Curves</td>
               <td>
                 <SelectCell
                   value={form.spinalCurves}
@@ -246,7 +246,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Pelvic Tilt</td>
+              <td className="py-3 text-black font-bold">Pelvic Tilt</td>
               <td>
                 <SelectCell
                   value={form.pelvicTilt}
@@ -257,7 +257,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
             </tr>
 
             <tr>
-              <td className="py-3 text-white font-bold">Knee Alignment</td>
+              <td className="py-3 text-black font-bold">Knee Alignment</td>
               <td>
                 <SelectCell
                   value={form.kneeAlignmentLat}
@@ -271,8 +271,8 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       </section>
 
       {/* ===================== ASSESSMENT FINDINGS ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings / Observations</h4>
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Assessment Findings / Observations</h4>
         <TextareaCell
           value={form.observations}
           onChange={(v: string) => update("observations", v, true)}
@@ -286,7 +286,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-500 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
@@ -298,7 +298,7 @@ export default function StaticPosture({ initialData, onSave }: StaticPostureProp
               setTimeout(() => setIsSaved(false), 3000);
             }
           }}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-2 bg-gray-300 text-black font-bold rounded-lg shadow hover:bg-gray-400"
         >
           Save Section
         </button>

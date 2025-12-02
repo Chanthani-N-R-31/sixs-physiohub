@@ -102,41 +102,41 @@ export default function ActivityFeed() {
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="p-2.5 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+          className="p-2.5 bg-white border border-gray-400 rounded-lg text-black font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all" className="text-gray-900">
+          <option value="all" className="text-black">
             All Actions
           </option>
-          <option value="CREATED" className="text-gray-900">
+          <option value="CREATED" className="text-black">
             Created
           </option>
-          <option value="UPDATED" className="text-gray-900">
+          <option value="UPDATED" className="text-black">
             Updated
           </option>
-          <option value="DELETED" className="text-gray-900">
+          <option value="DELETED" className="text-black">
             Deleted
           </option>
-          <option value="RESTORED" className="text-gray-900">
+          <option value="RESTORED" className="text-black">
             Restored
           </option>
-          <option value="CORRECTED" className="text-gray-900">
+          <option value="CORRECTED" className="text-black">
             Corrected
           </option>
         </select>
       </div>
 
-      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 overflow-hidden">
+      <div className="bg-gray-100 rounded-xl p-6 shadow-lg border border-gray-400 overflow-hidden">
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm text-left min-w-[700px]">
-            <thead className="border-b border-gray-300 uppercase text-xs">
+            <thead className="border-b border-gray-400 uppercase text-xs">
               <tr>
-                <th className="p-4 text-gray-700 font-bold">Timestamp</th>
-                <th className="p-4 text-gray-700 font-bold">User</th>
-                <th className="p-4 text-gray-700 font-bold">Action</th>
-                <th className="p-4 text-gray-700 font-bold">Details</th>
+                <th className="p-4 text-black font-bold">Timestamp</th>
+                <th className="p-4 text-black font-bold">User</th>
+                <th className="p-4 text-black font-bold">Action</th>
+                <th className="p-4 text-black font-bold">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-400">
               {loading ? (
                 <tr>
                   <td colSpan={4} className="p-8 text-center text-gray-500">
@@ -153,12 +153,12 @@ export default function ActivityFeed() {
                 logs.map((log) => (
                   <tr
                     key={log.id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="hover:bg-gray-200 transition-colors"
                   >
-                    <td className="p-4 text-gray-600 whitespace-nowrap">
+                    <td className="p-4 text-black whitespace-nowrap">
                       {log.time}
                     </td>
-                    <td className="p-4 font-bold text-gray-900">{log.user}</td>
+                    <td className="p-4 font-bold text-black">{log.user}</td>
                     <td className="p-4">
                       <span
                         className={`px-2 py-1 rounded-full text-[10px] font-bold border ${
@@ -167,7 +167,7 @@ export default function ActivityFeed() {
                             : log.action === "CREATED"
                             ? "bg-green-600 text-white border-green-500"
                             : log.action === "RESTORED"
-                            ? "bg-purple-600 text-white border-purple-500"
+                            ? "bg-teal-600 text-white border-teal-500"
                             : log.action === "CORRECTED"
                             ? "bg-orange-600 text-white border-orange-500"
                             : "bg-blue-600 text-white border-blue-500"
@@ -176,7 +176,7 @@ export default function ActivityFeed() {
                         {log.action}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-700">{log.detail}</td>
+                    <td className="p-4 text-black">{log.detail}</td>
                   </tr>
                 ))
               )}

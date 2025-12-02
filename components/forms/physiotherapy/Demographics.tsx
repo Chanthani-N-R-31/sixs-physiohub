@@ -161,13 +161,13 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
-          className={`w-full p-2 border rounded-md text-sm input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? "border-red-500" : "border-gray-600"
+          className={`w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            error ? "border-red-500" : ""
           }`}
           placeholder={placeholder}
           required={required}
         />
-        {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+        {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
       </div>
     ),
     []
@@ -195,8 +195,8 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
-          className={`w-full p-2 border rounded-md text-sm select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            error ? "border-red-500" : "border-gray-600"
+          className={`w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            error ? "border-red-500" : ""
           }`}
           required={required}
         >
@@ -207,7 +207,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
             </option>
           ))}
         </select>
-        {error && <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>}
+        {error && <p className="text-red-600 text-xs mt-1 font-medium">{error}</p>}
       </div>
     ),
     []
@@ -216,31 +216,31 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-white">Demographics</h3>
+        <h3 className="text-3xl font-bold text-white text-center">Demographics</h3>
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-500 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
       </div>
 
       {/* ===================== DEMOGRAPHIC DETAILS ====================== */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-semibold text-white mb-3">
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-semibold text-black mb-3">
           Demographic Details
         </h4>
 
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white/70 font-bold border-b border-gray-700">
+            <tr className="text-left text-black/70 font-bold border-b border-gray-400">
               <th className="py-2 w-1/3">Parameter</th>
               <th className="py-2 w-2/3">Description</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             <tr>
-              <td className="py-2 text-white">
+              <td className="py-2 text-black">
                 Patient Name <span className="text-red-500">*</span>
               </td>
               <td>
@@ -257,7 +257,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
             </tr>
 
             <tr>
-              <td className="py-2 text-white">
+              <td className="py-2 text-black">
                 Date of Birth <span className="text-red-500">*</span>
               </td>
               <td>
@@ -274,7 +274,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
             </tr>
 
             <tr>
-              <td className="py-2 text-white">
+              <td className="py-2 text-black">
                 Gender <span className="text-red-500">*</span>
               </td>
               <td>
@@ -290,7 +290,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
             </tr>
 
             <tr>
-              <td className="py-2 text-white">Rank</td>
+              <td className="py-2 text-black">Rank</td>
               <td>
                 <InputCell
                   value={form.rank}
@@ -305,7 +305,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
             </tr>
 
             <tr>
-              <td className="py-2 text-white">
+              <td className="py-2 text-black">
                 Date of Assessment <span className="text-red-500">*</span>
               </td>
               <td>
@@ -328,7 +328,7 @@ export default function Demographics({ initialData, onSave }: DemographicsProps)
       <div className="flex justify-end">
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium transition-colors"
+          className="px-6 py-2 bg-gray-300 text-black font-bold rounded-lg shadow hover:bg-gray-400 transition-colors"
         >
           Save Demographics
         </button>

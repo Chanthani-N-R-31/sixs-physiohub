@@ -1826,13 +1826,13 @@ export default function RegistrationDetails({
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-500 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-2 bg-gray-300 text-black font-bold rounded-lg shadow hover:bg-gray-400"
         >
           Save Registration Details
         </button>

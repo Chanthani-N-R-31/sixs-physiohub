@@ -68,26 +68,26 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-bold text-white">Spatiotemporal Metrics</h3>
+      <h3 className="text-3xl font-bold text-white text-center">Spatiotemporal Metrics</h3>
 
-      <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+      <div className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Values</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-400">
             {metrics.map((metric) => (
               <tr key={metric.key}>
-                <td className="py-3 text-white font-bold">{metric.label}</td>
+                <td className="py-3 text-black font-bold">{metric.label}</td>
                 <td>
                   <input
                     type="number"
                     step="0.1"
-                    className="w-full p-2 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter value"
                     value={form[metric.key as keyof typeof form] as string}
                     onChange={(e) => {
@@ -105,10 +105,10 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
       </div>
 
       {/* Assessment Findings */}
-      <div className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        <h4 className="text-lg font-bold text-white mb-3">Assessment Findings</h4>
+      <div className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Assessment Findings</h4>
         <textarea
-          className="w-full p-3 textarea-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+          className="w-full p-3 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter assessment findings"
           value={form.assessmentFindings}
@@ -119,13 +119,13 @@ export default function Spatiotemporal({ initialData, onSave }: SpatiotemporalPr
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-300 text-sm flex items-center font-bold">
+          <span className="text-green-600 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
         <button
           onClick={handleSave}
-          className="px-6 py-3 bg-blue-900 text-white rounded-lg shadow-lg hover:bg-blue-800 transition-all font-bold border border-blue-800"
+          className="px-6 py-3 bg-gray-300 text-black font-bold rounded-lg shadow-lg hover:bg-gray-400 transition-all"
         >
           Save Section
         </button>

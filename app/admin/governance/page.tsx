@@ -233,34 +233,34 @@ export default function DataGovernance() {
       {/* Content: Deleted Records */}
       {activeTab === "deleted" && (
         <div className="space-y-4">
-          <div className="bg-red-900/40 border border-red-600 rounded-xl p-4 flex items-center gap-3">
-            <div className="bg-red-800/60 p-1.5 rounded-full text-red-200">
+          <div className="bg-red-100 border border-red-400 rounded-xl p-4 flex items-center gap-3">
+            <div className="bg-red-200 p-1.5 rounded-full text-red-600">
               <TrashIcon className="w-5 h-5" />
             </div>
-            <div className="text-white font-bold text-sm">
+            <div className="text-black font-bold text-sm">
               <strong>Warning:</strong> "Force Delete" is a permanent action and
               cannot be undone. Use "Restore" to move records back to the
               active index.
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-0 overflow-hidden shadow-lg">
+          <div className="bg-gray-100 rounded-xl border border-gray-400 p-0 overflow-hidden shadow-lg">
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left min-w-[800px]">
-                <thead className="border-b border-gray-300">
+                <thead className="border-b border-gray-400">
                   <tr>
-                    <th className="p-4 text-gray-700 font-bold">
+                    <th className="p-4 text-black font-bold">
                       Individual Name
                     </th>
-                    <th className="p-4 text-gray-700 font-bold">Deleted By</th>
-                    <th className="p-4 text-gray-700 font-bold">Deleted On</th>
-                    <th className="p-4 text-gray-700 font-bold">
+                    <th className="p-4 text-black font-bold">Deleted By</th>
+                    <th className="p-4 text-black font-bold">Deleted On</th>
+                    <th className="p-4 text-black font-bold">
                       Reason (Optional)
                     </th>
-                    <th className="p-4 text-gray-700 font-bold">Actions</th>
+                    <th className="p-4 text-black font-bold">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-400">
                   {loading ? (
                     <tr>
                       <td colSpan={5} className="p-6 text-center text-gray-500">
@@ -275,22 +275,22 @@ export default function DataGovernance() {
                     </tr>
                   ) : (
                     deletedRecords.map((rec) => (
-                      <tr key={rec.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="p-4 text-gray-900 font-bold">{rec.individualName}</td>
-                        <td className="p-4 text-gray-700">{rec.deletedBy}</td>
-                        <td className="p-4 text-gray-600">{rec.deletedOn}</td>
-                        <td className="p-4 text-gray-500 italic">
+                      <tr key={rec.id} className="hover:bg-gray-200 transition-colors">
+                        <td className="p-4 text-black font-bold">{rec.individualName}</td>
+                        <td className="p-4 text-black">{rec.deletedBy}</td>
+                        <td className="p-4 text-black">{rec.deletedOn}</td>
+                        <td className="p-4 text-black/70 italic">
                           {rec.reason && rec.reason.trim() !== "" ? rec.reason : "—"}
                         </td>
                         <td className="p-4 flex gap-2">
                           <button
-                            className="flex items-center gap-1 text-white bg-blue-900 hover:bg-blue-800 border border-blue-800 px-3 py-1.5 rounded transition-colors text-xs font-bold"
+                            className="flex items-center gap-1 text-black bg-gray-300 hover:bg-gray-400 border border-gray-400 px-3 py-1.5 rounded transition-colors text-xs font-bold"
                             onClick={() => handleRestore(rec)}
                           >
                             <ArrowPathIcon className="w-3.5 h-3.5" /> Restore
                           </button>
                           <button
-                            className="flex items-center gap-1 text-white bg-red-700 hover:bg-red-600 px-3 py-1.5 rounded transition-colors text-xs font-bold border border-red-600"
+                            className="flex items-center gap-1 text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded transition-colors text-xs font-bold border border-red-700"
                             onClick={() => alert("Force delete logic is not implemented yet. This is a placeholder button.")}
                           >
                             <TrashIcon className="w-3.5 h-3.5" /> Force Delete
@@ -308,10 +308,10 @@ export default function DataGovernance() {
 
       {/* Content: Corrections */}
       {activeTab === "correction" && (
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 text-center space-y-6">
+        <div className="bg-gray-100 rounded-xl border border-gray-400 p-6 text-center space-y-6">
           <div className="max-w-md mx-auto space-y-4">
-            <h3 className="text-lg font-bold text-white">Edit Master Record</h3>
-            <p className="text-sm text-white/70 font-medium">
+            <h3 className="text-lg font-bold text-black">Edit Master Record</h3>
+            <p className="text-sm text-black font-medium">
               Admin privileges allow you to override specific data points in an
               individual's record without changing the audit trail of the
               original assessment.
@@ -321,16 +321,16 @@ export default function DataGovernance() {
               <input
                 type="text"
                 placeholder="Enter Individual ID (e.g., P-1029)..."
-                className="flex-1 p-3 input-glass font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 p-3 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button className="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-800 font-bold transition shadow-lg border border-blue-800">
+              <button className="bg-gray-300 text-black px-6 py-3 rounded-lg hover:bg-gray-400 font-bold transition shadow-lg">
                 Fetch Record
               </button>
             </div>
           </div>
 
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-12 flex flex-col items-center justify-center text-white/60 bg-gray-900/40">
-            <PencilSquareIcon className="w-16 h-16 mb-4 text-white/40" />
+          <div className="border-2 border-dashed border-gray-400 rounded-xl p-12 flex flex-col items-center justify-center text-black/60 bg-white">
+            <PencilSquareIcon className="w-16 h-16 mb-4 text-black/40" />
             <p className="font-bold">No record loaded.</p>
             <p className="text-sm">
               Enter an Individual ID above to enable admin-level corrections.

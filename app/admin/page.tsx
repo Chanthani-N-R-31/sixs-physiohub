@@ -11,25 +11,6 @@ import {
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, where } from "firebase/firestore";
 
-// Helper Component for Stat Cards - solid dark style
-function StatCard({ title, value, icon: Icon, loading }: any) {
-  return (
-    <div className="bg-[#1a4d4d] p-6 rounded-xl shadow-lg">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-bold text-white/80">{title}</p>
-          <h3 className="text-3xl font-bold text-white mt-2">
-            {loading ? "..." : value}
-          </h3>
-        </div>
-        <div className="p-3 rounded-lg bg-blue-500/20 text-white">
-          <Icon className="w-6 h-6" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [totalPhysios, setTotalPhysios] = useState(0);
@@ -136,11 +117,11 @@ export default function AdminDashboard() {
 
       {/* Alert Banner */}
       {recentDeletions > 0 && (
-        <div className="bg-red-900/40 border border-red-600 rounded-xl p-4 flex items-start gap-4">
-          <ExclamationCircleIcon className="w-6 h-6 text-red-300 flex-shrink-0 mt-0.5" />
+        <div className="bg-red-100 border border-red-400 rounded-xl p-4 flex items-start gap-4">
+          <ExclamationCircleIcon className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-sm font-bold text-white">Governance Alert</h4>
-            <p className="text-white/90 text-sm mt-1">
+            <h4 className="text-sm font-bold text-black">Governance Alert</h4>
+            <p className="text-black text-sm mt-1">
               {recentDeletions} record{recentDeletions !== 1 ? "s" : ""}{" "}
               {recentDeletions !== 1 ? "have" : "has"} been deleted in the last
               24 hours. Please review the Data Governance module to ensure these
@@ -150,38 +131,66 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* KPI Cards - Dark blue like dashboard */}
+      {/* KPI Cards - Glassmorphism like main dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Total Physios</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : totalPhysios}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Physios</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : totalPhysios}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <UsersIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Total Individuals</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : totalIndividuals}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Individuals</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : totalIndividuals}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <UsersIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Completed Assessments</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : completedAssessments}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Completed Assessments</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : completedAssessments}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <DocumentCheckIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
-        <div className="bg-blue-900 rounded-xl p-6 shadow-lg border border-blue-800">
-          <div className="text-xs font-bold text-white/80 uppercase tracking-wide">Deleted Records</div>
-          <div className="mt-2 text-3xl font-bold text-white">
-            {loading ? "..." : deletedRecords}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Deleted Records</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : deletedRecords}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <TrashIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* System Health Placeholder - White card */}
-      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">System Health</h3>
-        <div className="h-32 flex items-center justify-center rounded-lg border border-dashed border-gray-300 text-gray-500 bg-gray-50">
+      {/* System Health Placeholder - Light grey card */}
+      <div className="bg-gray-100 rounded-xl p-6 shadow-lg border border-gray-400">
+        <h3 className="text-lg font-bold text-black mb-4">System Health</h3>
+        <div className="h-32 flex items-center justify-center rounded-lg border border-dashed border-gray-400 text-black bg-white">
           <ChartBarIcon className="w-6 h-6 mr-2" />
           Activity Chart Placeholder
         </div>

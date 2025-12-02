@@ -67,7 +67,7 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="px-6 py-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-blue-900 flex items-center justify-center text-white font-bold text-lg shadow-lg border border-blue-800">
+          <div className="w-11 h-11 rounded-xl bg-teal-900 flex items-center justify-center text-white font-bold text-lg shadow-lg border border-teal-800">
             PH
           </div>
           <div>
@@ -95,7 +95,7 @@ export default function AdminSidebar() {
                 href={item.href}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[15px] font-bold transition-all ${
                   active
-                    ? "bg-blue-900 text-white shadow-lg"
+                    ? "bg-teal-900 text-white shadow-lg border border-teal-800"
                     : "text-gray-300 hover:bg-gray-800 hover:text-white"
                 }`}
               >
@@ -111,7 +111,7 @@ export default function AdminSidebar() {
       <div className="mt-auto px-6 py-6 border-t border-gray-700">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-bold transition-colors"
+          className="flex items-center gap-2 text-sm text-white/80 hover:text-white font-bold transition-colors"
         >
           <ArrowRightOnRectangleIcon className="w-5 h-5" />
           Logout

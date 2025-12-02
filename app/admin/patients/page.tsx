@@ -325,7 +325,7 @@ export default function MasterIndividualIndex() {
         {/* Back button */}
         <button
           onClick={handleBackFromEdit}
-          className="flex items-center gap-2 text-white/80 hover:text-white font-bold mb-4 transition-colors"
+          className="flex items-center gap-2 text-black hover:text-black font-bold mb-4 transition-colors"
         >
           <ArrowLeftIcon className="w-5 h-5" />
           <span>Back to Individual Index</span>
@@ -419,41 +419,41 @@ export default function MasterIndividualIndex() {
             <input
               type="text"
               placeholder="Search by Individual Name, ID, or Army Number..."
-              className="w-full pl-10 p-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 font-bold placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white shadow-md"
+              className="w-full pl-10 p-3 bg-white border border-gray-400 rounded-lg text-black font-bold placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white shadow-md"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold hover:bg-gray-600 transition-all shadow-lg">
+          <button className="flex items-center gap-2 px-4 py-3 bg-gray-300 border border-gray-400 rounded-lg text-black font-bold hover:bg-gray-400 transition-all shadow-lg">
             <FunnelIcon className="w-5 h-5" />
             Filters
           </button>
         </div>
         <button
           onClick={handleCreateNew}
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-900 text-white rounded-lg font-bold hover:bg-blue-800 transition-all shadow-lg border border-blue-800"
+          className="flex items-center justify-center gap-2 px-5 py-3 bg-gray-300 text-black font-bold rounded-lg hover:bg-gray-400 transition-all shadow-lg"
         >
           <PlusCircleIcon className="w-5 h-5" />
           Add New Entry
         </button>
       </div>
 
-      {/* Data Table - White card like dashboard */}
-      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 overflow-hidden">
+      {/* Data Table - Light grey card */}
+      <div className="bg-gray-100 rounded-xl p-6 shadow-lg border border-gray-400 overflow-hidden">
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm text-left min-w-[800px]">
-            <thead className="border-b border-gray-300">
+            <thead className="border-b border-gray-400">
               <tr>
-                <th className="p-4 text-gray-700 font-bold">Individual ID</th>
-                <th className="p-4 text-gray-700 font-bold">Name</th>
-                <th className="p-4 text-gray-700 font-bold">Unit / Rank</th>
-                <th className="p-4 text-gray-700 font-bold">Physio</th>
-                <th className="p-4 text-gray-700 font-bold">Last Activity</th>
-                <th className="p-4 text-gray-700 font-bold">Status</th>
-                <th className="p-4 text-gray-700 font-bold">Actions</th>
+                <th className="p-4 text-black font-bold">Individual ID</th>
+                <th className="p-4 text-black font-bold">Name</th>
+                <th className="p-4 text-black font-bold">Unit / Rank</th>
+                <th className="p-4 text-black font-bold">Physio</th>
+                <th className="p-4 text-black font-bold">Last Activity</th>
+                <th className="p-4 text-black font-bold">Status</th>
+                <th className="p-4 text-black font-bold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-400">
               {loading ? (
                 <tr>
                   <td
@@ -478,19 +478,25 @@ export default function MasterIndividualIndex() {
                     key={ind.fullId}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="p-4 font-mono text-blue-600 font-medium">
+                    <td className="p-4 font-mono text-black font-bold">
                       {ind.id}
                     </td>
-                    <td className="p-4 font-bold text-gray-900">{ind.name}</td>
-                    <td className="p-4 text-gray-700">
+                    <td className="p-4 font-bold text-black">{ind.name}</td>
+                    <td className="p-4 text-black">
                       {ind.rank} / {ind.unit}
                     </td>
-                    <td className="p-4 text-gray-600">{ind.physio}</td>
-                    <td className="p-4 text-gray-600">
+                    <td className="p-4 text-black">{ind.physio}</td>
+                    <td className="p-4 text-black">
                       {ind.lastActivity}
                     </td>
                     <td className="p-4">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white border border-blue-500">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        ind.status === "Completed" 
+                          ? "bg-teal-600 text-white border border-teal-500"
+                          : ind.status === "In Progress"
+                          ? "bg-teal-600 text-white border border-teal-500"
+                          : "bg-gray-400 text-white border border-gray-500"
+                      }`}>
                         {ind.status}
                       </span>
                     </td>
@@ -499,14 +505,14 @@ export default function MasterIndividualIndex() {
                         <button
                           title="Edit"
                           onClick={() => handleEdit(ind)}
-                          className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                          className="p-2 rounded-md text-black hover:bg-gray-300 hover:text-black transition-colors"
                         >
                           <PencilIcon className="w-4 h-4" />
                         </button>
                         <button
                           title="Delete"
                           onClick={() => handleDelete(ind)}
-                          className="p-2 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                          className="p-2 rounded-md text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>

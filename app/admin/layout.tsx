@@ -16,15 +16,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div
       className={`${inter.className} flex min-h-screen relative overflow-hidden bg-gray-900`}
       style={{
-        backgroundImage: "url(/new4.webp)",
+        backgroundImage: "url('/final ui.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Dark overlay for better readability */}
-      <div className="absolute inset-0 bg-black/60" />
+      {/* Overlay for better readability */}
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
 
       {/* Sidebar */}
       <div className="relative z-10">

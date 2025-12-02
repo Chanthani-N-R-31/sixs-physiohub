@@ -131,32 +131,32 @@ export default function PhysiologyForm({
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">IMU Setup</h3>
+      <div className="bg-gray-100 rounded-xl shadow-md p-6 border border-gray-400">
+        <h3 className="text-3xl font-bold text-white text-center mb-4">IMU Setup</h3>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-xs uppercase text-gray-500 border-b">
+            <thead className="text-xs uppercase text-black border-b border-gray-400">
               <tr>
-                <th className="py-3 text-left font-medium">Parameter</th>
-                <th className="py-3 text-left font-medium">Unit</th>
-                <th className="py-3 text-left font-medium">Enter value</th>
+                <th className="py-3 text-left font-bold">Parameter</th>
+                <th className="py-3 text-left font-bold">Unit</th>
+                <th className="py-3 text-left font-bold">Enter value</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-400">
               {PARAMETER_CONFIG.map((param) => (
                 <tr key={param.id}>
-                  <td className="py-4 font-medium text-gray-900">{param.label}</td>
-                  <td className="py-4 text-gray-500">{param.unit || "—"}</td>
+                  <td className="py-4 font-bold text-black">{param.label}</td>
+                  <td className="py-4 text-black">{param.unit || "—"}</td>
 
                   <td className="py-4">
                     {param.multiline ? (
                       <textarea
                         className="
-                          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
-                          text-gray-900 placeholder-gray-400 bg-white
-                          focus:border-green-500 focus:ring-green-500
+                          w-full rounded-lg border border-gray-400 px-3 py-2 text-sm 
+                          text-black placeholder-gray-500 bg-white
+                          focus:border-blue-500 focus:ring-blue-500
                         "
                         rows={2}
                         value={formValues[param.id] || ""}
@@ -167,9 +167,9 @@ export default function PhysiologyForm({
                       <input
                         type="text"
                         className="
-                          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm 
-                          text-gray-900 placeholder-gray-400 bg-white
-                          focus:border-green-500 focus:ring-green-500
+                          w-full rounded-lg border border-gray-400 px-3 py-2 text-sm 
+                          text-black placeholder-gray-500 bg-white
+                          focus:border-blue-500 focus:ring-blue-500
                         "
                         value={formValues[param.id] || ""}
                         onChange={(e) => handleChange(param.id, e.target.value)}
@@ -196,7 +196,7 @@ export default function PhysiologyForm({
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+            className="px-6 py-3 bg-gray-300 text-black font-bold rounded-lg hover:bg-gray-400 transition-all disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Physiology"}
           </button>
