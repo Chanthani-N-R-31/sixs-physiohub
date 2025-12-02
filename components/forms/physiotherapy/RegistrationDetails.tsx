@@ -500,9 +500,9 @@ export default function RegistrationDetails({
     }
   };
 
-  const renderSectionHeader = (num: number, title: string) => (
+  const renderSectionHeader = (num: number, title: string, isWhiteBg: boolean = false) => (
     <h4 
-      className="text-lg font-bold text-white mb-3 cursor-pointer"
+      className={`text-lg font-bold mb-3 cursor-pointer ${isWhiteBg ? "text-black" : "text-white"}`}
       onClick={() => toggleSection(num)}
     >
       {title} {expandedSections.has(num) ? "▼" : "▶"}
@@ -527,16 +527,27 @@ export default function RegistrationDetails({
     options?: string[],
     placeholder?: string,
     readOnly = false,
-    required = false
+    required = false,
+    isWhiteBg: boolean = false
   ) => {
     const fieldValue = form[key as keyof typeof form] as string;
     const error = validationErrors[key];
     const isTextOnly = isTextOnlyField(key);
     const shouldUseTextarea = type === "textarea" || (type === "text" && (key.includes("description") || key.includes("notes") || key.includes("Areas") || key.includes("Strengths") || key.includes("Limitations") || key.includes("Suitability")));
 
+    const inputClass = isWhiteBg 
+      ? "w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      : "w-full p-2 input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+    const selectClass = isWhiteBg
+      ? "w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      : "w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+    const textareaClass = isWhiteBg
+      ? "w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+      : "w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical";
+
     return (
       <tr>
-        <td className="py-3 text-white font-bold">
+        <td className={`py-3 font-bold ${isWhiteBg ? "text-black" : "text-white"}`}>
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </td>
@@ -545,12 +556,12 @@ export default function RegistrationDetails({
             <select
               value={fieldValue || ""}
               onChange={(e) => update(key, e.target.value, false)}
-              className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={selectClass}
               disabled={readOnly}
             >
               <option value="">-</option>
               {options?.map((opt) => (
-                <option key={opt} value={opt}>
+                <option key={opt} value={opt} className={isWhiteBg ? "bg-white text-black" : ""}>
                   {opt}
                 </option>
               ))}
@@ -563,7 +574,7 @@ export default function RegistrationDetails({
                     <img
                       src={form[`${key}Preview` as keyof typeof form] as string}
                       alt={`${label} preview`}
-                      className="max-w-full h-auto max-h-48 rounded-lg border border-gray-600"
+                      className={`max-w-full h-auto max-h-48 rounded-lg border ${isWhiteBg ? "border-gray-400" : "border-gray-600"}`}
                     />
                     <button
                       type="button"
@@ -605,8 +616,8 @@ export default function RegistrationDetails({
               ) : (
                 <>
                   {form[key as keyof typeof form] && !(form[`${key}Preview` as keyof typeof form] as string) ? (
-                    <div className="flex items-center gap-2 p-2 border border-gray-600 rounded bg-gray-700">
-                      <span className="text-sm font-bold text-white">
+                    <div className={`flex items-center gap-2 p-2 border rounded ${isWhiteBg ? "border-gray-400 bg-white" : "border-gray-600 bg-gray-700"}`}>
+                      <span className={`text-sm font-bold ${isWhiteBg ? "text-black" : "text-white"}`}>
                         {(form[key as keyof typeof form] as File)?.name || "File selected"}
                       </span>
                       <button
@@ -621,7 +632,7 @@ export default function RegistrationDetails({
                   <input
                     type="file"
                     onChange={(e) => handleFileChange(key, e.target.files?.[0] || null)}
-                    className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={isWhiteBg ? "w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" : "w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"}
                     accept="image/*,.pdf"
                   />
                 </>
@@ -643,7 +654,7 @@ export default function RegistrationDetails({
                     }));
                   }
                 }}
-                className={`w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical ${
+                className={`${textareaClass} ${
                   error ? "border-red-500" : ""
                 } ${readOnly ? "opacity-60" : ""}`}
                 rows={3}
@@ -651,7 +662,7 @@ export default function RegistrationDetails({
                 readOnly={readOnly}
               />
               {error && (
-                <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>
+                <p className={`text-xs mt-1 font-medium ${isWhiteBg ? "text-red-600" : "text-red-300"}`}>{error}</p>
               )}
             </>
           ) : type === "date-masked" ? (
@@ -662,14 +673,14 @@ export default function RegistrationDetails({
                 value={fieldValue || ""}
                 onChange={(e) => update(key, e.target.value, false, true)} // Trigger Date Logic
                 maxLength={10}
-                className={`w-full p-2 input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`${inputClass} ${
                   error ? "border-red-500" : ""
                 } ${readOnly ? "opacity-60" : ""}`}
                 placeholder="DD/MM/YYYY"
                 readOnly={readOnly}
               />
               {error && (
-                <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>
+                <p className={`text-xs mt-1 font-medium ${isWhiteBg ? "text-red-600" : "text-red-300"}`}>{error}</p>
               )}
             </>
           ) : (
@@ -700,14 +711,14 @@ export default function RegistrationDetails({
                   }
                 }}
                 maxLength={key === "contact" ? 10 : undefined}
-                className={`w-full p-2 input-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                className={`${inputClass} ${
                   error ? "border-red-500" : ""
                 } ${readOnly ? "opacity-60" : ""}`}
                 placeholder={placeholder}
                 readOnly={readOnly}
               />
               {error && (
-                <p className="text-red-300 text-xs mt-1 font-medium">{error}</p>
+                <p className={`text-xs mt-1 font-medium ${isWhiteBg ? "text-red-600" : "text-red-300"}`}>{error}</p>
               )}
             </>
           )}
@@ -718,74 +729,78 @@ export default function RegistrationDetails({
 
   return (
     <div className="space-y-8 w-full overflow-x-hidden">
-      <h3 className="text-xl font-bold text-white">Registration Details</h3>
+      <h3 className="text-3xl font-bold text-white text-center">Registration Details</h3>
 
       {/* SECTION 1 — PERSONAL IDENTIFICATION */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(1, "PERSONAL IDENTIFICATION")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(1, "PERSONAL IDENTIFICATION", true)}
         {expandedSections.has(1) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
-                {renderField("First Name", "firstName", "text", undefined, "Enter first name", false, true)}
-                {renderField("Initials", "initials", "text", undefined, "Enter initials")}
-                {renderField("Last Name", "lastName", "text", undefined, "Enter last name", false, true)}
-                {renderField("Full Name ", "fullName", "text", undefined, "", true)}
-                {renderField("Photograph Upload", "photograph", "file")}
+            <tbody className="divide-y divide-gray-400">
+                {renderField("First Name", "firstName", "text", undefined, "Enter first name", false, true, true)}
+                {renderField("Initials", "initials", "text", undefined, "Enter initials", false, false, true)}
+                {renderField("Last Name", "lastName", "text", undefined, "Enter last name", false, true, true)}
+                {renderField("Full Name ", "fullName", "text", undefined, "", true, false, true)}
+                {renderField("Photograph Upload", "photograph", "file", undefined, undefined, false, false, true)}
                 {renderField(
                   "Service Branch",
                   "serviceBranch",
                   "select",
-                  ["Army", "Air Force", "Navy"]
+                  ["Army", "Air Force", "Navy"],
+                  undefined,
+                  false,
+                  false,
+                  true
                 )}
-                {renderField("Service Number", "serviceNumber", "text", undefined, "Enter service number")}
-                {renderField("Rank", "rank", "text", undefined, "Enter rank")}
-                {renderField("Current Appointment / Designation", "currentAppointment", "text", undefined, "Enter appointment/designation")}
+                {renderField("Service Number", "serviceNumber", "text", undefined, "Enter service number", false, false, true)}
+                {renderField("Rank", "rank", "text", undefined, "Enter rank", false, false, true)}
+                {renderField("Current Appointment / Designation", "currentAppointment", "text", undefined, "Enter appointment/designation", false, false, true)}
                 
                 {/* --- DATE FIELDS HERE --- */}
-                {renderField("Enlistment Date", "enlistmentDate", "date-masked")}
+                {renderField("Enlistment Date", "enlistmentDate", "date-masked", undefined, undefined, false, false, true)}
                 
-                {renderField("Years in Service (Auto-Calculated)", "yearsInService", "text", undefined, "", true)}
-                {renderField("Years in Special Forces (Auto-Calculated)", "yearsInSpecialForces", "text", undefined, "Enter years")}
+                {renderField("Years in Service (Auto-Calculated)", "yearsInService", "text", undefined, "", true, false, true)}
+                {renderField("Years in Special Forces (Auto-Calculated)", "yearsInSpecialForces", "text", undefined, "Enter years", false, false, true)}
                 
                 {/* --- DATE FIELDS HERE --- */}
-                {renderField("Date of Birth", "dob", "date-masked")}
+                {renderField("Date of Birth", "dob", "date-masked", undefined, undefined, false, false, true)}
                 
-                {renderField("Age (Auto-Calculated)", "age", "text", undefined, "", true)}
-                {renderField("Gender", "gender", "select", ["Male", "Female", "Other"])}
-                {renderField("Blood Group", "bloodGroup", "select", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])}
-                {renderField("Dominant Hand", "dominantHand", "select", ["Left", "Right", "Ambidextrous"])}
-                {renderField("Dominant Leg", "dominantLeg", "select", ["Left", "Right"])}
-                {renderField("Dominant Eye", "dominantEye", "select", ["Left", "Right"])}
-                {renderField("Service ID Scan Upload", "serviceIdScan", "file")}
-                {renderField("Medical Category Document Upload", "medicalCategoryDoc", "file")}
+                {renderField("Age (Auto-Calculated)", "age", "text", undefined, "", true, false, true)}
+                {renderField("Gender", "gender", "select", ["Male", "Female", "Other"], undefined, false, false, true)}
+                {renderField("Blood Group", "bloodGroup", "select", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], undefined, false, false, true)}
+                {renderField("Dominant Hand", "dominantHand", "select", ["Left", "Right", "Ambidextrous"], undefined, false, false, true)}
+                {renderField("Dominant Leg", "dominantLeg", "select", ["Left", "Right"], undefined, false, false, true)}
+                {renderField("Dominant Eye", "dominantEye", "select", ["Left", "Right"], undefined, false, false, true)}
+                {renderField("Service ID Scan Upload", "serviceIdScan", "file", undefined, undefined, false, false, true)}
+                {renderField("Medical Category Document Upload", "medicalCategoryDoc", "file", undefined, undefined, false, false, true)}
             </tbody>
           </table>
         )}
       </section>
 
       {/* SECTION 2 — SERVICE HISTORY & QUALIFICATIONS */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(2, "SERVICE HISTORY & QUALIFICATIONS")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(2, "SERVICE HISTORY & QUALIFICATIONS", true)}
         {expandedSections.has(2) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
-                {renderField("Total Years in Armed Forces", "totalYearsArmedForces", "text", undefined, "Enter years")}
-                {renderField("Total Years in Combat Role", "totalYearsCombatRole", "text", undefined, "Enter years")}
-                {renderField("Total Years in Special Forces", "totalYearsSpecialForces", "text", undefined, "Enter years")}
+            <tbody className="divide-y divide-gray-400">
+                {renderField("Total Years in Armed Forces", "totalYearsArmedForces", "text", undefined, "Enter years", false, false, true)}
+                {renderField("Total Years in Combat Role", "totalYearsCombatRole", "text", undefined, "Enter years", false, false, true)}
+                {renderField("Total Years in Special Forces", "totalYearsSpecialForces", "text", undefined, "Enter years", false, false, true)}
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Special Forces Courses (with Certificate Upload)</td>
+                  <td className="py-3 text-black font-bold align-top">Special Forces Courses (with Certificate Upload)</td>
                   <td>
                     <div className="space-y-3">
                       {[
@@ -809,7 +824,7 @@ export default function RegistrationDetails({
                         const courseData = (form.sfCourses as any)?.[course];
                         const certificateFile = (form.sfCourses as any)?.[course + "_cert"];
                         return (
-                          <div key={course} className="border border-gray-600 rounded-lg p-3 bg-gray-700">
+                          <div key={course} className="border border-gray-400 rounded-lg p-3 bg-white">
                             <div className="flex items-center gap-2 mb-2">
                               <input
                                 type="checkbox"
@@ -817,14 +832,14 @@ export default function RegistrationDetails({
                                 onChange={(e) => updateNested("sfCourses", course, e.target.checked)}
                                 className="w-4 h-4"
                               />
-                              <label className="text-sm font-bold text-white flex-1">{course}</label>
+                              <label className="text-sm font-bold text-black flex-1">{course}</label>
                             </div>
                             {courseData && (
                               <div className="ml-6 mt-2">
-                                <label className="text-xs font-bold text-white mb-1 block">Certificate Upload</label>
+                                <label className="text-xs font-bold text-black mb-1 block">Certificate Upload</label>
                                 {certificateFile ? (
-                                  <div className="flex items-center gap-2 p-2 bg-white border border-gray-300 rounded">
-                                    <span className="text-xs font-bold text-white flex-1 truncate">
+                                  <div className="flex items-center gap-2 p-2 bg-white border border-gray-400 rounded">
+                                    <span className="text-xs font-bold text-black flex-1 truncate">
                                       {certificateFile.name}
                                     </span>
                                     <button
@@ -871,8 +886,8 @@ export default function RegistrationDetails({
                                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                           />
                                         </svg>
-                                        <span className="text-sm font-bold text-white">Choose File</span>
-                                        <span className="text-xs font-bold text-white">(PDF, JPG, PNG)</span>
+                                        <span className="text-sm font-bold text-black">Choose File</span>
+                                        <span className="text-xs font-bold text-black">(PDF, JPG, PNG)</span>
                                       </div>
                                       <input
                                         type="file"
@@ -896,15 +911,15 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Weapon Mastery Qualification</td>
+                  <td className="py-3 text-black font-bold align-top">Weapon Mastery Qualification</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Primary Rifle</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Primary Rifle</label>
                         <select
                           value={form.primaryRifle}
                           onChange={(e) => update("primaryRifle", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>AK-47</option>
@@ -915,11 +930,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Secondary Weapon</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Secondary Weapon</label>
                         <select
                           value={form.secondaryWeapon}
                           onChange={(e) => update("secondaryWeapon", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Pistol</option>
@@ -928,11 +943,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">LMG/MMG</label>
+                        <label className="text-xs font-bold text-black mb-1 block">LMG/MMG</label>
                         <select
                           value={form.lmgMmg}
                           onChange={(e) => update("lmgMmg", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -940,11 +955,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Sniper Systems</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Sniper Systems</label>
                         <select
                           value={form.sniperSystems}
                           onChange={(e) => update("sniperSystems", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -952,11 +967,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Underwater Weapons</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Underwater Weapons</label>
                         <select
                           value={form.underwaterWeapons}
                           onChange={(e) => update("underwaterWeapons", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -964,11 +979,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">CQB Weapons</label>
+                        <label className="text-xs font-bold text-black mb-1 block">CQB Weapons</label>
                         <select
                           value={form.cqbWeapons}
                           onChange={(e) => update("cqbWeapons", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -979,46 +994,46 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Annual Firing Scores</td>
+                  <td className="py-3 text-black font-bold align-top">Annual Firing Scores</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Rifle</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Rifle</label>
                         <input
                           type="text"
                           value={form.rifleScore}
                           onChange={(e) => update("rifleScore", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Pistol</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Pistol</label>
                         <input
                           type="text"
                           value={form.pistolScore}
                           onChange={(e) => update("pistolScore", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Night Firing</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Night Firing</label>
                         <input
                           type="text"
                           value={form.nightFiringScore}
                           onChange={(e) => update("nightFiringScore", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Moving Target</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Moving Target</label>
                         <input
                           type="text"
                           value={form.movingTargetScore}
                           onChange={(e) => update("movingTargetScore", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter score"
                         />
                       </div>
@@ -1031,19 +1046,19 @@ export default function RegistrationDetails({
       </section>
 
       {/* SECTION 3 — OPERATIONAL DEPLOYMENT RECORD */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(3, "OPERATIONAL DEPLOYMENT RECORD")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(3, "OPERATIONAL DEPLOYMENT RECORD", true)}
         {expandedSections.has(3) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-400">
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Terrain Deployment Exposure</td>
+                  <td className="py-3 text-black font-bold align-top">Terrain Deployment Exposure</td>
                   <td>
                     <div className="space-y-2">
                       {[
@@ -1062,14 +1077,14 @@ export default function RegistrationDetails({
                             onChange={(e) => updateNested("terrainExposure", terrain, e.target.checked)}
                             className="w-4 h-4"
                           />
-                          <label className="text-sm font-bold text-white">{terrain}</label>
+                          <label className="text-sm font-bold text-black">{terrain}</label>
                         </div>
                       ))}
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Mission Exposure</td>
+                  <td className="py-3 text-black font-bold align-top">Mission Exposure</td>
                   <td>
                     <div className="space-y-2">
                       {[
@@ -1091,53 +1106,53 @@ export default function RegistrationDetails({
                             onChange={(e) => updateNested("missionExposure", mission, e.target.checked)}
                             className="w-4 h-4"
                           />
-                          <label className="text-sm font-bold text-white">{mission}</label>
+                          <label className="text-sm font-bold text-black">{mission}</label>
                         </div>
                       ))}
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Load Carriage</td>
+                  <td className="py-3 text-black font-bold align-top">Load Carriage</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Typical Load (kg)</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Typical Load (kg)</label>
                         <input
                           type="number"
                           value={form.typicalLoad}
                           onChange={(e) => update("typicalLoad", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter kg"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Maximum Load (kg)</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Maximum Load (kg)</label>
                         <input
                           type="number"
                           value={form.maximumLoad}
                           onChange={(e) => update("maximumLoad", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter kg"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Longest Mission Duration</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Longest Mission Duration</label>
                         <input
                           type="text"
                           value={form.longestMissionDuration}
                           onChange={(e) => update("longestMissionDuration", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter duration"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Max Continuous Movement Under Load</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Max Continuous Movement Under Load</label>
                         <input
                           type="text"
                           value={form.maxContinuousMovement}
                           onChange={(e) => update("maxContinuousMovement", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter details"
                         />
                       </div>
@@ -1145,25 +1160,25 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Night Operations</td>
+                  <td className="py-3 text-black font-bold align-top">Night Operations</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Night Ops per Month</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Night Ops per Month</label>
                         <input
                           type="number"
                           value={form.nightOpsPerMonth}
                           onChange={(e) => update("nightOpsPerMonth", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter number"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">NVD Proficiency</label>
+                        <label className="text-xs font-bold text-black mb-1 block">NVD Proficiency</label>
                         <select
                           value={form.nvdProficiency}
                           onChange={(e) => update("nvdProficiency", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Beginner</option>
@@ -1173,11 +1188,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Night Navigation Rating</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Night Navigation Rating</label>
                         <select
                           value={form.nightNavigationRating}
                           onChange={(e) => update("nightNavigationRating", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1201,31 +1216,31 @@ export default function RegistrationDetails({
       </section>
 
       {/* SECTION 4 — MEDICAL, INJURY & DURABILITY */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(4, "MEDICAL, INJURY & DURABILITY")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(4, "MEDICAL, INJURY & DURABILITY", true)}
         {expandedSections.has(4) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
-                {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"])}
-                {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details (text only, no numbers)")}
+            <tbody className="divide-y divide-gray-400">
+                {renderField("Medical Category (SHAPE / Air Force / Navy)", "medicalCategory", "select", ["SHAPE-1", "SHAPE-2", "SHAPE-3", "SHAPE-4", "SHAPE-5", "Fit", "Temporary Unfit", "Permanent Unfit"], undefined, false, false, true)}
+                {renderField("Medical Downgrades/Upgrades", "medicalDowngrades", "textarea", undefined, "Enter details (text only, no numbers)", false, false, true)}
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Injury History (5-Year Log)</td>
+                  <td className="py-3 text-black font-bold align-top">Injury History (5-Year Log)</td>
                   <td>
                     <div className="space-y-4">
                       {Array.from({ length: 5 }).map((_, idx) => {
                         const injury = (form.injuryHistory as any[])[idx] || {};
                         return (
-                          <div key={idx} className="border p-3 rounded space-y-2">
-                            <h5 className="font-bold text-white">Injury {idx + 1}</h5>
+                          <div key={idx} className="border border-gray-400 p-3 rounded space-y-2 bg-white">
+                            <h5 className="font-bold text-black">Injury {idx + 1}</h5>
                             <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <label className="text-xs font-bold text-white">Body Area</label>
+                                <label className="text-xs font-bold text-black">Body Area</label>
                                 <select
                                   value={injury.bodyArea || ""}
                                   onChange={(e) => {
@@ -1233,7 +1248,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], bodyArea: e.target.value };
                                     update("injuryHistory", newHistory, false);
                                   }}
-                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Head</option>
@@ -1251,7 +1266,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs font-bold text-white">Injury Type</label>
+                                <label className="text-xs font-bold text-black">Injury Type</label>
                                 <select
                                   value={injury.injuryType || ""}
                                   onChange={(e) => {
@@ -1259,7 +1274,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], injuryType: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Fracture</option>
@@ -1271,7 +1286,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs font-bold text-white">Severity Grade</label>
+                                <label className="text-xs font-bold text-black">Severity Grade</label>
                                 <select
                                   value={injury.severity || ""}
                                   onChange={(e) => {
@@ -1279,7 +1294,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], severity: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Mild</option>
@@ -1288,7 +1303,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs font-bold text-white">Occurrence Type</label>
+                                <label className="text-xs font-bold text-black">Occurrence Type</label>
                                 <select
                                   value={injury.occurrence || ""}
                                   onChange={(e) => {
@@ -1296,7 +1311,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], occurrence: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Training</option>
@@ -1306,7 +1321,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div>
-                                <label className="text-xs font-bold text-white">Recurrence</label>
+                                <label className="text-xs font-bold text-black">Recurrence</label>
                                 <select
                                   value={injury.recurrence || ""}
                                   onChange={(e) => {
@@ -1314,7 +1329,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], recurrence: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Yes</option>
@@ -1322,7 +1337,7 @@ export default function RegistrationDetails({
                                 </select>
                               </div>
                               <div className="col-span-2">
-                                <label className="text-xs font-bold text-white">Treatment Received</label>
+                                <label className="text-xs font-bold text-black">Treatment Received</label>
                                 <textarea
                                   value={injury.treatment || ""}
                                   onChange={(e) => {
@@ -1330,13 +1345,13 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], treatment: e.target.value };
                                     update("injuryHistory", newHistory, false);
                                   }}
-                                  className="w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold resize-vertical"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold resize-vertical"
                                   placeholder="Enter treatment details"
                                   rows={2}
                                 />
                               </div>
                               <div className="col-span-2">
-                                <label className="text-xs font-bold text-white">Rehab Status</label>
+                                <label className="text-xs font-bold text-black">Rehab Status</label>
                                 <select
                                   value={injury.rehab || ""}
                                   onChange={(e) => {
@@ -1344,7 +1359,7 @@ export default function RegistrationDetails({
                                     newHistory[idx] = { ...newHistory[idx], rehab: e.target.value };
                                     update("injuryHistory", newHistory);
                                   }}
-                                  className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
+                                  className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold"
                                 >
                                   <option value="">-</option>
                                   <option>Completed</option>
@@ -1360,7 +1375,7 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Chronic Conditions</td>
+                  <td className="py-3 text-black font-bold align-top">Chronic Conditions</td>
                   <td>
                     <div className="space-y-2">
                       {[
@@ -1380,32 +1395,32 @@ export default function RegistrationDetails({
                             onChange={(e) => updateNested("chronicConditions", condition, e.target.checked)}
                             className="w-4 h-4"
                           />
-                          <label className="text-sm font-bold text-white">{condition}</label>
+                          <label className="text-sm font-bold text-black">{condition}</label>
                         </div>
                       ))}
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Pain Mapping</td>
+                  <td className="py-3 text-black font-bold align-top">Pain Mapping</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Pain Location</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Pain Location</label>
                         <input
                           type="text"
                           value={form.painLocation}
                           onChange={(e) => update("painLocation", filterTextOnly(e.target.value), true)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter location (text only)"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Pain Intensity</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Pain Intensity</label>
                         <select
                           value={form.painIntensity}
                           onChange={(e) => update("painIntensity", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1421,11 +1436,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Pain Triggers</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Pain Triggers</label>
                         <textarea
                           value={form.painTriggers}
                           onChange={(e) => update("painTriggers", filterTextOnly(e.target.value), true)}
-                          className="w-full p-2 textarea-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold resize-vertical"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold resize-vertical"
                           rows={3}
                           placeholder="Enter triggers (text only, no numbers)"
                         />
@@ -1439,37 +1454,37 @@ export default function RegistrationDetails({
       </section>
 
       {/* SECTION 5 — SLEEP, HYDRATION & RECOVERY */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(5, "SLEEP, HYDRATION & RECOVERY")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(5, "SLEEP, HYDRATION & RECOVERY", true)}
         {expandedSections.has(5) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-400">
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Sleep Profile</td>
+                  <td className="py-3 text-black font-bold align-top">Sleep Profile</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Average Sleep Hours</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Average Sleep Hours</label>
                         <input
                           type="number"
                           value={form.avgSleepHours}
                           onChange={(e) => update("avgSleepHours", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter hours"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Sleep Quality</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Sleep Quality</label>
                         <select
                           value={form.sleepQuality}
                           onChange={(e) => update("sleepQuality", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Poor</option>
@@ -1479,11 +1494,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Sleep Disruptions</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Sleep Disruptions</label>
                         <select
                           value={form.sleepDisruptions}
                           onChange={(e) => update("sleepDisruptions", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>None</option>
@@ -1494,11 +1509,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Sleep Deprivation Exposure</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Sleep Deprivation Exposure</label>
                         <select
                           value={form.sleepDeprivationExposure}
                           onChange={(e) => update("sleepDeprivationExposure", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>None</option>
@@ -1512,25 +1527,25 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Hydration</td>
+                  <td className="py-3 text-black font-bold align-top">Hydration</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Water Intake</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Water Intake</label>
                         <input
                           type="text"
                           value={form.waterIntake}
                           onChange={(e) => update("waterIntake", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter daily intake"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Electrolyte Use</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Electrolyte Use</label>
                         <select
                           value={form.electrolyteUse}
                           onChange={(e) => update("electrolyteUse", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1539,11 +1554,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Hydration Score</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Hydration Score</label>
                         <select
                           value={form.hydrationScore}
                           onChange={(e) => update("hydrationScore", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>1</option>
@@ -1562,15 +1577,15 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Recovery</td>
+                  <td className="py-3 text-black font-bold align-top">Recovery</td>
                   <td>
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Physiotherapy Frequency</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Physiotherapy Frequency</label>
                         <select
                           value={form.physiotherapyFrequency}
                           onChange={(e) => update("physiotherapyFrequency", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Daily</option>
@@ -1581,11 +1596,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Manual Therapy</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Manual Therapy</label>
                         <select
                           value={form.manualTherapy}
                           onChange={(e) => update("manualTherapy", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1594,11 +1609,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Hot/Cold Therapy</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Hot/Cold Therapy</label>
                         <select
                           value={form.hotColdTherapy}
                           onChange={(e) => update("hotColdTherapy", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1607,11 +1622,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Breathing Drills</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Breathing Drills</label>
                         <select
                           value={form.breathingDrills}
                           onChange={(e) => update("breathingDrills", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1620,11 +1635,11 @@ export default function RegistrationDetails({
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-white mb-1 block">Supplement Use</label>
+                        <label className="text-xs font-bold text-black mb-1 block">Supplement Use</label>
                         <select
                           value={form.supplementUse}
                           onChange={(e) => update("supplementUse", e.target.value)}
-                          className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-</option>
                           <option>Yes</option>
@@ -1641,19 +1656,19 @@ export default function RegistrationDetails({
       </section>
 
       {/* SECTION 6 — TRAINING LOAD & DUTY LOAD */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(6, "TRAINING LOAD & DUTY LOAD")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(6, "TRAINING LOAD & DUTY LOAD", true)}
         {expandedSections.has(6) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-gray-400">
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Physical Training Load</td>
+                  <td className="py-3 text-black font-bold align-top">Physical Training Load</td>
                   <td>
                     <div className="space-y-3">
                       {[
@@ -1667,12 +1682,12 @@ export default function RegistrationDetails({
                         { key: "airborneTasks", label: "Airborne Tasks", placeholder: "Enter tasks per week" },
                       ].map((field) => (
                         <div key={field.key}>
-                          <label className="text-xs font-bold text-white mb-1 block">{field.label}</label>
+                          <label className="text-xs font-bold text-black mb-1 block">{field.label}</label>
                           <input
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder={field.placeholder}
                           />
                         </div>
@@ -1681,7 +1696,7 @@ export default function RegistrationDetails({
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Duty Load</td>
+                  <td className="py-3 text-black font-bold align-top">Duty Load</td>
                   <td>
                     <div className="space-y-3">
                       {[
@@ -1691,12 +1706,12 @@ export default function RegistrationDetails({
                         { key: "standToHoursAltitude", label: "Stand-To Hours at Altitude", placeholder: "Enter hours per week" },
                       ].map((field) => (
                         <div key={field.key}>
-                          <label className="text-xs font-bold text-white mb-1 block">{field.label}</label>
+                          <label className="text-xs font-bold text-black mb-1 block">{field.label}</label>
                           <input
                             type="text"
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder={field.placeholder}
                           />
                         </div>
@@ -1710,21 +1725,21 @@ export default function RegistrationDetails({
       </section>
 
       {/* SECTION 7 — SELF-ASSESSMENT */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(7, "SELF-ASSESSMENT")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(7, "SELF-ASSESSMENT", true)}
         {expandedSections.has(7) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
-                {renderField("Strength Areas", "strengthAreas", "textarea", undefined, "Enter strength areas (text only, no numbers)")}
-                {renderField("Weak Areas", "weakAreas", "textarea", undefined, "Enter weak areas (text only, no numbers)")}
+            <tbody className="divide-y divide-gray-400">
+                {renderField("Strength Areas", "strengthAreas", "textarea", undefined, "Enter strength areas (text only, no numbers)", false, false, true)}
+                {renderField("Weak Areas", "weakAreas", "textarea", undefined, "Enter weak areas (text only, no numbers)", false, false, true)}
                 <tr>
-                  <td className="py-3 text-white font-bold align-top">Terrain Readiness (1–10)</td>
+                  <td className="py-3 text-black font-bold align-top">Terrain Readiness (1–10)</td>
                   <td>
                     <div className="space-y-3">
                       {[
@@ -1735,11 +1750,11 @@ export default function RegistrationDetails({
                         { key: "terrainReadinessUrban", label: "Urban" },
                       ].map((field) => (
                         <div key={field.key}>
-                          <label className="text-xs font-bold text-white mb-1 block">{field.label}</label>
+                          <label className="text-xs font-bold text-black mb-1 block">{field.label}</label>
                           <select
                             value={form[field.key as keyof typeof form] as string}
                             onChange={(e) => update(field.key, e.target.value)}
-                            className="w-full p-2 select-glass focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 bg-white border border-gray-400 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           >
                             <option value="">-</option>
                             <option>1</option>
@@ -1758,52 +1773,52 @@ export default function RegistrationDetails({
                     </div>
                   </td>
                 </tr>
-                {renderField("Mission Readiness Score (1–10)", "missionReadinessScore", "select", ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"])}
+                {renderField("Mission Readiness Score (1–10)", "missionReadinessScore", "select", ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], undefined, false, false, true)}
             </tbody>
           </table>
         )}
       </section>
 
       {/* SECTION 8 — COMMANDER ASSESSMENT */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
-        {renderSectionHeader(8, "COMMANDER ASSESSMENT")}
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
+        {renderSectionHeader(8, "COMMANDER ASSESSMENT", true)}
         {expandedSections.has(8) && (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white font-bold border-b border-gray-700">
+              <tr className="text-left text-black font-bold border-b border-gray-400">
                 <th className="py-3">Parameter</th>
                 <th className="py-3">Description</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
-                {renderField("Observed Strengths", "observedStrengths", "textarea", undefined, "Enter observed strengths (text only, no numbers)")}
-                {renderField("Observed Limitations", "observedLimitations", "textarea", undefined, "Enter observed limitations (text only, no numbers)")}
-                {renderField("Terrain Suitability", "terrainSuitability", "textarea", undefined, "Enter terrain suitability (text only, no numbers)")}
-                {renderField("Deployment Readiness", "deploymentReadiness", "select", ["Ready", "Conditional", "Not Ready"])}
-                {renderField("Requalification Requirement", "requalificationRequirement", "select", ["Yes", "No", "Partial"])}
-                {renderField("Recommended S&C Focus Areas", "recommendedScFocusAreas", "textarea", undefined, "Enter recommended focus areas (text only, no numbers)")}
+            <tbody className="divide-y divide-gray-400">
+                {renderField("Observed Strengths", "observedStrengths", "textarea", undefined, "Enter observed strengths (text only, no numbers)", false, false, true)}
+                {renderField("Observed Limitations", "observedLimitations", "textarea", undefined, "Enter observed limitations (text only, no numbers)", false, false, true)}
+                {renderField("Terrain Suitability", "terrainSuitability", "textarea", undefined, "Enter terrain suitability (text only, no numbers)", false, false, true)}
+                {renderField("Deployment Readiness", "deploymentReadiness", "select", ["Ready", "Conditional", "Not Ready"], undefined, false, false, true)}
+                {renderField("Requalification Requirement", "requalificationRequirement", "select", ["Yes", "No", "Partial"], undefined, false, false, true)}
+                {renderField("Recommended S&C Focus Areas", "recommendedScFocusAreas", "textarea", undefined, "Enter recommended focus areas (text only, no numbers)", false, false, true)}
             </tbody>
           </table>
         )}
       </section>
 
       {/* Existing fields that should remain */}
-      <section className="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+      <section className="bg-gray-100 p-4 rounded-xl border border-gray-400 shadow-lg">
         <h4 className="text-lg font-bold text-black mb-3">ADDITIONAL DETAILS</h4>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-white font-bold border-b border-gray-700">
+            <tr className="text-left text-black font-bold border-b border-gray-400">
               <th className="py-3">Parameter</th>
               <th className="py-3">Description</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-700">
-              {renderField("Contact Number", "contact", "text", undefined, "Enter 10-digit contact number")}
-              {renderField("Email ID", "email", "text", undefined, "Enter email address")}
-              {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department (text only)")}
+          <tbody className="divide-y divide-gray-400">
+              {renderField("Contact Number", "contact", "text", undefined, "Enter 10-digit contact number", false, false, true)}
+              {renderField("Email ID", "email", "text", undefined, "Enter email address", false, false, true)}
+              {renderField("Training Department", "trainingDepartment", "text", undefined, "Enter training department (text only)", false, false, true)}
               
               {/* --- DATE FIELD HERE --- */}
-              {renderField("Date of Assessment", "dateOfAssessment", "date-masked")}
+              {renderField("Date of Assessment", "dateOfAssessment", "date-masked", undefined, undefined, false, false, true)}
           </tbody>
         </table>
       </section>
