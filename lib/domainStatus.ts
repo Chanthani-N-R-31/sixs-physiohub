@@ -245,7 +245,7 @@ export function getDomainStatuses(entryData: any): DomainStatusMap {
       Psychology: "pending",
     };
   }
-
+  
   // Calculate status for each domain from the actual data
   return {
     Physiotherapy: calculateDomainStatus("Physiotherapy", entryData),

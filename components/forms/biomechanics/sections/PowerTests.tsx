@@ -163,21 +163,21 @@ export default function Power({ initialData, onSave }: PowerProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xl font-semibold text-gray-900">Power Tests – Controlled Environment</h3>
-        <p className="text-gray-500 text-sm mt-1">
+        <h3 className="text-3xl font-bold text-white text-center">Power Tests – Controlled Environment</h3>
+        <p className="text-black font-bold text-sm mt-1 font-medium">
           Assess neuromuscular explosiveness and elastic energy utilization using vertical and horizontal jumps.
         </p>
       </div>
 
       <div className="space-y-6">
         {sections.map((section) => (
-          <div key={section.category} className="bg-white p-5 rounded-xl border border-gray-200 shadow-md">
+          <div key={section.category} className="bg-gray-100 p-5 rounded-xl border border-gray-400 shadow-lg">
             
             {/* Section Header with Protocol Info */}
-            <div className="mb-4 border-b border-gray-100 pb-3">
+            <div className="mb-4 border-b border-gray-400 pb-3">
               <div className="flex justify-between items-center">
-                <h4 className="text-lg font-semibold text-gray-800">{section.title}</h4>
-                <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                <h4 className="text-lg font-bold text-black">{section.title}</h4>
+                <span className="text-xs font-medium bg-gray-400 text-black font-bold px-2 py-1 rounded border border-gray-500">
                   {section.protocol}
                 </span>
               </div>
@@ -186,27 +186,27 @@ export default function Power({ initialData, onSave }: PowerProps) {
             {/* Input Table */}
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-700 font-medium">
-                  <th className="py-2 w-1/2">Parameter</th>
-                  <th className="py-2 w-1/2">Values</th>
+                <tr className="text-left text-black font-bold border-b border-gray-400">
+                  <th className="py-3 w-1/2">Parameter</th>
+                  <th className="py-3 w-1/2">Values</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-gray-400">
                 {section.rows.map((row) => {
                   const categoryData = form[section.category as keyof typeof form] as any;
                   const value = categoryData[row.key] ?? "";
 
                   return (
                     <tr key={`${section.category}-${row.key}`}>
-                      <td className="py-2 text-gray-900">
+                      <td className="py-3 text-black font-bold">
                         {row.label}
-                        {row.unit && <span className="text-gray-400 text-xs ml-1">({row.unit})</span>}
+                        {row.unit && <span className="text-black/70 text-xs ml-1">({row.unit})</span>}
                       </td>
                       <td>
                         <input
                           type="number"
                           step="0.1"
-                          className="input-field"
+                          className="w-full p-2 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           placeholder={`Enter ${row.label.toLowerCase()}`}
                           value={value}
                           onChange={(e) => {
@@ -227,10 +227,10 @@ export default function Power({ initialData, onSave }: PowerProps) {
       </div>
 
       {/* Assessment Findings */}
-      <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-md">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3">Assessment Findings</h4>
+      <div className="bg-gray-100 p-5 rounded-xl border border-gray-400 shadow-lg">
+        <h4 className="text-lg font-bold text-black mb-3">Assessment Findings</h4>
         <textarea
-          className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-vertical"
+          className="w-full p-3 bg-white border border-gray-400 text-black rounded font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
           rows={4}
           placeholder="Enter detailed notes and findings..."
           value={form.assessmentFindings}
@@ -244,13 +244,13 @@ export default function Power({ initialData, onSave }: PowerProps) {
       {/* Save Button */}
       <div className="flex justify-end gap-3">
         {isSaved && (
-          <span className="text-green-600 text-sm flex items-center">
+          <span className="text-green-600 text-sm flex items-center font-bold">
             ✓ Saved successfully
           </span>
         )}
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 font-medium"
+          className="px-6 py-3 bg-gray-300 text-black font-bold rounded-lg shadow-lg hover:bg-gray-400 transition-all"
         >
           Save Section
         </button>

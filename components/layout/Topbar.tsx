@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
-import { useDashboard } from "@/app/dashboard/layout";
+import { useRouter, usePathname } from "next/navigation";
 
 interface Patient {
   id: string;
@@ -20,7 +20,8 @@ interface Patient {
 export default function Topbar() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
-  const { setActiveTab } = useDashboard();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     loadPatients();
@@ -83,15 +84,20 @@ export default function Topbar() {
   };
 
   const handlePatientSelect = (patient: Patient) => {
-    // Navigate to entries tab to show the selected patient
-    setActiveTab("entries");
+    // Navigate based on current route
+    if (pathname?.startsWith("/admin")) {
+      // If in admin, navigate to admin patients page
+      router.push("/admin/patients");
+    } else {
+      // If in dashboard, navigate to dashboard
+      router.push("/dashboard");
+    }
     // You could also scroll to the patient or highlight it
-    // For now, just navigate to entries page
     console.log("Selected patient:", patient);
   };
 
   return (
-    <div className="sticky top-0 z-20 bg-white/70 backdrop-blur-md border-b border-gray-200">
+    <div className="sticky top-0 z-20 bg-gray-800 border-b border-gray-700 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
           {/* Search */}

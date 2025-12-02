@@ -6,9 +6,13 @@ import {
   EyeIcon,
   PencilIcon,
   TrashIcon,
+  UserIcon,
+  CheckCircleIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
-import { db } from "@/lib/firebase";
-import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { collection, query, orderBy, limit, getDocs, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
+import { logActivity } from "@/lib/auditLogger";
 
 interface Entry {
   id: string;
@@ -74,8 +78,11 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
         const statusRaw = data.status || "incomplete";
         const statusLabel = statusRaw === "completed" ? "Completed" : statusRaw === "in_progress" ? "In Progress" : "Incomplete";
         
+        // Format ID like P-CQW172 (first 6 chars of doc ID)
+        const shortId = docSnapshot.id.slice(0, 6);
+        
         loadedEntries.push({
-          id: docSnapshot.id.slice(0, 6),
+          id: shortId,
           fullId: docSnapshot.id, // Store full ID for operations
           name: fullName,
           age: String(regDetails.age || regDetails.yearsInService || "N/A"),
@@ -153,7 +160,35 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
     }
     
     try {
+      // Ensure we have the latest full data before deleting
+      let entryData = entry.fullData;
+      if (!entryData) {
+        const docRef = doc(db, "physioAssessments", entry.fullId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          entryData = { id: docSnap.id, ...docSnap.data() };
+        } else {
+          alert("Entry not found. It may have already been deleted.");
+          return;
+        }
+      }
+
+      // 1) Move the document to an archive collection for potential restore
+      await setDoc(doc(db, "deletedPhysioAssessments", entry.fullId), entryData);
+
+      // 2) Delete from the main collection
       await deleteDoc(doc(db, "physioAssessments", entry.fullId));
+
+      // 3) Log the deletion with the underlying docId for Governance restore
+      const userName = auth.currentUser?.email || auth.currentUser?.displayName || "Admin";
+      const userId = auth.currentUser?.uid || "unknown";
+      await logActivity(
+        userId,
+        userName,
+        "DELETED",
+        `Deleted individual P-${entry.id} (${entry.name}) [docId=${entry.fullId}]`
+      );
+
       // Remove from local state
       setEntries((prev) => prev.filter((e) => e.fullId !== entry.fullId));
       // Reload data to update stats
@@ -166,47 +201,74 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
   return (
     <div className="w-full overflow-x-hidden">
-      
-      {/* KPI Row - Updated to 4 Columns */}
+      {/* KPI Row - Updated to 4 Columns with Glassmorphism Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
         {/* Card 1: Total Patients (Static 50) */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Total Individuals</div>
-          <div className="mt-2 text-2xl font-bold text-gray-900">{totalPatients}</div>
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Individuals</div>
+              <div className="mt-2 text-3xl font-bold text-white">{totalPatients}</div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <UserIcon className="w-6 h-6 text-white" />
+            </div>
+          </div>
         </div>
 
         {/* Card 2: Entries Completed */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Entries Completed</div>
-          <div className="mt-2 text-2xl font-bold text-green-600">
-            {loading ? "..." : completedCount}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Entries Completed</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : completedCount}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <CheckCircleIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
         {/* Card 3: Pending */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Pending</div>
-          <div className="mt-2 text-2xl font-bold text-orange-600">
-            {loading ? "..." : pendingCount}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Pending</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : pendingCount}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <TrashIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
         {/* Card 4: Assessments Today */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <div className="text-xs text-gray-500">Assessments Today</div>
-          <div className="mt-2 text-2xl font-bold text-blue-600">
-            {loading ? "..." : assessmentsToday}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Assessments Today</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : assessmentsToday}
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <DocumentTextIcon className="w-6 h-6 text-white" />
+            </div>
           </div>
         </div>
 
       </div>
 
-      {/* Recent Entries Table */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      {/* Recent Entries Table - White card like image */}
+      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Entries</h3>
-          <span className="text-sm text-gray-500">
+          <h3 className="text-lg font-bold text-gray-900">Recent Entries</h3>
+          <span className="text-sm text-gray-600 font-medium">
             {loading 
               ? "Loading..." 
               : entries.length > 0 
@@ -217,18 +279,18 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
         <div className="overflow-x-auto -mx-6 px-6">
           <table className="w-full text-sm min-w-[600px]">
-            <thead className="text-xs text-gray-500 text-left">
+            <thead className="text-xs text-gray-700 font-bold text-left border-b border-gray-300">
               <tr>
-                <th className="py-2"> ID</th>
-                <th className="py-2">Name</th>
-                <th className="py-2">Age</th>
-                <th className="py-2">Assessment Date</th>
-                <th className="py-2">Status</th>
-                <th className="py-2">Actions</th>
+                <th className="py-3">ID</th>
+                <th className="py-3">Name</th>
+                <th className="py-3">Age</th>
+                <th className="py-3">Assessment Date</th>
+                <th className="py-3">Status</th>
+                <th className="py-3">Actions</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-gray-500">Loading entries...</td>
@@ -239,15 +301,18 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                 </tr>
               ) : (
                 entries.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-50">
-                    <td className="py-4 text-gray-900">P-{row.id}</td>
-                    <td className="py-4 text-gray-900 font-medium">{row.name}</td>
-                    <td className="py-4 text-gray-900">{row.age}</td>
-                    <td className="py-4 text-gray-900">{row.date}</td>
+                  <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 text-gray-900 font-medium">P-{row.id}</td>
+                    <td className="py-4 text-gray-900 font-bold">{row.name}</td>
+                    <td className="py-4 text-gray-700">{row.age}</td>
+                    <td className="py-4 text-gray-700">{row.date}</td>
                     <td className="py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        row.status === "Completed" ? "bg-green-50 text-green-700" : 
-                        row.status === "In Progress" ? "bg-yellow-50 text-yellow-700" : "bg-red-50 text-red-700"
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        row.status === "Completed" 
+                          ? "bg-teal-600 text-white border border-teal-500"
+                          : row.status === "In Progress"
+                          ? "bg-teal-600 text-white border border-teal-500"
+                          : "bg-gray-400 text-white border border-gray-500"
                       }`}>
                         {row.status}
                       </span>
@@ -257,21 +322,21 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                           <button 
                             title="View"
                             onClick={() => handleView(row)}
-                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                           >
                             <EyeIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Edit"
                             onClick={() => handleEdit(row)}
-                            className="p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button 
                             title="Delete"
                             onClick={() => handleDelete(row)}
-                            className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors"
+                            className="p-2 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                           >
                             <TrashIcon className="w-4 h-4" />
                           </button>

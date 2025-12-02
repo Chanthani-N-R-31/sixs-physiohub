@@ -12,7 +12,7 @@ import NutritionForm from "@/components/forms/nutrition/NutritionForm";
 import PsychologyForm from "@/components/forms/psychology/PsychologyForm";
 import { useDashboard } from "./layout";
 import { db, auth } from "@/lib/firebase";
-import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 // Map domains to their specific Firestore collections
 const DOMAIN_COLLECTION_MAP: Record<string, string> = {
@@ -32,43 +32,57 @@ export default function DashboardPage() {
   const [editingEntryData, setEditingEntryData] = useState<any>(null);
   
   // Loading States
-  const [isCreating, setIsCreating] = useState(false); // Creating new entry
   const [isDataLoading, setIsDataLoading] = useState(false); // Fetching existing data (Fix for glitch)
 
+  // Helper function to check if registration details have been saved
+  const isRegistrationSaved = useCallback(() => {
+    // Registration is saved if:
+    // 1. Entry ID exists (document was created)
+    // 2. Registration details have meaningful data (not just empty object)
+    if (!editingEntryId) return false;
+    
+    const regDetails = editingEntryData?.registrationDetails || {};
+    // Check if registration has at least one meaningful field
+    const hasData = Object.keys(regDetails).length > 0 && 
+                    (regDetails.fullName || regDetails.serviceNumber || regDetails.firstName || regDetails.lastName);
+    return hasData;
+  }, [editingEntryId, editingEntryData]);
+
   // --- 1. Create New Entry Logic ---
-  const handleCreateNewEntry = async () => {
+  // No Firestore write yet - document will be created on first save in Physiotherapy form
+  const handleCreateNewEntry = () => {
     if (!auth.currentUser) {
       alert("Please log in to create an entry");
       return;
     }
 
-    setIsCreating(true);
-    try {
-      const docRef = await addDoc(collection(db, "physioAssessments"), {
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        createdBy: auth.currentUser.uid,
-        status: "in_progress",
-        registrationDetails: {
-          fullName: "New Patient",
-          dateOfAssessment: new Date().toISOString(),
-        },
-      });
+    // No Firestore document yet – just local state
+    setEditingEntryId(null);
+    setEditingEntryData({
+      registrationDetails: {},
+      status: "in_progress",
+    });
 
-      setEditingEntryId(docRef.id);
+    // Go directly to Physiotherapy (registration) form
+    setSelectedDomain("Physiotherapy");
+    setActiveTab("add");
+  };
+
+  // Ensure that when user clicks "Add New Entry" from sidebar or mobile nav,
+  // we directly show the Physiotherapy form for a fresh entry
+  useEffect(() => {
+    if (activeTab === "add" && !editingEntryId && selectedDomain === null) {
+      // Initialize local state for a brand new entry (no Firestore write yet)
+      setEditingEntryId(null);
       setEditingEntryData({
         registrationDetails: {},
         status: "in_progress",
       });
-      setSelectedDomain(null);
-      setActiveTab("add");
-    } catch (error) {
-      console.error("Error creating new entry:", error);
-      alert("Failed to initialize new entry");
-    } finally {
-      setIsCreating(false);
+
+      // Go straight into Physiotherapy forms
+      setSelectedDomain("Physiotherapy");
     }
-  };
+  }, [activeTab, editingEntryId, selectedDomain]);
 
   // --- 2. Data Fetching Logic ---
   const reloadDomainData = useCallback(
@@ -116,6 +130,18 @@ export default function DashboardPage() {
 
   // --- 3. Navigation & Selection Handlers ---
   const handleDomainSelect = async (domain: string) => {
+    // For new entries, only allow Physiotherapy until registration is saved
+    if (!editingEntryId && domain !== "Physiotherapy") {
+      alert("Please complete and save the Registration Details first before accessing other domains.");
+      return;
+    }
+
+    // Check if registration is required but not saved
+    if (!isRegistrationSaved() && domain !== "Physiotherapy") {
+      alert("Please complete and save the Registration Details first before accessing other domains.");
+      return;
+    }
+
     setSelectedDomain(domain);
 
     // Optional: Re-fetch latest data for just this domain to be safe
@@ -128,12 +154,26 @@ export default function DashboardPage() {
   };
 
   const handleBackFromForm = async () => {
-    setSelectedDomain(null);
-    // When coming back to the card view, re-hydrate to ensure statuses update immediately
-    if (editingEntryId) {
-        const mergedData = await hydrateAllDomainData(editingEntryId);
-        setEditingEntryData((prev: any) => ({ ...prev, ...mergedData }));
+    // If no entryId yet (new entry not saved), ask user what to do
+    if (!editingEntryId) {
+      const confirmed = window.confirm(
+        "You have unsaved changes. Are you sure you want to go back? This will discard your changes."
+      );
+      if (!confirmed) {
+        return; // User cancelled, stay on form
+      }
+      // Reset everything and go back to overview
+      setSelectedDomain(null);
+      setEditingEntryId(null);
+      setEditingEntryData(null);
+      setActiveTab("overview");
+      return;
     }
+    
+    // For existing entries, go back to domain selection and re-hydrate data
+    setSelectedDomain(null);
+    const mergedData = await hydrateAllDomainData(editingEntryId);
+    setEditingEntryData((prev: any) => ({ ...prev, ...mergedData }));
   };
 
   const handleBackFromDomainSelect = () => {
@@ -195,16 +235,6 @@ export default function DashboardPage() {
   return (
     <div className="w-full h-full overflow-x-hidden relative">
       
-      {/* LOADING OVERLAY (For Creation) */}
-      {isCreating && (
-        <div className="absolute inset-0 z-50 bg-white/90 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 font-medium">Initializing New Assessment...</p>
-          </div>
-        </div>
-      )}
-
       {/* LOADING OVERLAY (For Fetching Existing Data) - FIXES THE GLITCH */}
       {isDataLoading && activeTab === "add" && (
         <div className="absolute inset-0 z-50 bg-white/90 flex items-center justify-center">
@@ -237,6 +267,8 @@ export default function DashboardPage() {
               onBack={handleBackFromDomainSelect}
               onSelect={handleDomainSelect}
               entryData={editingEntryData}
+              isRegistrationSaved={isRegistrationSaved()}
+              hasEntryId={!!editingEntryId}
             />
           ) : !isDataLoading ? (
             /* FORM RENDERER */
@@ -305,18 +337,18 @@ export default function DashboardPage() {
               {!["Physiotherapy", "Biomechanics", "Physiology", "Nutrition", "Psychology"].includes(selectedDomain || "") && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-white">
                       {selectedDomain} Assessment
                     </h2>
                     <button
                       onClick={handleBackFromForm}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                      className="px-4 py-2 bg-white/20 backdrop-blur-md text-white rounded-lg hover:bg-white/30 transition-all border border-white/30"
                     >
                       ← Back
                     </button>
                   </div>
-                  <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-                    <p className="text-gray-600">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/30">
+                    <p className="text-white/70">
                       {selectedDomain} form coming soon...
                     </p>
                   </div>

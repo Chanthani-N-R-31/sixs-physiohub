@@ -161,11 +161,11 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
     <div className="w-full overflow-x-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Physiotherapy Assessment</h2>
+        <h2 className="text-3xl font-bold text-white">Physiotherapy Assessment</h2>
         {onBack && (
           <button
             onClick={onBack}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-600 transition-all shadow-lg border border-gray-600"
           >
             ← Back
           </button>
@@ -173,16 +173,16 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+          <div className="border-b border-gray-700 mb-6">
         <div className="flex space-x-1 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
+              className={`px-4 py-2 text-sm font-bold whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "border-b-2 border-green-600 text-green-600"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "border-b-2 border-blue-500 text-white font-bold"
+                  : "text-white font-bold hover:text-white hover:bg-gray-700/50"
               }`}
             >
               {tab.label}
@@ -192,7 +192,7 @@ export default function PhysioFormTabs({ onBack, initialData, entryId, onDataSav
       </div>
 
       {/* Tab Content */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+      <div className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
         {activeTab === "registration" && (
           <RegistrationDetails
             initialData={formData.registrationDetails}

@@ -20,7 +20,19 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
+      
+      // Check if user is an admin (by email pattern)
+      // You can customize this logic based on your admin email pattern
+      const isAdmin = email.toLowerCase().includes("admin") || 
+                      email.toLowerCase().endsWith("@admin.com") ||
+                      email.toLowerCase().endsWith("@sixs.com");
+      
+      // Redirect admin users to admin dashboard, others to regular dashboard
+      if (isAdmin) {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: unknown) {
       const error = err as { message?: string; code?: string };
       setErrorMsg(error.message || "Login failed. Please check your credentials and try again.");
@@ -31,30 +43,31 @@ export default function LoginPage() {
 
   return (
     <div 
-      className="min-h-screen flex justify-center items-center p-8 relative overflow-hidden"
+      className="min-h-screen flex justify-center items-center p-8 relative"
       style={{
-        backgroundImage: 'url(/background.jpg)',
+        backgroundImage: `url('/maybeUI.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
       }}
     >
-      {/* Login Form Container */}
-      <div className="w-full max-w-md relative z-10 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/30">
+      {/* Overlay for better readability */}
+      <div className="absolute inset-0 bg-black/10" />
+      
+      {/* Login Form Container with Enhanced Glass Effect */}
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/30 relative z-10 ring-1 ring-white/20">
           {/* Title */}
-          <h2 className="text-3xl font-bold text-white mb-2">Login</h2>
-
-          {/* Welcome message */}
-          <p className="text-white/90 text-sm mb-6">Welcome back! Please sign in to continue.</p>
+          <h2 className="text-3xl font-bold text-white mb-6">Login</h2>
 
           <form onSubmit={handleLogin} className="space-y-5">
 
             {/* Email */}
             <div>
-              <label className="text-sm text-black font-bold mb-1 block">Email</label>
+              <label className="text-sm text-white font-bold mb-1 block">Email</label>
               <input
                 type="email"
-                className="w-full mt-1 p-3 bg-white/35 backdrop-blur-sm border border-white/30 rounded-lg text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/45"
+                className="w-full mt-1 p-3 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
                 placeholder="Enter your email"
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -63,10 +76,10 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label className="text-sm text-black font-bold mb-1 block">Password</label>
+              <label className="text-sm text-white font-bold mb-1 block">Password</label>
               <input
                 type="password"
-                className="w-full mt-1 p-3 bg-white/35 backdrop-blur-sm border border-white/30 rounded-lg text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white/45"
+                className="w-full mt-1 p-3 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
                 placeholder="Enter your password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -75,8 +88,8 @@ export default function LoginPage() {
 
             {/* Error Message */}
             {errorMsg && (
-              <div className="p-2 bg-red-500/20 backdrop-blur-sm rounded-lg border border-red-500/30">
-                <p className="text-red-500 text-sm font-medium">{errorMsg}</p>
+              <div className="p-2 bg-red-900/50 rounded-lg border border-red-700">
+                <p className="text-white text-sm font-bold">{errorMsg}</p>
               </div>
             )}
 
@@ -84,7 +97,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#1a4d4d]/80 backdrop-blur-sm text-white rounded-lg font-medium hover:bg-[#1a4d4d]/90 transition-all shadow-lg hover:shadow-xl disabled:bg-[#1a4d4d]/60 border border-[#1a4d4d]/50"
+              className="w-full py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-900 transition-all shadow-lg hover:shadow-xl disabled:bg-black/60 disabled:cursor-not-allowed border border-gray-800"
             >
               {loading ? "Signing in..." : "Login"}
             </button>
