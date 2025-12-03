@@ -9,7 +9,7 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-type DashboardTab = "overview" | "entries" | "add" | "export";
+type DashboardTab = "overview" | "entries" | "add" | "export" | "analytics" | "reports";
 
 interface DashboardContextType {
   activeTab: DashboardTab;

@@ -7,6 +7,8 @@ import {
   PlusCircleIcon,
   ArrowDownTrayIcon,
   ArrowRightOnRectangleIcon,
+  ChartBarIcon,
+  DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline";
 
 import { signOut } from "firebase/auth";
@@ -31,6 +33,8 @@ export default function Sidebar() {
     { label: "Overview", icon: HomeIcon, tab: "overview" },
     { label: "Entries", icon: DocumentTextIcon, tab: "entries" },
     { label: "Add New Entry", icon: PlusCircleIcon, tab: "add" },
+    { label: "Analytics", icon: ChartBarIcon, tab: "analytics" },
+    { label: "Reports", icon: DocumentArrowDownIcon, tab: "reports" },
     { label: "Export Data", icon: ArrowDownTrayIcon, tab: "export" },
   ];
 

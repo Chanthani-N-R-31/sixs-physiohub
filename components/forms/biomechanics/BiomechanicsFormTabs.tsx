@@ -16,6 +16,7 @@ import Variability from "./sections/Variability";
 import LoadCarriage from "./sections/LoadCarriage";
 import Strength from "./sections/Strength";
 import PowerTests from "./sections/PowerTests";
+import VideoAnalysis from "./sections/VideoAnalysis";
 
 interface BiomechanicsFormTabsProps {
   onBack?: () => void;
@@ -39,6 +40,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
     loadCarriage: initialData?.loadCarriage || {},
     strength: initialData?.strength || {},
     powerTests: initialData?.powerTests || {},
+    videoAnalysis: initialData?.videoAnalysis || {},
   });
 
   useEffect(() => {
@@ -64,6 +66,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
           loadCarriage: data.loadCarriage || {},
           strength: data.strength || {},
           powerTests: data.powerTests || {},
+          videoAnalysis: data.videoAnalysis || {},
         });
       }
     } catch (error) {
@@ -210,6 +213,7 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
     { id: "impact", label: "Impact" },
     { id: "variability", label: "Variability" },
     { id: "loadCarriage", label: "Load Carriage" },
+    { id: "videoAnalysis", label: "Video Analysis" },
   ];
 
   return (
@@ -314,6 +318,13 @@ export default function BiomechanicsFormTabs({ onBack, initialData, entryId, onD
           <LoadCarriage
             initialData={formData.loadCarriage}
             onSave={(data) => handleSave("loadCarriage", data)}
+          />
+        )}
+        {activeTab === "videoAnalysis" && (
+          <VideoAnalysis
+            initialData={formData.videoAnalysis}
+            entryId={entryIdState}
+            onSave={(data) => handleSave("videoAnalysis", data)}
           />
         )}
       </div>

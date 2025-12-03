@@ -8,6 +8,8 @@ import {
   ClockIcon,
   ArrowRightOnRectangleIcon,
   ArrowLeftIcon,
+  ChartBarIcon,
+  DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -42,6 +44,16 @@ export default function AdminSidebar() {
       label: "Assessments",
       icon: UserGroupIcon,
       href: "/admin/patients",
+    },
+    {
+      label: "Analytics",
+      icon: ChartBarIcon,
+      href: "/admin/analytics",
+    },
+    {
+      label: "Reports",
+      icon: DocumentArrowDownIcon,
+      href: "/admin/reports",
     },
     {
       label: "Governance",

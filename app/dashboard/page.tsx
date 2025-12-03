@@ -5,6 +5,8 @@ import OverviewPage from "./overview/page";
 import EntriesPage from "./entries/page";
 import DomainCard from "@/components/ui/DomainCard";
 import ExportPage from "./export/ExportPage";
+import AnalyticsPage from "./analytics/page";
+import ReportsPage from "./reports/page";
 import PhysioFormTabs from "@/components/forms/physiotherapy/PhysioFormTabs";
 import BiomechanicsFormTabs from "@/components/forms/biomechanics/BiomechanicsFormTabs";
 import PhysiologyForm from "@/components/forms/physiology/PhysiologyForm";
@@ -357,6 +359,18 @@ export default function DashboardPage() {
             </>
           ) : null}
         </>
+      )}
+
+      {activeTab === "analytics" && (
+        <div className="w-full">
+          <AnalyticsPage />
+        </div>
+      )}
+
+      {activeTab === "reports" && (
+        <div className="w-full">
+          <ReportsPage />
+        </div>
       )}
 
       {activeTab === "export" && <ExportPage />}
