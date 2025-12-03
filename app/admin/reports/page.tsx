@@ -5,9 +5,8 @@ import {
   DocumentArrowDownIcon,
   FunnelIcon,
   DocumentTextIcon,
-  CalendarIcon,
-  UserGroupIcon,
-  UsersIcon,
+  PencilIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, orderBy } from "firebase/firestore";
@@ -21,10 +20,49 @@ interface Assessment {
   fullData: any;
 }
 
+interface ReportConfig {
+  sections: {
+    registrationDetails: boolean;
+    injuryHistory: boolean;
+    staticPosture: boolean;
+    rom: boolean;
+    strengthStability: boolean;
+    fms: boolean;
+    biomechanics: boolean;
+    physiology: boolean;
+    nutrition: boolean;
+    psychology: boolean;
+    domainStatus: boolean;
+  };
+  customNotes: string;
+  includeSummary: boolean;
+  includeCharts: boolean;
+}
+
 export default function AdminReportsPage() {
   const [loading, setLoading] = useState(false);
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [filteredAssessments, setFilteredAssessments] = useState<Assessment[]>([]);
+  const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null);
+  const [showEditor, setShowEditor] = useState(false);
+  const [reportConfig, setReportConfig] = useState<ReportConfig>({
+    sections: {
+      registrationDetails: true,
+      injuryHistory: true,
+      staticPosture: true,
+      rom: true,
+      strengthStability: true,
+      fms: true,
+      biomechanics: true,
+      physiology: true,
+      nutrition: true,
+      psychology: true,
+      domainStatus: true,
+    },
+    customNotes: "",
+    includeSummary: true,
+    includeCharts: false,
+  });
   
   // Filter states
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -105,7 +143,6 @@ export default function AdminReportsPage() {
   const applyFilters = () => {
     let filtered = [...assessments];
 
-    // Status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(assessment => {
         if (statusFilter === "completed") return assessment.status === "Completed";
@@ -115,7 +152,6 @@ export default function AdminReportsPage() {
       });
     }
 
-    // Date range filter
     if (dateFrom) {
       filtered = filtered.filter(assessment => {
         const assessmentDate = new Date(assessment.date);
@@ -133,7 +169,6 @@ export default function AdminReportsPage() {
       });
     }
 
-    // Domain filter
     if (domainFilter !== "all") {
       filtered = filtered.filter(assessment => {
         const domainStatuses = assessment.fullData.domainStatuses || {};
@@ -142,12 +177,10 @@ export default function AdminReportsPage() {
       });
     }
 
-    // User filter
     if (userFilter !== "all") {
       filtered = filtered.filter(assessment => assessment.createdBy === userFilter);
     }
 
-    // Search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(assessment =>
@@ -160,52 +193,324 @@ export default function AdminReportsPage() {
     setFilteredAssessments(filtered);
   };
 
-  const generatePDF = async (assessment: Assessment) => {
+  const openEditor = (assessment: Assessment) => {
+    setSelectedAssessment(assessment);
+    setShowEditor(true);
+  };
+
+  const generatePDF = async () => {
+    if (!selectedAssessment) return;
+
     try {
       setLoading(true);
-      
-      const response = await fetch("/api/reports/generate-pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          assessmentId: assessment.id,
-          assessmentData: assessment.fullData,
-        }),
+
+      // Dynamically import jsPDF
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate PDF");
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      let yPosition = 20;
+
+      // Header
+      doc.setFontSize(20);
+      doc.setTextColor(20, 184, 166);
+      doc.text("Assessment Report", pageWidth / 2, yPosition, { align: "center" });
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPosition, { align: "center" });
+      yPosition += 5;
+      doc.text(`Assessment ID: ${selectedAssessment.id}`, pageWidth / 2, yPosition, { align: "center" });
+      yPosition += 10;
+
+      // Draw line
+      doc.setDrawColor(20, 184, 166);
+      doc.setLineWidth(0.5);
+      doc.line(20, yPosition, pageWidth - 20, yPosition);
+      yPosition += 10;
+
+      const regDetails = selectedAssessment.fullData.registrationDetails || {};
+      const name = regDetails.fullName || `${regDetails.firstName || ""} ${regDetails.lastName || ""}`.trim() || "Unknown";
+
+      // Patient Information
+      if (reportConfig.includeSummary) {
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Patient Information", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Name: ${name}`, 25, yPosition);
+        yPosition += 6;
+        doc.text(`Date of Assessment: ${regDetails.dateOfAssessment || "N/A"}`, 25, yPosition);
+        yPosition += 6;
+        doc.text(`Age: ${regDetails.age || "N/A"}`, 25, yPosition);
+        yPosition += 6;
+        doc.text(`Status: ${selectedAssessment.fullData.status || "N/A"}`, 25, yPosition);
+        yPosition += 6;
+        
+        if (selectedAssessment.createdBy) {
+          doc.text(`Created By: ${selectedAssessment.createdBy}`, 25, yPosition);
+          yPosition += 6;
+        }
+        if (regDetails.serviceNumber) {
+          doc.text(`Service Number: ${regDetails.serviceNumber}`, 25, yPosition);
+          yPosition += 6;
+        }
+        if (regDetails.rank) {
+          doc.text(`Rank: ${regDetails.rank}`, 25, yPosition);
+          yPosition += 6;
+        }
+
+        yPosition += 5;
       }
 
-      const data = await response.json();
-      
-      // If the API returns HTML (temporary solution), create a blob and download
-      if (data.html) {
-        const blob = new Blob([data.html], { type: "text/html" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `Assessment-Report-${assessment.id}-${new Date().toISOString().split('T')[0]}.html`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        alert("HTML report generated. Note: For PDF generation, please configure a PDF library (Puppeteer, jsPDF, etc.)");
-      } else {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `Assessment-Report-${assessment.id}-${new Date().toISOString().split('T')[0]}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+      // Domain Status
+      if (reportConfig.sections.domainStatus && selectedAssessment.fullData.domainStatuses) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Domain Status", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const domainStatuses = selectedAssessment.fullData.domainStatuses;
+        Object.entries(domainStatuses).forEach(([domain, status]: [string, any]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          const statusText = status === "completed" ? "Completed" : status === "in_progress" ? "In Progress" : "Not Started";
+          doc.text(`${domain}: ${statusText}`, 25, yPosition);
+          yPosition += 6;
+        });
+        yPosition += 5;
       }
+
+      // Registration Details
+      if (reportConfig.sections.registrationDetails) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Registration Details", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        Object.entries(regDetails).forEach(([key, value]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          if (value !== null && value !== undefined && value !== "") {
+            const label = key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            doc.text(`${label}: ${String(value)}`, 25, yPosition);
+            yPosition += 6;
+          }
+        });
+        yPosition += 5;
+      }
+
+      // Injury History
+      if (reportConfig.sections.injuryHistory && selectedAssessment.fullData.injuryHistory) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Injury History", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const injuryHistory = selectedAssessment.fullData.injuryHistory;
+        Object.entries(injuryHistory).forEach(([key, value]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          if (value !== null && value !== undefined && value !== "") {
+            const label = key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            doc.text(`${label}: ${String(value)}`, 25, yPosition);
+            yPosition += 6;
+          }
+        });
+        yPosition += 5;
+      }
+
+      // Static Posture
+      if (reportConfig.sections.staticPosture && selectedAssessment.fullData.staticPosture) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Static Posture", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const staticPosture = selectedAssessment.fullData.staticPosture;
+        Object.entries(staticPosture).forEach(([key, value]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          if (value !== null && value !== undefined && value !== "") {
+            const label = key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            doc.text(`${label}: ${String(value)}`, 25, yPosition);
+            yPosition += 6;
+          }
+        });
+        yPosition += 5;
+      }
+
+      // ROM
+      if (reportConfig.sections.rom && selectedAssessment.fullData.rom) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Range of Motion (ROM)", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const rom = selectedAssessment.fullData.rom;
+        Object.entries(rom).forEach(([key, value]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          if (value !== null && value !== undefined && value !== "") {
+            const label = key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            doc.text(`${label}: ${String(value)}`, 25, yPosition);
+            yPosition += 6;
+          }
+        });
+        yPosition += 5;
+      }
+
+      // Strength & Stability
+      if (reportConfig.sections.strengthStability && selectedAssessment.fullData.strengthStability) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Strength & Stability", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const strength = selectedAssessment.fullData.strengthStability;
+        Object.entries(strength).forEach(([key, value]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          if (value !== null && value !== undefined && value !== "") {
+            const label = key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            doc.text(`${label}: ${String(value)}`, 25, yPosition);
+            yPosition += 6;
+          }
+        });
+        yPosition += 5;
+      }
+
+      // FMS
+      if (reportConfig.sections.fms && selectedAssessment.fullData.fms) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Functional Movement Screen (FMS)", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const fms = selectedAssessment.fullData.fms;
+        Object.entries(fms).forEach(([key, value]) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          if (value !== null && value !== undefined && value !== "") {
+            const label = key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+            doc.text(`${label}: ${String(value)}`, 25, yPosition);
+            yPosition += 6;
+          }
+        });
+        yPosition += 5;
+      }
+
+      // Custom Notes
+      if (reportConfig.customNotes) {
+        if (yPosition > pageHeight - 40) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Additional Notes", 20, yPosition);
+        yPosition += 8;
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        const notesLines = doc.splitTextToSize(reportConfig.customNotes, pageWidth - 40);
+        notesLines.forEach((line: string) => {
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          doc.text(line, 25, yPosition);
+          yPosition += 6;
+        });
+      }
+
+      // Footer on last page
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(128, 128, 128);
+        doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+      }
+
+      // Save PDF
+      doc.save(`Assessment-Report-${selectedAssessment.id}-${new Date().toISOString().split('T')[0]}.pdf`);
+      
+      setShowEditor(false);
+      setSelectedAssessment(null);
     } catch (error: any) {
       console.error("PDF generation error:", error);
       alert(`Failed to generate PDF: ${error.message}`);
@@ -220,14 +525,15 @@ export default function AdminReportsPage() {
       return;
     }
 
-    if (!confirm(`Generate PDF reports for ${filteredAssessments.length} assessment(s)?`)) {
+    if (!confirm(`Generate PDF reports for ${filteredAssessments.length} assessment(s) with current settings?`)) {
       return;
     }
 
     try {
       setLoading(true);
       for (const assessment of filteredAssessments) {
-        await generatePDF(assessment);
+        setSelectedAssessment(assessment);
+        await generatePDF();
         await new Promise(resolve => setTimeout(resolve, 500));
       }
       alert(`Successfully generated ${filteredAssessments.length} PDF report(s).`);
@@ -419,12 +725,12 @@ export default function AdminReportsPage() {
                     <td className="py-4 text-gray-700 text-sm">{assessment.createdBy}</td>
                     <td className="py-4">
                       <button
-                        onClick={() => generatePDF(assessment)}
+                        onClick={() => openEditor(assessment)}
                         disabled={loading}
                         className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700 transition-all disabled:opacity-50"
                       >
-                        <DocumentArrowDownIcon className="w-4 h-4" />
-                        Generate PDF
+                        <PencilIcon className="w-4 h-4" />
+                        Edit & Generate
                       </button>
                     </td>
                   </tr>
@@ -434,6 +740,113 @@ export default function AdminReportsPage() {
           </div>
         )}
       </div>
+
+      {/* Report Editor Modal */}
+      {showEditor && selectedAssessment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-white">Edit Report</h2>
+                <p className="text-gray-300 text-sm mt-1">
+                  {selectedAssessment.name} - {selectedAssessment.id.slice(0, 8)}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowEditor(false);
+                  setSelectedAssessment(null);
+                }}
+                className="text-gray-400 hover:text-white"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Section Selection */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-4">Select Sections to Include</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {Object.entries(reportConfig.sections).map(([key, value]) => (
+                    <label
+                      key={key}
+                      className="flex items-center gap-2 p-3 bg-gray-700 rounded-lg border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={value}
+                        onChange={(e) =>
+                          setReportConfig((prev) => ({
+                            ...prev,
+                            sections: { ...prev.sections, [key]: e.target.checked },
+                          }))
+                        }
+                        className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                      />
+                      <span className="text-white text-sm font-bold">
+                        {key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Options */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-4">Report Options</h3>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 p-3 bg-gray-700 rounded-lg border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={reportConfig.includeSummary}
+                      onChange={(e) =>
+                        setReportConfig((prev) => ({ ...prev, includeSummary: e.target.checked }))
+                      }
+                      className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                    />
+                    <span className="text-white text-sm font-bold">Include Summary Section</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Custom Notes */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-4">Additional Notes</h3>
+                <textarea
+                  value={reportConfig.customNotes}
+                  onChange={(e) =>
+                    setReportConfig((prev) => ({ ...prev, customNotes: e.target.value }))
+                  }
+                  placeholder="Add any additional notes or comments to include in the report..."
+                  className="textarea-glass w-full min-h-[120px]"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-700">
+                <button
+                  onClick={() => {
+                    setShowEditor(false);
+                    setSelectedAssessment(null);
+                  }}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg font-bold hover:bg-gray-500 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={generatePDF}
+                  disabled={loading}
+                  className="flex items-center gap-2 px-6 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700 transition-all disabled:opacity-50"
+                >
+                  <DocumentArrowDownIcon className="w-5 h-5" />
+                  {loading ? "Generating..." : "Generate PDF"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
