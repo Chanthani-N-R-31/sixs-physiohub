@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, XMarkIcon, FunnelIcon } from "@heroicons/react/24/outline";
 
 interface Patient {
   id: string;
@@ -16,10 +16,13 @@ interface SearchBarProps {
   onPatientSelect?: (patient: Patient) => void;
 }
 
+type FilterType = "all" | "name" | "id" | "condition";
+
 export default function SearchBar({ patients, onPatientSelect }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Patient[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [filterType, setFilterType] = useState<FilterType>("all");
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,13 +53,25 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
     }
 
     const query = searchQuery.toLowerCase().trim();
-    const filtered = patients.filter(
-      (patient) =>
-        patient.name.toLowerCase().includes(query) ||
-        patient.id.toLowerCase().includes(query) ||
-        (patient.age && String(patient.age).includes(query)) ||
-        (patient.date && patient.date.toLowerCase().includes(query))
-    );
+    const filtered = patients.filter((patient) => {
+      if (filterType === "name") {
+        return patient.name.toLowerCase().includes(query);
+      } else if (filterType === "id") {
+        return patient.id.toLowerCase().includes(query);
+      } else if (filterType === "condition") {
+        // Search by status/condition
+        return patient.status.toLowerCase().includes(query);
+      } else {
+        // All: search across all fields
+        return (
+          patient.name.toLowerCase().includes(query) ||
+          patient.id.toLowerCase().includes(query) ||
+          (patient.age && String(patient.age).includes(query)) ||
+          (patient.date && patient.date.toLowerCase().includes(query)) ||
+          patient.status.toLowerCase().includes(query)
+        );
+      }
+    });
 
     setSearchResults(filtered);
     setShowResults(filtered.length > 0);
@@ -68,8 +83,34 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
     setShowResults(false);
   };
 
+  const getPlaceholder = () => {
+    switch (filterType) {
+      case "name":
+        return "Search by Name";
+      case "id":
+        return "Search by ID";
+      case "condition":
+        return "Search by Status/Condition";
+      default:
+        return "Search by ID/Name/Condition";
+    }
+  };
+
+  const getFilterLabel = () => {
+    switch (filterType) {
+      case "name":
+        return "Name";
+      case "id":
+        return "ID";
+      case "condition":
+        return "Condition";
+      default:
+        return "All";
+    }
+  };
+
   return (
-    <div className="relative w-full sm:w-96 md:w-[420px]" ref={searchRef}>
+    <div className="relative w-full sm:w-96 md:w-[480px]" ref={searchRef}>
       <div className="relative">
         <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
         <input
@@ -77,17 +118,33 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => searchQuery && setShowResults(true)}
-          placeholder="Search by ID/Name"
-          className="w-full p-2.5 pl-10 pr-10 rounded-lg border border-gray-300 bg-gray-100 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white"
+          placeholder={getPlaceholder()}
+          className="w-full p-2.5 pl-10 pr-24 rounded-lg border border-gray-300 bg-gray-100 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white"
         />
         {searchQuery && (
           <button
             onClick={handleClear}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-white/70 hover:text-white"
+            className="absolute right-12 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
           >
             <XMarkIcon className="w-4 h-4" />
           </button>
         )}
+        
+        {/* Filter Type Button */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <button
+            onClick={() => {
+              const types: FilterType[] = ["all", "name", "id", "condition"];
+              const currentIndex = types.indexOf(filterType);
+              setFilterType(types[(currentIndex + 1) % types.length]);
+            }}
+            className="px-2 py-1 text-xs font-medium bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors flex items-center gap-1"
+            title={`Filter: ${getFilterLabel()}`}
+          >
+            <FunnelIcon className="w-3 h-3" />
+            <span>{getFilterLabel()}</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Results Dropdown */}
@@ -95,8 +152,11 @@ export default function SearchBar({ patients, onPatientSelect }: SearchBarProps)
         <div className="absolute z-50 w-full mt-2 bg-gray-800 rounded-lg shadow-xl border border-gray-700 max-h-96 overflow-y-auto">
           {searchResults.length > 0 ? (
             <div className="p-2">
-              <div className="px-3 py-2 text-xs font-semibold text-white/70 uppercase">
-                Search Results ({searchResults.length})
+              <div className="px-3 py-2 text-xs font-semibold text-white/70 uppercase flex items-center justify-between">
+                <span>Search Results ({searchResults.length})</span>
+                <span className="text-teal-400 font-normal normal-case">
+                  Filter: {getFilterLabel()}
+                </span>
               </div>
               {searchResults.map((patient) => (
                 <div

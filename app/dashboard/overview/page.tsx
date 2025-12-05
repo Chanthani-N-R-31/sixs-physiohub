@@ -13,6 +13,10 @@ import {
 import { db, auth } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { logActivity } from "@/lib/auditLogger";
+import ResumeWorkCard from "@/components/dashboard/ResumeWorkCard";
+import DomainProgressBar from "@/components/dashboard/DomainProgressBar";
+import AssessmentsAttentionWidget from "@/components/dashboard/AssessmentsAttentionWidget";
+import ActivityFeed from "@/components/dashboard/ActivityFeed";
 
 interface Entry {
   id: string;
@@ -201,6 +205,11 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
   return (
     <div className="w-full overflow-x-hidden">
+      {/* Resume Work Card - Prominent at Top */}
+      <div className="mb-8">
+        <ResumeWorkCard />
+      </div>
+
       {/* KPI Row - Updated to 4 Columns with Glassmorphism Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
@@ -264,8 +273,12 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
 
       </div>
 
-      {/* Recent Entries Table - White card like image */}
-      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+      {/* Main Content Grid with Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Left Column - 2/3 width */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Recent Entries Table - White card like image */}
+          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-900">Recent Entries</h3>
           <span className="text-sm text-gray-600 font-medium">
@@ -285,7 +298,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                 <th className="py-3">Name</th>
                 <th className="py-3">Age</th>
                 <th className="py-3">Assessment Date</th>
-                <th className="py-3">Status</th>
+                <th className="py-3">Progress</th>
                 <th className="py-3">Actions</th>
               </tr>
             </thead>
@@ -307,15 +320,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
                     <td className="py-4 text-gray-700">{row.age}</td>
                     <td className="py-4 text-gray-700">{row.date}</td>
                     <td className="py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        row.status === "Completed" 
-                          ? "bg-teal-600 text-white border border-teal-500"
-                          : row.status === "In Progress"
-                          ? "bg-teal-600 text-white border border-teal-500"
-                          : "bg-gray-400 text-white border border-gray-500"
-                      }`}>
-                        {row.status}
-                      </span>
+                      <DomainProgressBar entryData={row.fullData} />
                     </td>
                     <td className="py-4">
                        <div className="flex items-center gap-2">
@@ -347,6 +352,16 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+          {/* Assessments Requiring Attention Widget */}
+          <AssessmentsAttentionWidget />
+        </div>
+
+        {/* Right Sidebar - 1/3 width */}
+        <div className="lg:col-span-1">
+          <ActivityFeed />
         </div>
       </div>
     </div>

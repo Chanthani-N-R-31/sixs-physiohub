@@ -10,6 +10,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, where } from "firebase/firestore";
+import DomainCompletionChart from "@/components/admin/DomainCompletionChart";
+import DataGrowthChart from "@/components/admin/DataGrowthChart";
+import CriticalAuditLogs from "@/components/admin/CriticalAuditLogs";
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -18,6 +21,8 @@ export default function AdminDashboard() {
   const [completedAssessments, setCompletedAssessments] = useState(0);
   const [deletedRecords, setDeletedRecords] = useState(0);
   const [recentDeletions, setRecentDeletions] = useState(0);
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [averageAssessments, setAverageAssessments] = useState(0);
 
   useEffect(() => {
     // Only run on client side
@@ -80,13 +85,24 @@ export default function AdminDashboard() {
       // For physios, we'll count unique users from assessments
       // In a real app, you'd have a users collection
       const uniqueUsers = new Set<string>();
+      const userActivityMap = new Map<string, number>();
+      
       assessmentsSnapshot.forEach((doc) => {
         const data = doc.data();
         if (data.createdBy) {
           uniqueUsers.add(data.createdBy);
+          userActivityMap.set(data.createdBy, (userActivityMap.get(data.createdBy) || 0) + 1);
         }
       });
+      
       setTotalPhysios(uniqueUsers.size);
+      setActiveUsers(uniqueUsers.size);
+      
+      // Calculate average assessments per user
+      if (uniqueUsers.size > 0) {
+        const avgAssessments = Math.round(total / uniqueUsers.size);
+        setAverageAssessments(avgAssessments);
+      }
 
     } catch (error) {
       console.error("Error loading admin stats:", error);
@@ -187,14 +203,51 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* System Health Placeholder - Light grey card */}
-      <div className="bg-gray-100 rounded-xl p-6 shadow-lg border border-gray-400">
-        <h3 className="text-lg font-bold text-black mb-4">System Health</h3>
-        <div className="h-32 flex items-center justify-center rounded-lg border border-dashed border-gray-400 text-black bg-white">
-          <ChartBarIcon className="w-6 h-6 mr-2" />
-          Activity Chart Placeholder
+      {/* Summary Metrics Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Active Users</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : activeUsers}
+              </div>
+              <div className="mt-1 text-sm text-white/60">
+                Unique users with assessments
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <UsersIcon className="w-6 h-6 text-white" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Avg Assessments/User</div>
+              <div className="mt-2 text-3xl font-bold text-white">
+                {loading ? "..." : averageAssessments}
+              </div>
+              <div className="mt-1 text-sm text-white/60">
+                Average per active user
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+              <DocumentCheckIcon className="w-6 h-6 text-white" />
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <DomainCompletionChart />
+        <DataGrowthChart />
+      </div>
+
+      {/* Critical Audit Logs */}
+      <CriticalAuditLogs />
     </div>
   );
 }
