@@ -10,6 +10,7 @@ import {
   exportHierarchicalCSV,
   downloadHierarchicalReport,
 } from "@/lib/exportData";
+import { exportToExcel, downloadExcelFile } from "@/lib/excelExport";
 import GlassCard from "@/components/ui/GlassCard";
 
 interface Patient {
@@ -94,6 +95,31 @@ export default function ExportPage() {
         return;
       }
 
+      // Handle Excel export
+      if (exportFormat === "xlsx") {
+        // Create Excel workbook with all sheets
+        const workbook = await exportToExcel(rawData);
+        
+        // Determine filename
+        let filename = "physiohub_export";
+        if (selectedPatient) {
+          const patient = patients.find(p => p.id === selectedPatient);
+          filename = patient 
+            ? `physiohub_${patient.name.replace(/\s+/g, "_")}` 
+            : "physiohub_export";
+        } else if (domainFilter === "specific") {
+          filename = `physiohub_${specificDomain.toLowerCase()}`;
+        }
+        
+        // Download Excel file
+        await downloadExcelFile(workbook, filename);
+        
+        alert(`Excel export completed! ${rawData.length} record(s) exported.`);
+        setIsGenerating(false);
+        return;
+      }
+
+      // Handle CSV export (existing logic)
       // Filter data for the selected domain
       let filteredData = rawData;
       if (domainFilter === "specific") {
@@ -266,9 +292,9 @@ export default function ExportPage() {
                   : "border-white/30 bg-white/5 hover:bg-white/10"
               } ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              <div className="text-lg font-bold text-white">Excel</div>
+              <div className="text-lg font-bold text-white">Excel (.xlsx)</div>
               <div className="text-sm text-white/70 mt-1">
-                Excel-compatible CSV (UTF-8 BOM)
+                Multi-sheet Excel workbook with domain separation
               </div>
             </button>
           </div>
