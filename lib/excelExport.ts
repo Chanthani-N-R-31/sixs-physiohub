@@ -4,7 +4,7 @@
  * Creates multi-sheet Excel workbooks with domain separation
  */
 
-import ExcelJS from "exceljs";
+import * as ExcelJS from "exceljs";
 
 /**
  * Human-readable field labels mapping
