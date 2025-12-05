@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowRightIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { db, auth } from "@/lib/firebase";
-import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { collection, query, orderBy, limit, getDocs, where, doc, getDoc } from "firebase/firestore";
 import { getDomainStatuses } from "@/lib/domainStatus";
 
 interface LastActiveEntry {
@@ -17,10 +16,13 @@ interface LastActiveEntry {
   activeDomain?: string;
 }
 
-export default function ResumeWorkCard() {
+interface ResumeWorkCardProps {
+  onResume?: (entryId: string, entryData: any, domain?: string) => void;
+}
+
+export default function ResumeWorkCard({ onResume }: ResumeWorkCardProps) {
   const [lastActive, setLastActive] = useState<LastActiveEntry | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     loadLastActiveEntry();
@@ -119,11 +121,33 @@ export default function ResumeWorkCard() {
     }
   };
 
-  const handleResume = () => {
+  const handleResume = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     if (!lastActive) return;
     
-    // Navigate to entries page and scroll to this entry, or open edit mode
-    router.push(`/dashboard/entries?edit=${lastActive.fullId}&domain=${lastActive.activeDomain || 'physiotherapy'}`);
+    try {
+      // Fetch the full entry data
+      const entryRef = doc(db, "physioAssessments", lastActive.fullId);
+      const entrySnap = await getDoc(entryRef);
+      
+      if (entrySnap.exists()) {
+        const entryData = { id: entrySnap.id, ...entrySnap.data() };
+        
+        // Call the onResume callback if provided
+        if (onResume) {
+          onResume(lastActive.fullId, entryData, lastActive.activeDomain);
+        } else {
+          // Fallback: log to console
+          console.log("Resume work:", lastActive.fullId, entryData);
+        }
+      }
+    } catch (error) {
+      console.error("Error resuming work:", error);
+    }
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -157,8 +181,17 @@ export default function ResumeWorkCard() {
 
   return (
     <div 
-      onClick={handleResume}
+      onClick={(e) => handleResume(e)}
+      onMouseDown={(e) => e.stopPropagation()}
       className="bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl p-6 shadow-lg border border-white/20 cursor-pointer hover:shadow-xl transition-all hover:scale-[1.02]"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleResume();
+        }
+      }}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">

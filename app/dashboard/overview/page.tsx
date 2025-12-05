@@ -207,7 +207,7 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
     <div className="w-full overflow-x-hidden">
       {/* Resume Work Card - Prominent at Top */}
       <div className="mb-8">
-        <ResumeWorkCard />
+        <ResumeWorkCard onResume={onEdit ? (entryId, entryData) => onEdit(entryId, entryData) : undefined} />
       </div>
 
       {/* KPI Row - Updated to 4 Columns with Glassmorphism Cards */}
