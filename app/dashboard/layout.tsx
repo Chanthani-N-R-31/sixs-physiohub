@@ -69,7 +69,7 @@ export default function DashboardLayout({
           }}
         >
           {/* Overlay for better readability */}
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] pointer-events-none" />
           
           {/* Top Navigation Bar */}
           <div className="relative z-10">
