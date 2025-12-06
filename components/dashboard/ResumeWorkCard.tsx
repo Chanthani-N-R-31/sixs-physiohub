@@ -142,7 +142,7 @@ export default function ResumeWorkCard() {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl p-6 shadow-lg border border-white/20">
+      <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/30">
         <div className="animate-pulse">
           <div className="h-6 bg-white/20 rounded w-1/3 mb-4"></div>
           <div className="h-4 bg-white/20 rounded w-1/2"></div>
@@ -158,28 +158,28 @@ export default function ResumeWorkCard() {
   return (
     <div 
       onClick={handleResume}
-      className="bg-gradient-to-r from-teal-600 to-blue-600 rounded-xl p-6 shadow-lg border border-white/20 cursor-pointer hover:shadow-xl transition-all hover:scale-[1.02]"
+      className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/30 cursor-pointer hover:shadow-xl transition-all hover:scale-[1.02]"
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <ClockIcon className="w-5 h-5 text-white" />
-            <span className="text-sm font-medium text-white/90">Resume Work</span>
+            <ClockIcon className="w-5 h-5 text-black" />
+            <span className="text-sm font-bold text-black">Resume Work</span>
           </div>
-          <h3 className="text-xl font-bold text-white mb-1">
+          <h3 className="text-xl font-bold text-black mb-1">
             {lastActive.name}
           </h3>
-          <p className="text-white/80 text-sm mb-2">
+          <p className="text-black font-bold text-sm mb-2">
             {lastActive.activeDomain ? `Continue ${lastActive.activeDomain}` : "Last updated"} • {formatTimeAgo(lastActive.lastUpdated)}
           </p>
-          <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
+          <div className="flex items-center gap-2 text-black font-bold text-sm">
             <span>Continue</span>
             <ArrowRightIcon className="w-4 h-4" />
           </div>
         </div>
         <div className="ml-4">
           <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/30">
-            <ArrowRightIcon className="w-8 h-8 text-white" />
+            <ArrowRightIcon className="w-8 h-8 text-black" />
           </div>
         </div>
       </div>

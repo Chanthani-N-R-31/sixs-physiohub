@@ -217,11 +217,11 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Individuals</div>
-              <div className="mt-2 text-3xl font-bold text-white">{totalPatients}</div>
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Total Individuals</div>
+              <div className="mt-2 text-3xl font-bold text-black">{totalPatients}</div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <UserIcon className="w-6 h-6 text-white" />
+              <UserIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
@@ -230,13 +230,13 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Entries Completed</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Entries Completed</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : completedCount}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <CheckCircleIcon className="w-6 h-6 text-white" />
+              <CheckCircleIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
@@ -245,13 +245,13 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Pending</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Pending</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : pendingCount}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <TrashIcon className="w-6 h-6 text-white" />
+              <TrashIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
@@ -260,13 +260,13 @@ export default function OverviewPage({ onEdit, onView }: OverviewPageProps = {})
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Assessments Today</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Assessments Today</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : assessmentsToday}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <DocumentTextIcon className="w-6 h-6 text-white" />
+              <DocumentTextIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>

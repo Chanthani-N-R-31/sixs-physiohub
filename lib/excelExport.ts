@@ -496,6 +496,7 @@ function addDataToSheet(
   
   // Auto-fit columns (with max width)
   worksheet.columns.forEach(column => {
+    if (!column || !column.eachCell) return;
     let maxLength = 0;
     column.eachCell({ includeEmpty: false }, (cell) => {
       const cellValue = cell.value ? String(cell.value) : '';

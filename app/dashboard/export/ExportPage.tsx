@@ -170,20 +170,20 @@ export default function ExportPage() {
   return (
     <div className="w-full overflow-x-hidden">
       {/* Header */}
-      <h2 className="text-3xl font-bold text-white mb-6">Export Data</h2>
+      <h2 className="text-3xl font-bold text-black mb-6">Export Data</h2>
 
       {/* Card */}
       <GlassCard>
         {/* Patient Dropdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-bold text-white mb-1">
+            <label className="block text-sm font-bold text-black mb-1">
               Select Individuals
             </label>
 
             <div className="flex gap-2">
               <select
-                className="w-full p-3 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
+                className="w-full p-3 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-black font-bold placeholder-black/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 shadow-lg"
                 value={selectedPatient}
                 onChange={(e) => setSelectedPatient(e.target.value)}
                 disabled={loading || isGenerating}
@@ -204,7 +204,7 @@ export default function ExportPage() {
               <button
                 onClick={() => window.location.reload()}
                 disabled={loading || isGenerating}
-                className="px-4 py-3 bg-white/10 backdrop-blur-md text-white rounded-lg font-bold hover:bg-white/20 transition-all shadow-lg border border-white/30 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-3 bg-white/10 backdrop-blur-md text-black rounded-lg font-bold hover:bg-white/20 transition-all shadow-lg border border-white/30 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Refresh patient list"
               >
                 ↻
@@ -214,12 +214,12 @@ export default function ExportPage() {
 
           {/* Domain Choice */}
           <div>
-            <label className="block text-sm font-bold text-white mb-1">
+            <label className="block text-sm font-bold text-black mb-1">
               Domain
             </label>
 
             <div className="flex flex-wrap gap-4 mt-2">
-              <label className="flex items-center gap-2 text-sm text-white font-medium">
+              <label className="flex items-center gap-2 text-sm text-black font-bold">
                 <input
                   type="radio"
                   name="domain"
@@ -231,7 +231,7 @@ export default function ExportPage() {
                 All Domains
               </label>
 
-              <label className="flex items-center gap-2 text-sm text-white font-medium">
+              <label className="flex items-center gap-2 text-sm text-black font-bold">
                 <input
                   type="radio"
                   name="domain"
@@ -245,7 +245,7 @@ export default function ExportPage() {
 
               {domainFilter === "specific" && (
                 <select
-                  className="p-2 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-white font-bold focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="p-2 bg-white/20 backdrop-blur-md border border-white/40 rounded-lg text-black font-bold focus:outline-none focus:ring-2 focus:ring-white/50"
                   value={specificDomain}
                   onChange={(e) => setSpecificDomain(e.target.value)}
                   disabled={isGenerating}
@@ -263,7 +263,7 @@ export default function ExportPage() {
 
         {/* Format Selector */}
         <div className="mt-8">
-          <label className="block text-sm font-bold text-white mb-2">
+          <label className="block text-sm font-bold text-black mb-2">
             Export Format
           </label>
 
@@ -277,8 +277,8 @@ export default function ExportPage() {
                   : "border-white/30 bg-white/5 hover:bg-white/10"
               } ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              <div className="text-lg font-bold text-white">CSV</div>
-              <div className="text-sm text-white/70 mt-1">
+              <div className="text-lg font-bold text-black">CSV</div>
+              <div className="text-sm text-black font-bold mt-1">
                 Comma-Separated Values
               </div>
             </button>
@@ -292,8 +292,8 @@ export default function ExportPage() {
                   : "border-white/30 bg-white/5 hover:bg-white/10"
               } ${isGenerating ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              <div className="text-lg font-bold text-white">Excel (.xlsx)</div>
-              <div className="text-sm text-white/70 mt-1">
+              <div className="text-lg font-bold text-black">Excel (.xlsx)</div>
+              <div className="text-sm text-black font-bold mt-1">
                 Multi-sheet Excel workbook with domain separation
               </div>
             </button>
@@ -305,7 +305,7 @@ export default function ExportPage() {
           <button
             onClick={handleDownload}
             disabled={isGenerating || loading}
-            className={`px-6 py-3 text-white rounded-lg shadow-lg transition font-bold border ${
+            className={`px-6 py-3 text-black rounded-lg shadow-lg transition font-bold border ${
               isGenerating || loading 
                 ? "bg-[#1a4d4d]/60 cursor-not-allowed border-[#1a4d4d]/50" 
                 : "bg-[#1a4d4d]/80 backdrop-blur-sm hover:bg-[#1a4d4d]/90 border-[#1a4d4d]/50"

@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <div
       className={`${inter.className} flex min-h-screen relative bg-gray-900`}
       style={{
-        backgroundImage: "url('/final ui.jpg')",
+        backgroundImage: "url('/back1.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

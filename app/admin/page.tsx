@@ -121,12 +121,12 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-white">Admin Overview</h1>
-          <p className="text-white/70 mt-1 font-medium">
+          <h1 className="text-3xl font-bold text-black">Admin Overview</h1>
+          <p className="text-black font-bold mt-1">
             System status and key performance metrics.
           </p>
         </div>
-        <div className="text-sm text-white/60 font-medium">
+        <div className="text-sm text-black font-bold">
           Last updated: Just now
         </div>
       </div>
@@ -152,52 +152,52 @@ export default function AdminDashboard() {
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Physios</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Total Physios</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : totalPhysios}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <UsersIcon className="w-6 h-6 text-white" />
+              <UsersIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Total Individuals</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Total Individuals</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : totalIndividuals}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <UsersIcon className="w-6 h-6 text-white" />
+              <UsersIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Completed Assessments</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Completed Assessments</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : completedAssessments}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <DocumentCheckIcon className="w-6 h-6 text-white" />
+              <DocumentCheckIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Deleted Records</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Deleted Records</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : deletedRecords}
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <TrashIcon className="w-6 h-6 text-white" />
+              <TrashIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
@@ -208,16 +208,16 @@ export default function AdminDashboard() {
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Active Users</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Active Users</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : activeUsers}
               </div>
-              <div className="mt-1 text-sm text-white/60">
+              <div className="mt-1 text-sm text-black font-bold">
                 Unique users with assessments
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <UsersIcon className="w-6 h-6 text-white" />
+              <UsersIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
@@ -225,16 +225,16 @@ export default function AdminDashboard() {
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-bold text-white/70 uppercase tracking-wide">Avg Assessments/User</div>
-              <div className="mt-2 text-3xl font-bold text-white">
+              <div className="text-xs font-bold text-black uppercase tracking-wide">Avg Assessments/User</div>
+              <div className="mt-2 text-3xl font-bold text-black">
                 {loading ? "..." : averageAssessments}
               </div>
-              <div className="mt-1 text-sm text-white/60">
+              <div className="mt-1 text-sm text-black font-bold">
                 Average per active user
               </div>
             </div>
             <div className="p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-              <DocumentCheckIcon className="w-6 h-6 text-white" />
+              <DocumentCheckIcon className="w-6 h-6 text-black" />
             </div>
           </div>
         </div>
